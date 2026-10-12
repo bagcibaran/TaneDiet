@@ -10,6 +10,7 @@ function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
+    const [error, setError] = useState('')
 
     return (
         <AuthLayout>
@@ -25,17 +26,20 @@ function LoginPage() {
                 className="space-y-4"
                 onSubmit={async (event) => {
                     event.preventDefault()
-
+                    setError('')
                     try {
                         const response = await loginUser({
                             email,
                             password,
                         })
 
+                        console.log(response)
+
                         localStorage.setItem('token', response.token)
                         navigate('/dashboard')
                     } catch (error) {
                         console.error('Login başarısız:', error)
+                        setError('Email veya şifre hatalı')
                     }
                 }}
             >
@@ -71,11 +75,17 @@ function LoginPage() {
                         name="password"
                         type="password"
                         value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                         className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                     />
                 </div>
+
+                {error && (
+                    <p className="text-sm text-red-600">
+                        {error}
+                    </p>
+                )}
 
                 <button
                     type="submit"

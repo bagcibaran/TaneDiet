@@ -19,7 +19,8 @@ export async function loginUser(
     })
 
     if (!response.ok) {
-        throw new Error('Email veya şifre hatalı')
+        const errorResponse = await response.json()
+        throw new Error(errorResponse.message)
     }
 
     return response.json() as Promise<LoginResponse>

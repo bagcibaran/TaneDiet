@@ -10,6 +10,11 @@ public class LoginResponse {
         this.message = message;
     }
 
+    @Override
+    public String toString() {
+        return "TaskEntity{token=" + token + ", message='" + message + "}";
+    }
+
     public String getToken() {
         return token;
     }
