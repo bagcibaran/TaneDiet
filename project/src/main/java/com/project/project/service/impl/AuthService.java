@@ -45,7 +45,7 @@ public class AuthService {
             throw new UserNotFoundException("Email veya şifre hatalı");
         }
 
-        String token = jwtService.generateToken(user.getUsername());
-        return new LoginResponse(token, "Giriş Başarılı");
+        String token = jwtService.generateToken(user);
+        return new LoginResponse(token, "Giriş Başarılı", user.getRole());
     }
 }
