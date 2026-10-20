@@ -1,9 +1,11 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import AuthLayout from '../AppLayout/Routes/AuthLayout.tsx'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { loginUser } from '../services/authService'
-import { useNavigate } from 'react-router-dom'
+import { ApiError } from '../services/apiClient'
+import { toErrorMessage } from '../services/errorMessage'
+import { saveToken } from '../services/session'
 
 function LoginPage() {
     const { t } = useTranslation()
@@ -11,6 +13,9 @@ function LoginPage() {
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
     const [error, setError] = useState('')
+    // Başka bir sayfa bizi buraya bir sebeple gönderdiyse (?reason=...) bunu göster
+    const [searchParams] = useSearchParams()
+    const reason = searchParams.get('reason')
 
     return (
         <AuthLayout>
@@ -21,6 +26,18 @@ function LoginPage() {
             <p className="mb-6 text-slate-500">
                 {t('login.subtitle')}
             </p>
+
+            {reason === 'expired' && (
+                <p className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+                    {t('errors.sessionExpired')}
+                </p>
+            )}
+
+            {reason === 'registered' && (
+                <p className="mb-4 rounded-lg bg-green-50 p-3 text-sm text-green-800">
+                    {t('login.registered')}
+                </p>
+            )}
 
             <form
                 className="space-y-4"
@@ -33,13 +50,15 @@ function LoginPage() {
                             password,
                         })
 
-                        console.log(response)
-
-                        localStorage.setItem('token', response.token)
+                        saveToken(response.token)
                         navigate('/dashboard')
                     } catch (error) {
-                        console.error('Login başarısız:', error)
-                        setError('Email veya şifre hatalı')
+                        // Backend yanlış e-posta/şifre için 404 döndürüyor
+                        if (error instanceof ApiError && error.status === 404) {
+                            setError(t('login.invalidCredentials'))
+                        } else {
+                            setError(toErrorMessage(error, t, 'login.failed'))
+                        }
                     }
                 }}
             >

@@ -1,11 +1,13 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '../AppLayout/Routes/AuthLayout'
 import { useState, type FormEvent } from 'react'
 import { registerUser } from '../services/authService'
+import { toErrorMessage } from '../services/errorMessage'
 
 function RegisterPage() {
     const { t } = useTranslation()
+    const navigate = useNavigate()
 
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
@@ -23,15 +25,16 @@ function RegisterPage() {
         }
 
         try {
-            const response = await registerUser({
+            await registerUser({
                 username,
                 email,
                 password,
             })
 
-            console.log('Kayıt başarılı:', response)
+            navigate('/login?reason=registered')
         } catch (error) {
-            console.error('Kayıt başarısız:', error)
+            // 409 gelirse backend'in mesajı gösterilir: "Bu e-posta adresi zaten kayıtlı" gibi
+            setError(toErrorMessage(error, t, 'register.failed'))
         }
     }
 

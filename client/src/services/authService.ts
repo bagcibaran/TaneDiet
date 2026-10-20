@@ -4,42 +4,18 @@ import type {
     RegisterRequest,
     UserResponse,
 } from '../types/auth'
+import { apiRequest } from './apiClient'
 
-const API_URL = 'http://localhost:8080'
-
-export async function loginUser(
-    request: LoginRequest,
-): Promise<LoginResponse> {
-    const response = await fetch(`${API_URL}/auth/login`, {
+export function loginUser(request: LoginRequest): Promise<LoginResponse> {
+    return apiRequest<LoginResponse>('/auth/login', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
+        body: request,
     })
-
-    if (!response.ok) {
-        const errorResponse = await response.json()
-        throw new Error(errorResponse.message)
-    }
-
-    return response.json() as Promise<LoginResponse>
 }
 
-export async function registerUser(
-    request: RegisterRequest,
-): Promise<UserResponse> {
-    const response = await fetch(`${API_URL}/auth/register`, {
+export function registerUser(request: RegisterRequest): Promise<UserResponse> {
+    return apiRequest<UserResponse>('/auth/register', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
+        body: request,
     })
-
-    if (!response.ok) {
-        throw new Error('Kayıt işlemi başarısız')
-    }
-
-    return response.json() as Promise<UserResponse>
 }

@@ -6,7 +6,10 @@
     "password": "Password",
     "submit": "Sign in",
     "registerPrompt": "Don't have an account?",
-    "registerLink": "Register"
+    "registerLink": "Register",
+    "invalidCredentials": "Invalid email or password",
+    "failed": "Sign in failed",
+    "registered": "Registration successful, you can sign in now"
   },
   "register": {
     "title": "Create an account",
@@ -18,7 +21,8 @@
     "submit": "Register",
     "loginPrompt": "Already have an account?",
     "loginLink": "Sign in",
-    "passwordMismatch": "Passwords do not match"
+    "passwordMismatch": "Passwords do not match",
+    "failed": "Registration failed"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -29,6 +33,24 @@
     "empty": "You have no tasks yet",
     "loadError": "Tasks could not be loaded",
     "newTask": "New task",
-    "addTask": "Add task"
+    "addTask": "Add task",
+    "createError": "Task could not be created",
+    "updateError": "Task could not be updated",
+    "deleteError": "Task could not be deleted"
+  },
+  "users": {
+    "title": "Users",
+    "back": "Back to dashboard",
+    "role": "Role",
+    "loadError": "Users could not be loaded"
+  },
+  "roles": {
+    "DIETITIAN": "Dietitian",
+    "CLIENT": "Client"
+  },
+  "errors": {
+    "network": "Could not reach the server. Is the backend running?",
+    "sessionExpired": "Your session has expired, please sign in again",
+    "forbidden": "You are not allowed to do this"
   }
 }

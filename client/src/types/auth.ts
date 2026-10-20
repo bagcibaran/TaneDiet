@@ -1,3 +1,5 @@
+export type Role = 'DIETITIAN' | 'CLIENT'
+
 export type LoginRequest = {
     email: string
     password: string
@@ -6,6 +8,7 @@ export type LoginRequest = {
 export type LoginResponse = {
     token: string
     message: string
+    role: Role
 }
 
 export type RegisterRequest = {
@@ -18,4 +21,5 @@ export type UserResponse = {
     id: number
     username: string
     email: string
+    role: Role
 }

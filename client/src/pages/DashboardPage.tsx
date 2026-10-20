@@ -3,12 +3,13 @@ import {
     useState,
     type FormEvent,
 } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
     Check,
     Pencil,
     Trash2,
+    Users,
     X,
 } from 'lucide-react'
 
@@ -18,12 +19,16 @@ import {
     getTasks,
     updateTask,
 } from '../services/taskService'
+import { toErrorMessage } from '../services/errorMessage'
+import { clearSession, getRole, getUsername } from '../services/session'
 
 import type { Task } from '../types/task'
 
 function DashboardPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
+    const role = getRole()
+    const username = getUsername()
 
     const [tasks, setTasks] = useState<Task[]>([])
     const [newTaskTitle, setNewTaskTitle] = useState('')
@@ -32,9 +37,11 @@ function DashboardPage() {
     const [loading, setLoading] = useState(true)
     const [creating, setCreating] = useState(false)
     const [error, setError] = useState(false)
+    // Ekleme, güncelleme veya silme başarısız olursa gösterilecek mesaj
+    const [actionError, setActionError] = useState('')
 
     const handleLogout = () => {
-        localStorage.removeItem('token')
+        clearSession()
         navigate('/login')
     }
 
@@ -63,6 +70,7 @@ function DashboardPage() {
             return
         }
 
+        setActionError('')
         try {
             setCreating(true)
 
@@ -77,13 +85,14 @@ function DashboardPage() {
 
             setNewTaskTitle('')
         } catch (error) {
-            console.error('Task oluşturulamadı:', error)
+            setActionError(toErrorMessage(error, t, 'dashboard.createError'))
         } finally {
             setCreating(false)
         }
     }
 
     const handleToggleTask = async (task: Task) => {
+        setActionError('')
         try {
             const updatedTask = await updateTask(task.id, {
                 title: task.title,
@@ -98,11 +107,12 @@ function DashboardPage() {
                 ),
             )
         } catch (error) {
-            console.error('Task durumu güncellenemedi:', error)
+            setActionError(toErrorMessage(error, t, 'dashboard.updateError'))
         }
     }
 
     const handleDeleteTask = async (id: number) => {
+        setActionError('')
         try {
             await deleteTask(id)
 
@@ -110,7 +120,7 @@ function DashboardPage() {
                 currentTasks.filter((task) => task.id !== id),
             )
         } catch (error) {
-            console.error('Task silinemedi:', error)
+            setActionError(toErrorMessage(error, t, 'dashboard.deleteError'))
         }
     }
 
@@ -129,6 +139,7 @@ function DashboardPage() {
             return
         }
 
+        setActionError('')
         try {
             const updatedTask = await updateTask(task.id, {
                 title: editingTitle,
@@ -145,7 +156,7 @@ function DashboardPage() {
 
             handleCancelEdit()
         } catch (error) {
-            console.error('Task güncellenemedi:', error)
+            setActionError(toErrorMessage(error, t, 'dashboard.updateError'))
         }
     }
 
@@ -159,17 +170,35 @@ function DashboardPage() {
                         </h1>
 
                         <p className="mt-2 text-slate-600">
-                            {t('dashboard.welcome')}
+                            {t('dashboard.welcome')}, {username}
+                            {role && (
+                                <span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
+                                    {t(`roles.${role}`)}
+                                </span>
+                            )}
                         </p>
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="rounded-lg bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700"
-                    >
-                        {t('dashboard.logout')}
-                    </button>
+                    <div className="flex gap-3">
+                        {/* Yalnızca diyetisyen görür. Asıl koruma backend'de: danışan /users'a istek atarsa 403 alır */}
+                        {role === 'DIETITIAN' && (
+                            <Link
+                                to="/users"
+                                className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 hover:bg-slate-50"
+                            >
+                                <Users className="h-4 w-4" />
+                                {t('users.title')}
+                            </Link>
+                        )}
+
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="rounded-lg bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700"
+                        >
+                            {t('dashboard.logout')}
+                        </button>
+                    </div>
                 </div>
 
                 <section className="mt-8 rounded-xl bg-white p-6 shadow">
@@ -199,6 +228,12 @@ function DashboardPage() {
                             {t('dashboard.addTask')}
                         </button>
                     </form>
+
+                    {actionError && (
+                        <p className="mt-4 text-sm text-red-600">
+                            {actionError}
+                        </p>
+                    )}
 
                     {loading && (
                         <p className="mt-4 text-slate-500">

@@ -3,6 +3,7 @@ import AppLayout from './AppLayout/Routes/AppLayout.tsx'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
+import UsersPage from './pages/UsersPage'
 import ProtectedRoute from './routes/ProtectedRoute'
 
 function App() {
@@ -18,6 +19,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <DashboardPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/users"
+                        element={
+                            <ProtectedRoute allowedRoles={['DIETITIAN']}>
+                                <UsersPage />
                             </ProtectedRoute>
                         }
                     />

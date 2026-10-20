@@ -6,7 +6,10 @@
     "password": "Şifre",
     "submit": "Giriş yap",
     "registerPrompt": "Hesabın yok mu?",
-    "registerLink": "Kayıt ol"
+    "registerLink": "Kayıt ol",
+    "invalidCredentials": "E-posta veya şifre hatalı",
+    "failed": "Giriş yapılamadı",
+    "registered": "Kayıt başarılı, şimdi giriş yapabilirsin"
   },
   "register": {
     "title": "Hesap oluştur",
@@ -18,7 +21,8 @@
     "submit": "Kayıt ol",
     "loginPrompt": "Zaten hesabın var mı?",
     "loginLink": "Giriş yap",
-    "passwordMismatch": "Şifreler eşleşmiyor"
+    "passwordMismatch": "Şifreler eşleşmiyor",
+    "failed": "Kayıt işlemi başarısız"
   },
   "dashboard": {
     "title": "Kontrol Paneli",
@@ -29,6 +33,24 @@
     "empty": "Henüz görevin yok",
     "loadError": "Görevler yüklenemedi",
     "newTask": "Yeni görev",
-    "addTask": "Görev ekle"
+    "addTask": "Görev ekle",
+    "createError": "Görev oluşturulamadı",
+    "updateError": "Görev güncellenemedi",
+    "deleteError": "Görev silinemedi"
+  },
+  "users": {
+    "title": "Kullanıcılar",
+    "back": "Kontrol paneline dön",
+    "role": "Rol",
+    "loadError": "Kullanıcılar yüklenemedi"
+  },
+  "roles": {
+    "DIETITIAN": "Diyetisyen",
+    "CLIENT": "Danışan"
+  },
+  "errors": {
+    "network": "Sunucuya ulaşılamadı. Backend çalışıyor mu?",
+    "sessionExpired": "Oturumunun süresi doldu, lütfen tekrar giriş yap",
+    "forbidden": "Bu işlem için yetkin yok"
   }
 }
