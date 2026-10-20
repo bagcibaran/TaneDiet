@@ -40,7 +40,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        ErrorResponse error = new ErrorResponse(HttpStatus.CONFLICT.value(), "Bu kullanıcıya ait task'lar olduğu için silinemez");
+        // Veritabanının hata mesajı, ihlal edilen kısıtın adını içerir (V2__ migration'ındaki isimler)
+        String cause = ex.getMostSpecificCause().getMessage();
+        String message;
+        if (cause.contains("uk_app_user_email")) {
+            message = "Bu e-posta adresi zaten kayıtlı";
+        } else if (cause.contains("uk_app_user_username")) {
+            message = "Bu kullanıcı adı zaten alınmış";
+        } else if (cause.contains("foreign key constraint fails")) {
+            message = "Bu kullanıcıya ait görevler olduğu için silinemez";
+        } else {
+            message = "İşlem veri kurallarına uymuyor";
+        }
+        ErrorResponse error = new ErrorResponse(HttpStatus.CONFLICT.value(), message);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }
