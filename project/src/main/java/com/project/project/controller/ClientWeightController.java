@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.project.project.dto.WeightSummaryResponse;
 
 import java.util.List;
 
@@ -50,5 +51,10 @@ public class ClientWeightController {
     ) {
         weightEntryService.deleteClientEntry(clientId, entryId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<WeightSummaryResponse> getClientSummary(@PathVariable Long clientId) {
+        return ResponseEntity.ok(weightEntryService.getClientSummary(clientId));
     }
 }
