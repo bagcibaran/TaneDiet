@@ -64,7 +64,10 @@
     "addError": "Weight entry could not be saved",
     "delete": "Delete entry",
     "confirmDelete": "Are you sure you want to delete this weight entry?",
-    "deleteError": "Weight entry could not be deleted"
+    "deleteError": "Weight entry could not be deleted",
+    "sinceStart": "Since start",
+    "last7Days": "Last 7 days",
+    "last30Days": "Last 30 days"
   },
   "clients": {
     "title": "Client",

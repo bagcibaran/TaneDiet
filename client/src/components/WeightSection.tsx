@@ -8,12 +8,16 @@ import {
     deleteClientWeight,
     deleteMyWeight,
     getClientWeights,
+    getClientWeightSummary,
     getMyWeights,
+    getMyWeightSummary,
 } from '../services/weightService'
 import { toErrorMessage } from '../services/errorMessage'
 import { getUsername } from '../services/session'
 import WeightForm from './WeightForm'
-import type { CreateWeightEntryRequest, WeightEntry } from '../types/weight'
+import WeightSummaryCards from './WeightSummaryCards'
+import type { CreateWeightEntryRequest, WeightEntry, WeightSummary } from '../types/weight'
+import WeightChart from './WeightChart'
 
 type WeightSectionProps = {
     // Verilirse diyetisyen o danışanın kilolarını yönetir; verilmezse danışan kendi kilolarını
@@ -25,14 +29,18 @@ function WeightSection({ clientId }: WeightSectionProps) {
     const currentUsername = getUsername()
 
     const [entries, setEntries] = useState<WeightEntry[]>([])
+    const [summary, setSummary] = useState<WeightSummary | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     // Silme başarısız olursa gösterilecek mesaj (liste görünmeye devam etsin diye ayrı)
     const [actionError, setActionError] = useState('')
 
     // Hangi adrese gidileceğine clientId karar veriyor
-    const loadFromApi = () =>
+    const loadEntriesFromApi = () =>
         clientId === undefined ? getMyWeights() : getClientWeights(clientId)
+
+    const loadSummaryFromApi = () =>
+        clientId === undefined ? getMyWeightSummary() : getClientWeightSummary(clientId)
 
     const addToApi = (request: CreateWeightEntryRequest) =>
         clientId === undefined ? addMyWeight(request) : addClientWeight(clientId, request)
@@ -40,14 +48,24 @@ function WeightSection({ clientId }: WeightSectionProps) {
     const deleteFromApi = (entryId: number) =>
         clientId === undefined ? deleteMyWeight(entryId) : deleteClientWeight(clientId, entryId)
 
+    // Liste ve özeti birlikte (aynı anda) yeniden yükler
+    const reload = async () => {
+        const [newEntries, newSummary] = await Promise.all([
+            loadEntriesFromApi(),
+            loadSummaryFromApi(),
+        ])
+        setEntries(newEntries)
+        setSummary(newSummary)
+    }
+
     // Diyetisyen her kaydı silebilir; danışan yalnızca kendi girdiğini (backend ile aynı kural)
     const canDelete = (entry: WeightEntry) =>
         clientId !== undefined || entry.enteredBy === currentUsername
 
     useEffect(() => {
-        async function loadEntries() {
+        async function loadInitial() {
             try {
-                setEntries(await loadFromApi())
+                await reload()
             } catch (error) {
                 setError(toErrorMessage(error, t, 'weights.loadError'))
             } finally {
@@ -55,14 +73,14 @@ function WeightSection({ clientId }: WeightSectionProps) {
             }
         }
 
-        loadEntries()
-        // loadFromApi her render'da yeniden oluşur; listeye eklersek sonsuz döngü olur
+        loadInitial()
+        // reload her render'da yeniden oluşur; listeye eklersek sonsuz döngü olur
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [t, clientId])
 
     const handleAdd = async (request: CreateWeightEntryRequest) => {
         await addToApi(request)
-        setEntries(await loadFromApi())
+        await reload()
     }
 
     const handleDelete = async (entry: WeightEntry) => {
@@ -73,7 +91,7 @@ function WeightSection({ clientId }: WeightSectionProps) {
         setActionError('')
         try {
             await deleteFromApi(entry.id)
-            setEntries((current) => current.filter((item) => item.id !== entry.id))
+            await reload()
         } catch (error) {
             setActionError(toErrorMessage(error, t, 'weights.deleteError'))
         }
@@ -89,6 +107,16 @@ function WeightSection({ clientId }: WeightSectionProps) {
             <h2 className="text-xl font-semibold text-slate-900">
                 {t('weights.title')}
             </h2>
+
+            {summary && summary.points.length > 0 && (
+                <WeightSummaryCards summary={summary} />
+            )}
+
+
+            {summary && summary.points.length > 1 && (
+                <WeightChart points={summary.points} />
+            )}
+
 
             <WeightForm onSubmit={handleAdd} />
 

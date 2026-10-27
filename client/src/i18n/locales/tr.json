@@ -64,7 +64,10 @@
     "addError": "Kilo kaydedilemedi",
     "delete": "Kaydı sil",
     "confirmDelete": "Bu kilo kaydını silmek istediğine emin misin?",
-    "deleteError": "Kilo kaydı silinemedi"
+    "deleteError": "Kilo kaydı silinemedi",
+    "sinceStart": "Başlangıçtan beri",
+    "last7Days": "Son 7 gün",
+    "last30Days": "Son 30 gün"
   },
   "clients": {
     "title": "Danışan",

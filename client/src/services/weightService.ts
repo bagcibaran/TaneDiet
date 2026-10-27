@@ -1,5 +1,5 @@
-import type { CreateWeightEntryRequest, WeightEntry } from '../types/weight'
 import { apiRequest } from './apiClient'
+import type { CreateWeightEntryRequest, WeightEntry, WeightSummary } from '../types/weight'
 
 export function getMyWeights(): Promise<WeightEntry[]> {
     return apiRequest<WeightEntry[]>('/weights')
@@ -32,4 +32,12 @@ export function deleteMyWeight(entryId: number): Promise<void> {
 
 export function deleteClientWeight(clientId: number, entryId: number): Promise<void> {
     return apiRequest<void>(`/clients/${clientId}/weights/${entryId}`, { method: 'DELETE' })
+}
+
+export function getMyWeightSummary(): Promise<WeightSummary> {
+    return apiRequest<WeightSummary>('/weights/summary')
+}
+
+export function getClientWeightSummary(clientId: number): Promise<WeightSummary> {
+    return apiRequest<WeightSummary>(`/clients/${clientId}/weights/summary`)
 }
