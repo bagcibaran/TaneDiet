@@ -52,5 +52,15 @@
     "network": "Could not reach the server. Is the backend running?",
     "sessionExpired": "Your session has expired, please sign in again",
     "forbidden": "You are not allowed to do this"
+  },
+  "weights": {
+    "title": "Weight tracking",
+    "empty": "You have no weight entries yet",
+    "loadError": "Weight entries could not be loaded",
+    "weightLabel": "Weight (kg)",
+    "dateLabel": "Measured on",
+    "add": "Add",
+    "adding": "Saving...",
+    "addError": "Weight entry could not be saved"
   }
 }

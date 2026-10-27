@@ -52,5 +52,15 @@
     "network": "Sunucuya ulaşılamadı. Backend çalışıyor mu?",
     "sessionExpired": "Oturumunun süresi doldu, lütfen tekrar giriş yap",
     "forbidden": "Bu işlem için yetkin yok"
+  },
+  "weights": {
+    "title": "Kilo takibi",
+    "empty": "Henüz kilo kaydın yok",
+    "loadError": "Kilo kayıtları yüklenemedi",
+    "weightLabel": "Kilo (kg)",
+    "dateLabel": "Tartı tarihi",
+    "add": "Ekle",
+    "adding": "Kaydediliyor...",
+    "addError": "Kilo kaydedilemedi"
   }
 }

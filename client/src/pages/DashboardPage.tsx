@@ -23,6 +23,8 @@ import { toErrorMessage } from '../services/errorMessage'
 import { clearSession, getRole, getUsername } from '../services/session'
 
 import type { Task } from '../types/task'
+import WeightSection from '../components/WeightSection'
+
 
 function DashboardPage() {
     const { t } = useTranslation()
@@ -201,6 +203,7 @@ function DashboardPage() {
                     </div>
                 </div>
 
+                {role === 'CLIENT' && <WeightSection />}
                 <section className="mt-8 rounded-xl bg-white p-6 shadow">
                     <h2 className="text-xl font-semibold text-slate-900">
                         {t('dashboard.tasksTitle')}
