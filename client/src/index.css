@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+/* tane. marka teması. Renkler logodan alındı. */
+@theme {
+    --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+
+    --color-brand: #006a3a;        /* koyu yeşil: başlık alanı, butonlar */
+    --color-brand-dark: #00552e;   /* butonun üzerine gelince */
+    --color-mint: #b8dcc5;         /* yeşil zemin üzerindeki küçük yazılar */
+    --color-cream: #f4f1ea;        /* sayfa zemini */
+    --color-card: #fffdf8;         /* kartlar */
+    --color-line: #e6e1d4;         /* ince çizgiler, kenarlıklar */
+    --color-ink: #1d3b2a;          /* ana metin */
+    --color-muted: #5b6b60;        /* ikincil metin */
+}
+
+body {
+    @apply bg-cream text-ink antialiased;
+}

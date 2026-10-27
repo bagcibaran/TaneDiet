@@ -71,6 +71,23 @@
   },
   "clients": {
     "title": "Client",
-    "back": "Back to users"
+    "back": "Clients",
+    "count": "{{count}} clients",
+    "empty": "No clients yet"
+  },
+  "nav": {
+    "home": "Home",
+    "profile": "Profile",
+    "clients": "Clients"
+  },
+  "profile": {
+    "language": "Language"
+  },
+  "brand": {
+    "tagline": "online diet"
+  },
+  "home": {
+    "greeting": "Hi {{name}} 👋",
+    "sinceStart": "{{value}} since start"
   }
 }

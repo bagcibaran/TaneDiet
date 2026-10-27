@@ -14,17 +14,20 @@ import {
 } from '../services/weightService'
 import { toErrorMessage } from '../services/errorMessage'
 import { getUsername } from '../services/session'
+import { formatKg } from '../utils/format'
 import WeightForm from './WeightForm'
 import WeightSummaryCards from './WeightSummaryCards'
-import type { CreateWeightEntryRequest, WeightEntry, WeightSummary } from '../types/weight'
 import WeightChart from './WeightChart'
+import type { CreateWeightEntryRequest, WeightEntry, WeightSummary } from '../types/weight'
 
 type WeightSectionProps = {
     // Verilirse diyetisyen o danışanın kilolarını yönetir; verilmezse danışan kendi kilolarını
     clientId?: number
+    // Özet her yüklendiğinde çağrılır (sayfa başlığında güncel kiloyu göstermek için)
+    onSummaryChange?: (summary: WeightSummary) => void
 }
 
-function WeightSection({ clientId }: WeightSectionProps) {
+function WeightSection({ clientId, onSummaryChange }: WeightSectionProps) {
     const { t, i18n } = useTranslation()
     const currentUsername = getUsername()
 
@@ -56,6 +59,7 @@ function WeightSection({ clientId }: WeightSectionProps) {
         ])
         setEntries(newEntries)
         setSummary(newSummary)
+        onSummaryChange?.(newSummary)
     }
 
     // Diyetisyen her kaydı silebilir; danışan yalnızca kendi girdiğini (backend ile aynı kural)
@@ -103,50 +107,46 @@ function WeightSection({ clientId }: WeightSectionProps) {
     }
 
     return (
-        <section className="mt-8 rounded-xl bg-white p-6 shadow">
-            <h2 className="text-xl font-semibold text-slate-900">
-                {t('weights.title')}
-            </h2>
+        <section className="rounded-2xl bg-card p-5 shadow-sm">
+            <h2 className="text-lg font-bold text-ink">{t('weights.title')}</h2>
 
             {summary && summary.points.length > 0 && (
                 <WeightSummaryCards summary={summary} />
             )}
 
-
             {summary && summary.points.length > 1 && (
                 <WeightChart points={summary.points} />
             )}
 
-
             <WeightForm onSubmit={handleAdd} />
 
             {actionError && (
-                <p className="mt-4 text-sm text-red-600">{actionError}</p>
+                <p className="mt-4 text-sm text-red-700">{actionError}</p>
             )}
 
             {loading && (
-                <p className="mt-4 text-slate-500">{t('dashboard.loading')}</p>
+                <p className="mt-4 text-muted">{t('dashboard.loading')}</p>
             )}
 
-            {error && <p className="mt-4 text-red-600">{error}</p>}
+            {error && <p className="mt-4 text-red-700">{error}</p>}
 
             {!loading && !error && entries.length === 0 && (
-                <p className="mt-4 text-slate-500">{t('weights.empty')}</p>
+                <p className="mt-4 text-muted">{t('weights.empty')}</p>
             )}
 
             {!loading && !error && entries.length > 0 && (
-                <ul className="mt-4 divide-y divide-slate-100">
+                <ul className="mt-4 divide-y divide-line">
                     {entries.map((entry) => (
-                        <li key={entry.id} className="flex items-center justify-between gap-3 py-2">
-                            <span className="text-slate-600">
+                        <li key={entry.id} className="flex items-center justify-between gap-3 py-3">
+                            <span className="text-muted">
                                 {formatDate(entry.measuredOn)}
-                                <span className="ml-2 text-xs text-slate-400">
+                                <span className="ml-2 text-xs text-muted/70">
                                     {entry.enteredBy}
                                 </span>
                             </span>
 
-                            <span className="ml-auto font-medium text-slate-900">
-                                {entry.weightKg.toLocaleString(i18n.language)} kg
+                            <span className="ml-auto font-semibold text-ink">
+                                {formatKg(entry.weightKg, i18n.language)}
                             </span>
 
                             {canDelete(entry) ? (
@@ -154,7 +154,7 @@ function WeightSection({ clientId }: WeightSectionProps) {
                                     type="button"
                                     onClick={() => handleDelete(entry)}
                                     aria-label={t('weights.delete')}
-                                    className="rounded-md p-2 text-red-600 hover:bg-red-50"
+                                    className="rounded-full p-2 text-red-700 hover:bg-red-50"
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </button>

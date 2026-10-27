@@ -15,9 +15,9 @@ type WeightChartProps = {
     points: WeightPoint[]
 }
 
-const LINE_COLOR = '#2563eb' // uygulamadaki mavi (blue-600)
-const GRID_COLOR = '#e2e8f0' // çok açık gri, arka planda kalsın
-const AXIS_TEXT_COLOR = '#64748b' // gri yazı
+const LINE_COLOR = '#006a3a' // marka yeşili (brand)
+const GRID_COLOR = '#e6e1d4' // line: krem zeminde ince çizgi
+const AXIS_TEXT_COLOR = '#5b6b60' // muted: ikincil metin
 
 function WeightChart({ points }: WeightChartProps) {
     const { t, i18n } = useTranslation()

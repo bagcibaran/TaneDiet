@@ -1,7 +1,9 @@
+import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+
 import AuthLayout from '../AppLayout/Routes/AuthLayout'
-import { useState, type FormEvent } from 'react'
+import { errorTextClass, inputClass, labelClass, primaryButtonClass } from '../components/ui'
 import { registerUser } from '../services/authService'
 import { toErrorMessage } from '../services/errorMessage'
 
@@ -25,12 +27,7 @@ function RegisterPage() {
         }
 
         try {
-            await registerUser({
-                username,
-                email,
-                password,
-            })
-
+            await registerUser({ username, email, password })
             navigate('/login?reason=registered')
         } catch (error) {
             // 409 gelirse backend'in mesajı gösterilir: "Bu e-posta adresi zaten kayıtlı" gibi
@@ -40,111 +37,76 @@ function RegisterPage() {
 
     return (
         <AuthLayout>
-            <h1 className="mb-2 text-3xl font-bold text-slate-900">
-                {t('register.title')}
-            </h1>
-
-            <p className="mb-6 text-slate-500">
-                {t('register.subtitle')}
-            </p>
+            <h1 className="text-2xl font-extrabold tracking-tight text-ink">{t('register.title')}</h1>
+            <p className="mb-6 mt-1 text-muted">{t('register.subtitle')}</p>
 
             <form className="space-y-4" onSubmit={handleSubmit}>
                 <div>
-                    <label
-                        htmlFor="username"
-                        className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                        {t('register.username')}
-                    </label>
-
+                    <label htmlFor="username" className={labelClass}>{t('register.username')}</label>
                     <input
                         id="username"
                         name="username"
                         type="text"
+                        autoComplete="username"
                         value={username}
                         onChange={(event) => setUsername(event.target.value)}
                         required
-                        className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        className={inputClass}
                     />
                 </div>
 
                 <div>
-                    <label
-                        htmlFor="register-email"
-                        className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                        {t('register.email')}
-                    </label>
-
+                    <label htmlFor="register-email" className={labelClass}>{t('register.email')}</label>
                     <input
                         id="register-email"
                         name="email"
                         type="email"
+                        autoComplete="email"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
                         required
-                        className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        className={inputClass}
                     />
                 </div>
 
                 <div>
-                    <label
-                        htmlFor="register-password"
-                        className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                        {t('register.password')}
-                    </label>
-
+                    <label htmlFor="register-password" className={labelClass}>{t('register.password')}</label>
                     <input
                         id="register-password"
                         name="password"
                         type="password"
+                        autoComplete="new-password"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                         required
-                        className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        className={inputClass}
                     />
                 </div>
 
                 <div>
-                    <label
-                        htmlFor="confirm-password"
-                        className="mb-1 block text-sm font-medium text-slate-700"
-                    >
-                        {t('register.confirmPassword')}
-                    </label>
-
+                    <label htmlFor="confirm-password" className={labelClass}>{t('register.confirmPassword')}</label>
                     <input
                         id="confirm-password"
                         name="confirmPassword"
                         type="password"
+                        autoComplete="new-password"
                         value={confirmPassword}
                         onChange={(event) => setConfirmPassword(event.target.value)}
                         required
-                        className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        className={inputClass}
                     />
                 </div>
 
-                {error && (
-                    <p className="text-sm text-red-600">
-                        {error}
-                    </p>
-                )}
+                {error && <p className={errorTextClass}>{error}</p>}
 
-                <button
-                    type="submit"
-                    className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
-                >
+                <button type="submit" className={primaryButtonClass}>
                     {t('register.submit')}
                 </button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-slate-500">
+            <p className="mt-6 text-center text-sm text-muted">
                 {t('register.loginPrompt')}{' '}
-                <Link
-                    to="/login"
-                    className="font-medium text-blue-600 hover:text-blue-700"
-                >
+                <Link to="/login" className="font-semibold text-brand hover:text-brand-dark">
                     {t('register.loginLink')}
                 </Link>
             </p>

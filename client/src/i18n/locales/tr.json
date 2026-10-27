@@ -71,6 +71,23 @@
   },
   "clients": {
     "title": "Danışan",
-    "back": "Kullanıcılara dön"
+    "back": "Danışanlar",
+    "count": "{{count}} danışan",
+    "empty": "Henüz danışan yok"
+  },
+  "nav": {
+    "home": "Ana sayfa",
+    "profile": "Profil",
+    "clients": "Danışanlar"
+  },
+  "profile": {
+    "language": "Dil"
+  },
+  "brand": {
+    "tagline": "online diyet"
+  },
+  "home": {
+    "greeting": "Merhaba {{name}} 👋",
+    "sinceStart": "başlangıçtan beri {{value}}"
   }
 }

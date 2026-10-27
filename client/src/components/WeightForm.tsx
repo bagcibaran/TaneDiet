@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { toErrorMessage } from '../services/errorMessage'
+import { errorTextClass, inputClass, labelClass, primaryButtonClass } from './ui'
 import type { CreateWeightEntryRequest } from '../types/weight'
 
 type WeightFormProps = {
@@ -44,24 +45,27 @@ function WeightForm({ onSubmit }: WeightFormProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="mt-4 flex flex-wrap items-end gap-3">
+        // Telefonda: kilo ve tarih yan yana, buton altta tam genişlik.
+        // Bilgisayarda: üçü tek satırda.
+        <form onSubmit={handleSubmit} className="mt-5 grid grid-cols-2 items-end gap-3 sm:grid-cols-[1fr_1fr_auto]">
             <div>
-                <label htmlFor="weight-kg" className="mb-1 block text-sm font-medium text-slate-700">
+                <label htmlFor="weight-kg" className={labelClass}>
                     {t('weights.weightLabel')}
                 </label>
                 <input
                     id="weight-kg"
                     type="text"
                     inputMode="decimal"
+                    placeholder="72,4"
                     value={weightKg}
                     onChange={(event) => setWeightKg(event.target.value)}
                     required
-                    className="w-32 rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    className={inputClass}
                 />
             </div>
 
             <div>
-                <label htmlFor="measured-on" className="mb-1 block text-sm font-medium text-slate-700">
+                <label htmlFor="measured-on" className={labelClass}>
                     {t('weights.dateLabel')}
                 </label>
                 <input
@@ -71,19 +75,19 @@ function WeightForm({ onSubmit }: WeightFormProps) {
                     max={today()}
                     onChange={(event) => setMeasuredOn(event.target.value)}
                     required
-                    className="rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    className={inputClass}
                 />
             </div>
 
             <button
                 type="submit"
                 disabled={saving}
-                className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                className={`col-span-2 sm:col-span-1 sm:w-auto sm:px-6 ${primaryButtonClass}`}
             >
                 {saving ? t('weights.adding') : t('weights.add')}
             </button>
 
-            {error && <p className="w-full text-sm text-red-600">{error}</p>}
+            {error && <p className={`col-span-2 sm:col-span-3 ${errorTextClass}`}>{error}</p>}
         </form>
     )
 }
