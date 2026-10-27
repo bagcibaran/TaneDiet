@@ -11,3 +11,17 @@ export function addMyWeight(request: CreateWeightEntryRequest): Promise<WeightEn
         body: request,
     })
 }
+
+export function getClientWeights(clientId: number): Promise<WeightEntry[]> {
+    return apiRequest<WeightEntry[]>(`/clients/${clientId}/weights`)
+}
+
+export function addClientWeight(
+    clientId: number,
+    request: CreateWeightEntryRequest,
+): Promise<WeightEntry> {
+    return apiRequest<WeightEntry>(`/clients/${clientId}/weights`, {
+        method: 'POST',
+        body: request,
+    })
+}

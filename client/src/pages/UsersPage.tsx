@@ -61,13 +61,25 @@ function UsersPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map((user) => (
-                                    <tr key={user.id} className="border-b border-slate-100">
-                                        <td className="py-2 text-slate-800">{user.username}</td>
-                                        <td className="py-2 text-slate-600">{user.email}</td>
-                                        <td className="py-2 text-slate-600">{t(`roles.${user.role}`)}</td>
-                                    </tr>
-                                ))}
+                            {users.map((user) => (
+                                <tr key={user.id} className="border-b border-slate-100">
+                                    <td className="py-2">
+                                        {/* Yalnızca danışanlar tıklanabilir; diyetisyenin kilo sayfası yok */}
+                                        {user.role === 'CLIENT' ? (
+                                            <Link
+                                                to={`/clients/${user.id}`}
+                                                className="font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                                            >
+                                                {user.username}
+                                            </Link>
+                                        ) : (
+                                            <span className="text-slate-800">{user.username}</span>
+                                        )}
+                                    </td>
+                                    <td className="py-2 text-slate-600">{user.email}</td>
+                                    <td className="py-2 text-slate-600">{t(`roles.${user.role}`)}</td>
+                                </tr>
+                            ))}
                             </tbody>
                         </table>
                     )}

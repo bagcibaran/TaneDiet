@@ -8,6 +8,7 @@ import com.project.project.exception.UserNotFoundException;
 import com.project.project.repository.UserRepository;
 import com.project.project.repository.WeightEntryRepository;
 import org.springframework.stereotype.Service;
+import com.project.project.entity.Role;
 
 import java.util.List;
 
@@ -45,8 +46,43 @@ public class WeightEntryService {
                 .toList();
     }
 
+    public List<WeightEntryResponse> getClientEntries(Long clientId) {
+        User client = findClientById(clientId);
+
+        return weightEntryRepository.findAllByUserOrderByMeasuredOnDescCreatedAtDesc(client)
+                .stream()
+                .map(WeightEntryResponse::new)
+                .toList();
+    }
+
+    public WeightEntryResponse addEntryForClient(Long clientId, String dietitianUsername, WeightEntryCreateRequest request) {
+        User client = findClientById(clientId);
+        User dietitian = findUserByUsername(dietitianUsername);
+
+        WeightEntry entry = new WeightEntry(
+                client,
+                request.getWeightKg(),
+                request.getMeasuredOn(),
+                dietitian
+        );
+
+        WeightEntry savedEntry = weightEntryRepository.save(entry);
+        return new WeightEntryResponse(savedEntry);
+    }
+
     private User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Kullanıcı bulunamadı: " + username));
+    }
+
+    private User findClientById(Long clientId) {
+        User user = userRepository.findById(clientId)
+                .orElseThrow(() -> new UserNotFoundException("Danışan bulunamadı, id: " + clientId));
+
+        if (user.getRole() != Role.CLIENT) {
+            throw new UserNotFoundException("Danışan bulunamadı, id: " + clientId);
+        }
+
+        return user;
     }
 }

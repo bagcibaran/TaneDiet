@@ -62,5 +62,9 @@
     "add": "Ekle",
     "adding": "Kaydediliyor...",
     "addError": "Kilo kaydedilemedi"
+  },
+  "clients": {
+    "title": "Danışan",
+    "back": "Kullanıcılara dön"
   }
 }

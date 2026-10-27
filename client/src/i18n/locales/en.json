@@ -62,5 +62,9 @@
     "add": "Add",
     "adding": "Saving...",
     "addError": "Weight entry could not be saved"
+  },
+  "clients": {
+    "title": "Client",
+    "back": "Back to users"
   }
 }

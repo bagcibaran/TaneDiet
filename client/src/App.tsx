@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
 import UsersPage from './pages/UsersPage'
+import ClientDetailPage from './pages/ClientDetailPage'
 import ProtectedRoute from './routes/ProtectedRoute'
 
 function App() {
@@ -27,6 +28,14 @@ function App() {
                         element={
                             <ProtectedRoute allowedRoles={['DIETITIAN']}>
                                 <UsersPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/clients/:id"
+                        element={
+                            <ProtectedRoute allowedRoles={['DIETITIAN']}>
+                                <ClientDetailPage />
                             </ProtectedRoute>
                         }
                     />
