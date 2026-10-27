@@ -61,7 +61,10 @@
     "dateLabel": "Tartı tarihi",
     "add": "Ekle",
     "adding": "Kaydediliyor...",
-    "addError": "Kilo kaydedilemedi"
+    "addError": "Kilo kaydedilemedi",
+    "delete": "Kaydı sil",
+    "confirmDelete": "Bu kilo kaydını silmek istediğine emin misin?",
+    "deleteError": "Kilo kaydı silinemedi"
   },
   "clients": {
     "title": "Danışan",

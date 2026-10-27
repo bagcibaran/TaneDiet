@@ -5,8 +5,10 @@ import com.project.project.entity.WeightEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WeightEntryRepository extends JpaRepository<WeightEntry, Long> {
 
     List<WeightEntry> findAllByUserOrderByMeasuredOnDescCreatedAtDesc(User user);
+    Optional<WeightEntry> findByIdAndUser(Long id, User user);
 }

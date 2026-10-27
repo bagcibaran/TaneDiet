@@ -61,7 +61,10 @@
     "dateLabel": "Measured on",
     "add": "Add",
     "adding": "Saving...",
-    "addError": "Weight entry could not be saved"
+    "addError": "Weight entry could not be saved",
+    "delete": "Delete entry",
+    "confirmDelete": "Are you sure you want to delete this weight entry?",
+    "deleteError": "Weight entry could not be deleted"
   },
   "clients": {
     "title": "Client",

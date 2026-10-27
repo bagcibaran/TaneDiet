@@ -42,4 +42,13 @@ public class ClientWeightController {
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @DeleteMapping("/{entryId}")
+    public ResponseEntity<Void> deleteClientEntry(
+            @PathVariable Long clientId,
+            @PathVariable Long entryId
+    ) {
+        weightEntryService.deleteClientEntry(clientId, entryId);
+        return ResponseEntity.noContent().build();
+    }
 }

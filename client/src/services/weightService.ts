@@ -25,3 +25,11 @@ export function addClientWeight(
         body: request,
     })
 }
+
+export function deleteMyWeight(entryId: number): Promise<void> {
+    return apiRequest<void>(`/weights/${entryId}`, { method: 'DELETE' })
+}
+
+export function deleteClientWeight(clientId: number, entryId: number): Promise<void> {
+    return apiRequest<void>(`/clients/${clientId}/weights/${entryId}`, { method: 'DELETE' })
+}

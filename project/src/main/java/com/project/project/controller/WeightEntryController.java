@@ -37,4 +37,13 @@ public class WeightEntryController {
         List<WeightEntryResponse> entries = weightEntryService.getMyEntries(authentication.getName());
         return ResponseEntity.ok(entries);
     }
+
+    @DeleteMapping("/{entryId}")
+    public ResponseEntity<Void> deleteMyEntry(
+            @PathVariable Long entryId,
+            Authentication authentication
+    ) {
+        weightEntryService.deleteMyEntry(authentication.getName(), entryId);
+        return ResponseEntity.noContent().build();
+    }
 }
