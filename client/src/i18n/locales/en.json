@@ -88,7 +88,8 @@
   "nav": {
     "home": "Home",
     "clients": "Clients",
-    "menu": "My menu"
+    "menu": "My menu",
+    "library": "Library"
   },
   "profile": {
     "language": "Language"
@@ -293,16 +294,6 @@
         "7": "Sunday"
       }
     },
-    "quick": {
-      "breakfast": "Breakfast",
-      "protein": "Protein",
-      "carb": "Carbs",
-      "salad": "Salad",
-      "fruit": "Fruit",
-      "nuts": "Nuts",
-      "dairy": "Dairy",
-      "drinks": "Drinks"
-    },
     "editor": {
       "back": "Back to client",
       "newTitle": "New diet program",
@@ -310,7 +301,6 @@
       "startFromCurrent": "Start from the current program ({{title}})",
       "title": "Title",
       "startDate": "Start date",
-      "quickAdd": "Quick add",
       "addAsOption": "Add as option ( / )",
       "addMealFirst": "Add a meal first",
       "copyDay": "Copy this day",
@@ -324,8 +314,6 @@
       "moveUp": "Move up",
       "moveDown": "Move down",
       "removeMeal": "Remove meal",
-      "addMeal": "Add a meal",
-      "customMeal": "Empty meal",
       "notes": "General note",
       "notesPlaceholder": "For example: drink at least 2.5 L of water a day.",
       "titleRequired": "Title cannot be empty",
@@ -334,7 +322,46 @@
       "incompleteMealOnDay": "{{day}} has a meal with an empty name or items",
       "saveError": "The program could not be saved",
       "save": "Save program",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "tabMeals": "Meals",
+      "tabItems": "Items",
+      "editLibrary": "Edit",
+      "emptyMeal": "Empty meal",
+      "saveAsTemplate": "Save as preset",
+      "templateSaved": "Saved to your presets",
+      "templateExists": "A preset named \"{{name}}\" with the same time already exists.",
+      "updateExisting": "Update it",
+      "addAsNew": "Add as new",
+      "templateNeedsName": "Give the meal a name first",
+      "addToAllDays": "Add to all days",
+      "addedToAllDays": "Added to the other days"
+    },
+    "library": {
+      "pageHint": "Edit the meals and items you write often",
+      "mealsTitle": "My preset meals",
+      "mealsHint": "Whole meals added to a program with one tap",
+      "itemsTitle": "Quick items",
+      "itemsHint": "Lines added to a meal with one tap",
+      "newMeal": "New preset meal",
+      "newCategory": "New category",
+      "noItems": "No items, only the name and time are added",
+      "itemsPlaceholder": "One item per line (may be empty)",
+      "categoryName": "Category name",
+      "renameCategory": "Rename category",
+      "deleteCategory": "Delete category",
+      "confirmDeleteCategory": "Delete the category \"{{name}}\" and its items?",
+      "itemText": "Item",
+      "itemPlaceholder": "For example: 1 bowl of yogurt",
+      "addItem": "Add item",
+      "editItem": "Edit item",
+      "deleteItem": "Delete item",
+      "emptyItems": "No categories yet. Add some with \"Edit\".",
+      "nameRequired": "Name cannot be empty",
+      "save": "Save",
+      "cancel": "Cancel",
+      "close": "Close",
+      "loadError": "The presets could not be loaded",
+      "saveError": "Could not be saved"
     }
   },
   "userMenu": {

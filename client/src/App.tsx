@@ -11,6 +11,7 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import IntakeGate from './routes/IntakeGate'
 import MenuPage from './pages/MenuPage'
 import DietPlanEditorPage from './pages/DietPlanEditorPage'
+import DietLibraryPage from './pages/DietLibraryPage'
 
 function App() {
     return (
@@ -58,6 +59,14 @@ function App() {
                             element={
                                 <ProtectedRoute allowedRoles={['DIETITIAN']}>
                                     <DietPlanEditorPage />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/library"
+                            element={
+                                <ProtectedRoute allowedRoles={['DIETITIAN']}>
+                                    <DietLibraryPage />
                                 </ProtectedRoute>
                             }
                         />

@@ -30,3 +30,11 @@ export function itemLines(items: string): string[] {
         .map((line) => line.trim())
         .filter((line) => line !== '')
 }
+
+// Aynı öğün mü? Ad (boşluklar kırpılıp büyük/küçük harf farkı olmadan, Türkçe İ/ı) ve saat aynıysa evet.
+// Saatsiz öğün yalnızca saatsiz öğünle eşleşir. "Hazır öğün yap" ve "Tüm günlere ekle" bunu kullanır.
+export function isSameMeal(a: { name: string; time: string | null }, b: { name: string; time: string | null }): boolean {
+    const normalizeName = (name: string) => name.trim().toLocaleLowerCase('tr')
+    const normalizeTime = (time: string | null) => (time ?? '').trim()
+    return normalizeName(a.name) === normalizeName(b.name) && normalizeTime(a.time) === normalizeTime(b.time)
+}

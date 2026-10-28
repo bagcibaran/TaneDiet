@@ -88,7 +88,8 @@
   "nav": {
     "home": "Ana sayfa",
     "clients": "Danışanlar",
-    "menu": "Menüm"
+    "menu": "Menüm",
+    "library": "Hazırlar"
   },
   "profile": {
     "language": "Dil"
@@ -293,16 +294,6 @@
         "7": "Pazar"
       }
     },
-    "quick": {
-      "breakfast": "Kahvaltılık",
-      "protein": "Protein",
-      "carb": "Karbonhidrat",
-      "salad": "Salata",
-      "fruit": "Meyve",
-      "nuts": "Kuruyemiş",
-      "dairy": "Süt ürünleri",
-      "drinks": "İçecek"
-    },
     "editor": {
       "back": "Danışana dön",
       "newTitle": "Yeni diyet programı",
@@ -310,7 +301,6 @@
       "startFromCurrent": "Mevcut programdan başla ({{title}})",
       "title": "Başlık",
       "startDate": "Başlangıç tarihi",
-      "quickAdd": "Hızlı ekle",
       "addAsOption": "Seçenek olarak ekle ( / )",
       "addMealFirst": "Önce bir öğün ekleyin",
       "copyDay": "Bu günü kopyala",
@@ -324,8 +314,6 @@
       "moveUp": "Yukarı taşı",
       "moveDown": "Aşağı taşı",
       "removeMeal": "Öğünü sil",
-      "addMeal": "Öğün ekle",
-      "customMeal": "Boş öğün",
       "notes": "Genel not",
       "notesPlaceholder": "Örneğin: Günde en az 2,5 L su için.",
       "titleRequired": "Başlık boş olamaz",
@@ -334,7 +322,46 @@
       "incompleteMealOnDay": "{{day}} gününde adı veya maddeleri boş bir öğün var",
       "saveError": "Program kaydedilemedi",
       "save": "Programı kaydet",
-      "saving": "Kaydediliyor..."
+      "saving": "Kaydediliyor...",
+      "tabMeals": "Öğünler",
+      "tabItems": "Maddeler",
+      "editLibrary": "Düzenle",
+      "emptyMeal": "Boş öğün",
+      "saveAsTemplate": "Hazır öğün yap",
+      "templateSaved": "Hazır öğünlere kaydedildi",
+      "templateExists": "\"{{name}}\" adında aynı saatte bir hazır öğün zaten var.",
+      "updateExisting": "Eskisini güncelle",
+      "addAsNew": "Yeni olarak ekle",
+      "templateNeedsName": "Önce öğüne bir ad verin",
+      "addToAllDays": "Tüm günlere ekle",
+      "addedToAllDays": "Diğer günlere eklendi"
+    },
+    "library": {
+      "pageHint": "Sık yazdığın öğünleri ve maddeleri buradan düzenle",
+      "mealsTitle": "Hazır öğünlerim",
+      "mealsHint": "Programa tek dokunuşla eklenen tam öğünler",
+      "itemsTitle": "Hızlı maddeler",
+      "itemsHint": "Öğüne tek dokunuşla eklenen satırlar",
+      "newMeal": "Yeni hazır öğün",
+      "newCategory": "Yeni kategori",
+      "noItems": "Madde yok, yalnızca ad ve saat eklenir",
+      "itemsPlaceholder": "Her satıra bir madde yazın (boş bırakılabilir)",
+      "categoryName": "Kategori adı",
+      "renameCategory": "Kategoriyi yeniden adlandır",
+      "deleteCategory": "Kategoriyi sil",
+      "confirmDeleteCategory": "\"{{name}}\" kategorisi ve içindeki maddeler silinsin mi?",
+      "itemText": "Madde",
+      "itemPlaceholder": "Örneğin: 1 kase yoğurt",
+      "addItem": "Madde ekle",
+      "editItem": "Maddeyi düzenle",
+      "deleteItem": "Maddeyi sil",
+      "emptyItems": "Henüz kategori yok. \"Düzenle\" ile ekleyin.",
+      "nameRequired": "Ad boş olamaz",
+      "save": "Kaydet",
+      "cancel": "Vazgeç",
+      "close": "Kapat",
+      "loadError": "Hazırlar yüklenemedi",
+      "saveError": "Kaydedilemedi"
     }
   },
   "userMenu": {

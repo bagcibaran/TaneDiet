@@ -1,16 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowDown, ArrowLeft, ArrowUp, Copy, Plus, Trash2, Zap } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowUp, CalendarRange, Copy, Star, Trash2 } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
 import DayTabs from '../components/diet/DayTabs'
+import LibrarySheet from '../components/diet/LibrarySheet'
+import QuickPanel from '../components/diet/QuickPanel'
 import { errorTextClass, inputClass, labelClass, primaryButtonClass } from '../components/ui'
-import { MEAL_PRESETS, QUICK_PICKS } from '../diet/quickPicks'
-import { WEEKDAYS, mealsOfDay } from '../diet/dietUtils'
+import { WEEKDAYS, isSameMeal, mealsOfDay } from '../diet/dietUtils'
 import { createDietPlan, getClientDietPlans, updateDietPlan } from '../services/dietService'
+import { createMealTemplate, getDietLibrary, updateMealTemplate } from '../services/dietLibraryService'
 import { toErrorMessage } from '../services/errorMessage'
 import type { DietPlan, DietPlanRequest, PlanType } from '../types/diet'
+import type { DietLibrary, MealTemplate } from '../types/dietLibrary'
 
 // Ekranda düzenlenen öğün. key yalnızca React listesi ve seçim için (kaydedilmez).
 type EditorMeal = {
@@ -70,7 +73,18 @@ function DietPlanEditorPage() {
     const [selectedKey, setSelectedKey] = useState<string | null>(null)
     // Açıksa hızlı seçimden gelen madde son satıra " / " ile seçenek olarak eklenir
     const [optionMode, setOptionMode] = useState(false)
-    const [pickCategory, setPickCategory] = useState(QUICK_PICKS[0].key)
+    // Diyetisyenin hazır öğünleri ve hızlı maddeleri (yüklenemezse editör yine çalışır)
+    const [library, setLibrary] = useState<DietLibrary | null>(null)
+    const [libraryError, setLibraryError] = useState<unknown>(null)
+    const [sheetOpen, setSheetOpen] = useState(false)
+    // Öğün kartının altında kısa bir bilgi ("kaydedildi") ya da hata
+    const [cardNotice, setCardNotice] = useState<{ key: string; messageKey: string; isError: boolean; error?: unknown } | null>(
+        null,
+    )
+    const noticeTimer = useRef<number | undefined>(undefined)
+    // "Hazır öğün yap": aynı ad ve saatte hazır öğün varsa kartta "güncelle / yeni ekle" sorusu
+    const [templateChoice, setTemplateChoice] = useState<{ mealKey: string; match: MealTemplate } | null>(null)
+    const [templateSaving, setTemplateSaving] = useState(false)
     const [copyTargets, setCopyTargets] = useState<number[]>([])
     const [showCopy, setShowCopy] = useState(false)
     // Yeni programda "mevcut programdan başla" için
@@ -120,16 +134,106 @@ function DietPlanEditorPage() {
             .finally(() => setLoading(false))
     }, [clientId, editingId])
 
+    // Hazırlar ayrı yüklenir: yüklenemezse program yine yazılıp kaydedilebilir
+    useEffect(() => {
+        let cancelled = false
+        getDietLibrary()
+            .then((result) => {
+                if (!cancelled) {
+                    setLibrary(result)
+                }
+            })
+            .catch((error) => {
+                if (!cancelled) {
+                    setLibraryError(error)
+                }
+            })
+        return () => {
+            cancelled = true
+        }
+    }, [])
+
+    const closeSheet = useCallback(() => setSheetOpen(false), [])
+
     const updateMeals = (dayIndex: number, change: (meals: EditorMeal[]) => EditorMeal[]) =>
         setDays((current) => ({ ...current, [dayIndex]: change(current[dayIndex] ?? []) }))
 
     const updateMeal = (key: string, patch: Partial<EditorMeal>) =>
         updateMeals(currentDay, (list) => list.map((meal) => (meal.key === key ? { ...meal, ...patch } : meal)))
 
-    const addMeal = (name: string, time: string) => {
-        const meal = emptyMeal(name, time)
+    // Hazır öğünün (ya da boş öğünün) bir kopyası o güne eklenir; hazır öğün değişmez
+    const addMeal = (template: { name: string; time: string | null; items: string }) => {
+        const meal = { ...emptyMeal(template.name, template.time ?? ''), items: template.items }
         updateMeals(currentDay, (list) => [...list, meal])
         setSelectedKey(meal.key)
+    }
+
+    // Öğün kartının altında birkaç saniye görünen bilgi ya da hata
+    const showNotice = (key: string, messageKey: string, isError: boolean, error?: unknown) => {
+        setCardNotice({ key, messageKey, isError, error })
+        window.clearTimeout(noticeTimer.current)
+        noticeTimer.current = window.setTimeout(() => setCardNotice(null), 2500)
+    }
+
+    // replaceId verilirse o hazır öğün güncellenir, yoksa yeni hazır öğün eklenir
+    const storeTemplate = async (meal: EditorMeal, replaceId: number | null) => {
+        const request = { name: meal.name.trim(), time: meal.time.trim() === '' ? null : meal.time, items: meal.items }
+        setTemplateSaving(true)
+        try {
+            const saved = replaceId === null ? await createMealTemplate(request) : await updateMealTemplate(replaceId, request)
+            setLibrary((current) =>
+                current
+                    ? {
+                          ...current,
+                          meals:
+                              replaceId === null
+                                  ? [...current.meals, saved]
+                                  : current.meals.map((template) => (template.id === saved.id ? saved : template)),
+                      }
+                    : current,
+            )
+            setTemplateChoice(null)
+            showNotice(meal.key, 'diet.editor.templateSaved', false)
+        } catch (error) {
+            showNotice(meal.key, 'diet.library.saveError', true, error)
+        } finally {
+            setTemplateSaving(false)
+        }
+    }
+
+    // "Hazır öğün yap": aynısı (ad + saat) yoksa hemen kaydeder, varsa kartta sorar
+    const saveAsTemplate = (meal: EditorMeal) => {
+        setTemplateChoice(null)
+        if (meal.name.trim() === '') {
+            showNotice(meal.key, 'diet.editor.templateNeedsName', true)
+            return
+        }
+        const match = library?.meals.find((template) => isSameMeal(template, meal))
+        if (match) {
+            setTemplateChoice({ mealKey: meal.key, match })
+            return
+        }
+        void storeTemplate(meal, null)
+    }
+
+    // "Tüm günlere ekle" (haftalık): diğer günlerde aynı öğün (ad + saat) varsa maddeleri değişir, yoksa sona eklenir
+    const addToAllDays = (meal: EditorMeal) => {
+        setDays((current) => {
+            const next = { ...current }
+            for (const weekday of WEEKDAYS) {
+                if (weekday === day) {
+                    continue
+                }
+                const list = current[weekday] ?? []
+                const index = list.findIndex((other) => isSameMeal(other, meal))
+                next[weekday] =
+                    index >= 0
+                        ? list.map((other, i) => (i === index ? { ...other, items: meal.items } : other))
+                        : [...list, { ...meal, key: newKey() }]
+            }
+            return next
+        })
+        showNotice(meal.key, 'diet.editor.addedToAllDays', false)
     }
 
     const moveMeal = (key: string, direction: -1 | 1) =>
@@ -268,7 +372,6 @@ function DietPlanEditorPage() {
         return <Navigate to="/clients" replace />
     }
 
-    const category = QUICK_PICKS.find((item) => item.key === pickCategory) ?? QUICK_PICKS[0]
     const chipClass = (active: boolean) =>
         `shrink-0 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
             active ? 'border-brand bg-brand text-cream' : 'border-line bg-cream text-muted hover:border-brand hover:text-brand'
@@ -347,48 +450,16 @@ function DietPlanEditorPage() {
                             </div>
                         </section>
 
-                        {/* Hızlı seçim: üstten tek dokunuşla öğün ve madde ekleme */}
-                        <section className="sticky top-0 z-30 space-y-3 rounded-2xl bg-card p-4 shadow-md">
-                            <div className="flex items-center justify-between gap-2">
-                                <p className="flex items-center gap-1 text-sm font-bold text-ink">
-                                    <Zap className="h-4 w-4 text-brand" />
-                                    {t('diet.editor.quickAdd')}
-                                </p>
-                                <label className="flex items-center gap-2 text-xs font-semibold text-muted">
-                                    <input
-                                        type="checkbox"
-                                        checked={optionMode}
-                                        onChange={(e) => setOptionMode(e.target.checked)}
-                                        className="h-4 w-4 accent-brand"
-                                    />
-                                    {t('diet.editor.addAsOption')}
-                                </label>
-                            </div>
-                            <div className="flex gap-2 overflow-x-auto pb-1">
-                                {QUICK_PICKS.map((item) => (
-                                    <button
-                                        key={item.key}
-                                        type="button"
-                                        onClick={() => setPickCategory(item.key)}
-                                        className={chipClass(pickCategory === item.key)}
-                                    >
-                                        {t(`diet.quick.${item.key}`)}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="flex max-h-28 flex-wrap gap-2 overflow-y-auto">
-                                {category.items.map((item) => (
-                                    <button
-                                        key={item}
-                                        type="button"
-                                        onClick={() => addQuickItem(item)}
-                                        className="rounded-lg bg-mint/30 px-2.5 py-1.5 text-left text-sm text-ink hover:bg-mint/60"
-                                    >
-                                        + {item}
-                                    </button>
-                                ))}
-                            </div>
-                        </section>
+                        {/* Hızlı seçim: üstten tek dokunuşla hazır öğün ve madde ekleme */}
+                        <QuickPanel
+                            library={library}
+                            loadError={libraryError}
+                            optionMode={optionMode}
+                            onOptionModeChange={setOptionMode}
+                            onAddMeal={addMeal}
+                            onAddItem={addQuickItem}
+                            onEdit={() => setSheetOpen(true)}
+                        />
 
                         {/* Haftalık programda gün seçimi ve kopyalama */}
                         {planType === 'WEEKLY' && (
@@ -481,59 +552,106 @@ function DietPlanEditorPage() {
                                         placeholder={t('diet.editor.itemsPlaceholder')}
                                         className={inputClass}
                                     />
-                                    <div className="flex justify-end gap-1">
-                                        <button
-                                            type="button"
-                                            onClick={() => moveMeal(meal.key, -1)}
-                                            disabled={index === 0}
-                                            aria-label={t('diet.editor.moveUp')}
-                                            className="rounded-full p-2 text-muted hover:bg-cream disabled:opacity-30"
-                                        >
-                                            <ArrowUp className="h-4 w-4" />
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => moveMeal(meal.key, 1)}
-                                            disabled={index === meals.length - 1}
-                                            aria-label={t('diet.editor.moveDown')}
-                                            className="rounded-full p-2 text-muted hover:bg-cream disabled:opacity-30"
-                                        >
-                                            <ArrowDown className="h-4 w-4" />
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => removeMeal(meal.key)}
-                                            aria-label={t('diet.editor.removeMeal')}
-                                            className="rounded-full p-2 text-red-700 hover:bg-red-50"
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </button>
+                                    {/* Solda yazı düğmeleri, sağda sıra ve silme. Dar ekranda gruplar bütün olarak alt satıra iner. */}
+                                    <div className="flex flex-wrap items-center justify-between gap-1">
+                                        <div className="flex flex-wrap gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => saveAsTemplate(meal)}
+                                                disabled={templateSaving || library === null}
+                                                className="flex items-center gap-1 rounded-full border border-line px-3 py-1.5 text-xs font-semibold text-brand hover:border-brand disabled:opacity-40"
+                                            >
+                                                <Star className="h-3.5 w-3.5" />
+                                                {t('diet.editor.saveAsTemplate')}
+                                            </button>
+                                            {planType === 'WEEKLY' && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => addToAllDays(meal)}
+                                                    className="flex items-center gap-1 rounded-full border border-line px-3 py-1.5 text-xs font-semibold text-brand hover:border-brand"
+                                                >
+                                                    <CalendarRange className="h-3.5 w-3.5" />
+                                                    {t('diet.editor.addToAllDays')}
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="ml-auto flex gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => moveMeal(meal.key, -1)}
+                                                disabled={index === 0}
+                                                aria-label={t('diet.editor.moveUp')}
+                                                className="rounded-full p-2 text-muted hover:bg-cream disabled:opacity-30"
+                                            >
+                                                <ArrowUp className="h-4 w-4" />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => moveMeal(meal.key, 1)}
+                                                disabled={index === meals.length - 1}
+                                                aria-label={t('diet.editor.moveDown')}
+                                                className="rounded-full p-2 text-muted hover:bg-cream disabled:opacity-30"
+                                            >
+                                                <ArrowDown className="h-4 w-4" />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeMeal(meal.key)}
+                                                aria-label={t('diet.editor.removeMeal')}
+                                                className="rounded-full p-2 text-red-700 hover:bg-red-50"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </div>
                                     </div>
+
+                                    {/* Aynı ad ve saatte hazır öğün var: güncellensin mi, yeni mi eklensin? */}
+                                    {templateChoice?.mealKey === meal.key && (
+                                        <div className="space-y-2 rounded-xl bg-cream p-3">
+                                            <p className="text-sm text-ink">
+                                                {t('diet.editor.templateExists', { name: templateChoice.match.name })}
+                                            </p>
+                                            <div className="flex flex-wrap gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => void storeTemplate(meal, templateChoice.match.id)}
+                                                    disabled={templateSaving}
+                                                    className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-cream hover:bg-brand-dark disabled:opacity-50"
+                                                >
+                                                    {t('diet.editor.updateExisting')}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => void storeTemplate(meal, null)}
+                                                    disabled={templateSaving}
+                                                    className="rounded-full border border-brand px-3 py-1.5 text-xs font-semibold text-brand hover:bg-card disabled:opacity-50"
+                                                >
+                                                    {t('diet.editor.addAsNew')}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setTemplateChoice(null)}
+                                                    className="rounded-full px-3 py-1.5 text-xs font-semibold text-muted hover:text-brand"
+                                                >
+                                                    {t('diet.library.cancel')}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {cardNotice?.key === meal.key && (
+                                        <p
+                                            role="status"
+                                            className={`text-sm font-semibold ${cardNotice.isError ? 'text-red-700' : 'text-brand'}`}
+                                        >
+                                            {cardNotice.error !== undefined
+                                                ? toErrorMessage(cardNotice.error, t, cardNotice.messageKey)
+                                                : t(cardNotice.messageKey)}
+                                        </p>
+                                    )}
                                 </article>
                             ))}
 
-                            {/* Öğün ekle: hazır öğün adları ve saatleri */}
-                            <div className="rounded-2xl border border-dashed border-line bg-card p-4">
-                                <p className="mb-2 flex items-center gap-1 text-sm font-semibold text-muted">
-                                    <Plus className="h-4 w-4" />
-                                    {t('diet.editor.addMeal')}
-                                </p>
-                                <div className="flex flex-wrap gap-2">
-                                    {MEAL_PRESETS.map((preset, index) => (
-                                        <button
-                                            key={`${preset.name}-${index}`}
-                                            type="button"
-                                            onClick={() => addMeal(preset.name, preset.time)}
-                                            className={chipClass(false)}
-                                        >
-                                            {preset.name} · {preset.time}
-                                        </button>
-                                    ))}
-                                    <button type="button" onClick={() => addMeal('', '')} className={chipClass(false)}>
-                                        {t('diet.editor.customMeal')}
-                                    </button>
-                                </div>
-                            </div>
                         </section>
 
                         {/* Genel not */}
@@ -559,6 +677,15 @@ function DietPlanEditorPage() {
                     </div>
                 )}
             </PageBody>
+
+            {library && (
+                <LibrarySheet
+                    open={sheetOpen}
+                    library={library}
+                    onChange={(update) => setLibrary((current) => (current ? update(current) : current))}
+                    onClose={closeSheet}
+                />
+            )}
         </>
     )
 }

@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Home, Users, UtensilsCrossed, type LucideIcon } from 'lucide-react'
+import { BookMarked, Home, Users, UtensilsCrossed, type LucideIcon } from 'lucide-react'
 
 import Logo from './Logo'
 import UserMenu from './UserMenu'
@@ -20,6 +20,7 @@ const CLIENT_TABS: Tab[] = [
 
 const DIETITIAN_TABS: Tab[] = [
     { to: '/clients', labelKey: 'nav.clients', icon: Users },
+    { to: '/library', labelKey: 'nav.library', icon: BookMarked },
 ]
 
 function AppShell() {
