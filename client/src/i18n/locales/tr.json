@@ -82,12 +82,14 @@
       "intakeUpdated": "Form güncellendi",
       "newWeights": "{{count}} yeni kilo",
       "hasNews": "Yeni güncelleme var"
-    }
+    },
+    "hasPlan": "Diyet programı var"
   },
   "nav": {
     "home": "Ana sayfa",
     "profile": "Profil",
-    "clients": "Danışanlar"
+    "clients": "Danışanlar",
+    "menu": "Menüm"
   },
   "profile": {
     "language": "Dil"
@@ -248,5 +250,90 @@
     },
     "profileLink": "Ön görüşme formum",
     "profileLinkHint": "Bilgileriniz değiştiyse güncelleyin"
+  },
+  "diet": {
+    "myMenu": "Menüm",
+    "sectionTitle": "Diyet programı",
+    "newPlan": "Yeni program",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "deleteActive": "Aktif programı sil",
+    "confirmDelete": "\"{{title}}\" programı silinsin mi?",
+    "preview": "Danışanın gördüğü menü",
+    "history": "Geçmiş programlar",
+    "noPlanDietitian": "Bu danışana henüz bir program yazılmadı.",
+    "noPlanClient": "Diyetisyeniniz henüz bir menü yazmadı. Menünüz hazır olduğunda burada görünecek.",
+    "loadError": "Diyet programı yüklenemedi",
+    "emptyDay": "Bu gün için menü yok.",
+    "or": "veya",
+    "today": "bugün",
+    "startsOn": "başlangıç {{date}}",
+    "type": {
+      "DAILY": "Günlük",
+      "WEEKLY": "Haftalık"
+    },
+    "days": {
+      "short": {
+        "1": "Pzt",
+        "2": "Sal",
+        "3": "Çar",
+        "4": "Per",
+        "5": "Cum",
+        "6": "Cmt",
+        "7": "Paz"
+      },
+      "long": {
+        "1": "Pazartesi",
+        "2": "Salı",
+        "3": "Çarşamba",
+        "4": "Perşembe",
+        "5": "Cuma",
+        "6": "Cumartesi",
+        "7": "Pazar"
+      }
+    },
+    "quick": {
+      "breakfast": "Kahvaltılık",
+      "protein": "Protein",
+      "carb": "Karbonhidrat",
+      "salad": "Salata",
+      "fruit": "Meyve",
+      "nuts": "Kuruyemiş",
+      "dairy": "Süt ürünleri",
+      "drinks": "İçecek"
+    },
+    "editor": {
+      "back": "Danışana dön",
+      "newTitle": "Yeni diyet programı",
+      "editTitle": "Programı düzenle",
+      "startFromCurrent": "Mevcut programdan başla ({{title}})",
+      "title": "Başlık",
+      "startDate": "Başlangıç tarihi",
+      "quickAdd": "Hızlı ekle",
+      "addAsOption": "Seçenek olarak ekle ( / )",
+      "addMealFirst": "Önce bir öğün ekleyin",
+      "copyDay": "Bu günü kopyala",
+      "copyTo": "{{day}} menüsünü şu günlere kopyala (o günlerin menüsü değişir):",
+      "copyConfirm": "{{count}} güne kopyala",
+      "toDailyConfirm": "Günlük programa geçince yalnızca {{day}} menüsü kalır. Devam edilsin mi?",
+      "mealName": "Öğün adı",
+      "mealTime": "Saat",
+      "items": "Maddeler",
+      "itemsPlaceholder": "Her satıra bir madde yazın. Seçenekleri \" / \" ile ayırın.",
+      "moveUp": "Yukarı taşı",
+      "moveDown": "Aşağı taşı",
+      "removeMeal": "Öğünü sil",
+      "addMeal": "Öğün ekle",
+      "customMeal": "Boş öğün",
+      "notes": "Genel not",
+      "notesPlaceholder": "Örneğin: Günde en az 2,5 L su için.",
+      "titleRequired": "Başlık boş olamaz",
+      "noMeals": "Programda en az bir öğün olmalı",
+      "incompleteMeal": "Adı veya maddeleri boş olan öğünleri doldurun ya da silin",
+      "incompleteMealOnDay": "{{day}} gününde adı veya maddeleri boş bir öğün var",
+      "saveError": "Program kaydedilemedi",
+      "save": "Programı kaydet",
+      "saving": "Kaydediliyor..."
+    }
   }
 }

@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react'
 import { PageBody, PageHero } from '../components/PageLayout'
 import WeightSection from '../components/WeightSection'
 import IntakeSummary from '../components/intake/IntakeSummary'
+import DietPlanSection from '../components/diet/DietPlanSection'
 import { getUsers } from '../services/userService'
 import { getClientActivity, markClientReviewed } from '../services/clientService'
 import { formatKg } from '../utils/format'
@@ -98,6 +99,7 @@ function ClientDetailPage() {
                     intakeStatus={activity?.intakeStatus}
                     changedFields={activity?.changedFields ?? []}
                 />
+                <DietPlanSection clientId={clientId} />
                 <WeightSection
                     clientId={clientId}
                     onSummaryChange={setSummary}

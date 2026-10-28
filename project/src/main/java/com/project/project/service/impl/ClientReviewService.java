@@ -9,6 +9,7 @@ import com.project.project.entity.User;
 import com.project.project.entity.WeightEntry;
 import com.project.project.exception.UserNotFoundException;
 import com.project.project.repository.ClientReviewRepository;
+import com.project.project.repository.DietPlanRepository;
 import com.project.project.repository.IntakeFormRepository;
 import com.project.project.repository.UserRepository;
 import com.project.project.repository.WeightEntryRepository;
@@ -30,17 +31,20 @@ public class ClientReviewService {
     private final ClientReviewRepository clientReviewRepository;
     private final IntakeFormRepository intakeFormRepository;
     private final WeightEntryRepository weightEntryRepository;
+    private final DietPlanRepository dietPlanRepository;
 
     public ClientReviewService(
             UserRepository userRepository,
             ClientReviewRepository clientReviewRepository,
             IntakeFormRepository intakeFormRepository,
-            WeightEntryRepository weightEntryRepository
+            WeightEntryRepository weightEntryRepository,
+            DietPlanRepository dietPlanRepository
     ) {
         this.userRepository = userRepository;
         this.clientReviewRepository = clientReviewRepository;
         this.intakeFormRepository = intakeFormRepository;
         this.weightEntryRepository = weightEntryRepository;
+        this.dietPlanRepository = dietPlanRepository;
     }
 
     // Danışan listesi: her kart için bildirimler
@@ -52,7 +56,8 @@ public class ClientReviewService {
                     // Yalnızca danışanın kendi girdiği kilolar; diyetisyenin girdiklerini zaten biliyor
                     long newWeights = weightEntryRepository.countByUserAndEnteredByAndCreatedAtAfter(client, client, since);
                     String intakeStatus = intakeStatus(intakeFormRepository.findByUser(client), review);
-                    return new ClientOverviewResponse(client, newWeights, intakeStatus);
+                    boolean hasPlan = dietPlanRepository.existsByClient(client);
+                    return new ClientOverviewResponse(client, newWeights, intakeStatus, hasPlan);
                 })
                 .toList();
     }

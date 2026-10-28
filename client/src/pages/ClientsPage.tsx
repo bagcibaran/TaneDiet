@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ChevronRight, Search } from 'lucide-react'
+import { ChevronRight, CircleCheck, Search } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
 import LanguageToggle from '../components/LanguageToggle'
@@ -107,7 +107,16 @@ function ClientsPage() {
                                                 )}
                                             </span>
                                             <span className="min-w-0 flex-1">
-                                                <span className="block font-semibold text-ink">{client.username}</span>
+                                                <span className="flex items-center gap-1 font-semibold text-ink">
+                                                    {client.username}
+                                                    {/* Diyet programı yazılmış danışan */}
+                                                    {client.hasPlan && (
+                                                        <CircleCheck
+                                                            className="h-4 w-4 text-brand"
+                                                            aria-label={t('clients.hasPlan')}
+                                                        />
+                                                    )}
+                                                </span>
                                                 <span className="block truncate text-sm text-muted">{client.email}</span>
                                                 {badges.length > 0 && (
                                                     <span className="mt-1 flex flex-wrap gap-1">

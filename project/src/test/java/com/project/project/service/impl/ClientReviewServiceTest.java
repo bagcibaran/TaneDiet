@@ -9,6 +9,7 @@ import com.project.project.entity.User;
 import com.project.project.entity.WeightEntry;
 import com.project.project.exception.UserNotFoundException;
 import com.project.project.repository.ClientReviewRepository;
+import com.project.project.repository.DietPlanRepository;
 import com.project.project.repository.IntakeFormRepository;
 import com.project.project.repository.UserRepository;
 import com.project.project.repository.WeightEntryRepository;
@@ -43,6 +44,9 @@ class ClientReviewServiceTest {
     @Mock
     private WeightEntryRepository weightEntryRepository;
 
+    @Mock
+    private DietPlanRepository dietPlanRepository;
+
     private ClientReviewService clientReviewService;
 
     private User client;
@@ -51,7 +55,7 @@ class ClientReviewServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         clientReviewService = new ClientReviewService(
-                userRepository, clientReviewRepository, intakeFormRepository, weightEntryRepository);
+                userRepository, clientReviewRepository, intakeFormRepository, weightEntryRepository, dietPlanRepository);
 
         client = new User("betul", "betul@test.com", "hash");
         client.setId(41L);
@@ -155,5 +159,14 @@ class ClientReviewServiceTest {
 
         assertThrows(UserNotFoundException.class, () -> clientReviewService.getActivity(28L));
         assertThrows(UserNotFoundException.class, () -> clientReviewService.markReviewed(28L));
+    }
+
+    @Test
+    void listClients_reportsWhetherClientHasDietPlan() {
+        when(clientReviewRepository.findByClient(client)).thenReturn(Optional.empty());
+        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.empty());
+        when(dietPlanRepository.existsByClient(client)).thenReturn(true);
+
+        assertTrue(clientReviewService.listClients().get(0).isHasPlan());
     }
 }

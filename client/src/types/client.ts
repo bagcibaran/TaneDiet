@@ -10,6 +10,8 @@ export type ClientOverview = {
     // Diyetisyen son baktığından beri danışanın kendi girdiği kilo kaydı sayısı
     newWeightCount: number
     intakeStatus: IntakeStatus
+    // Diyet programı yazılmış mı? (kartta ✓)
+    hasPlan: boolean
 }
 
 export type ClientActivity = {

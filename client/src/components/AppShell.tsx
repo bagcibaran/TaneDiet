@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Home, User, Users, type LucideIcon } from 'lucide-react'
+import { Home, User, Users, UtensilsCrossed, type LucideIcon } from 'lucide-react'
 
 import Logo from './Logo'
 import { getRole } from '../services/session'
@@ -14,6 +14,7 @@ type Tab = {
 // Role göre sekmeler. Yeni bir sayfa eklendiğinde buraya bir satır eklenir.
 const CLIENT_TABS: Tab[] = [
     { to: '/dashboard', labelKey: 'nav.home', icon: Home },
+    { to: '/menu', labelKey: 'nav.menu', icon: UtensilsCrossed },
     { to: '/profile', labelKey: 'nav.profile', icon: User },
 ]
 

@@ -82,12 +82,14 @@
       "intakeUpdated": "Form updated",
       "newWeights": "{{count}} new weights",
       "hasNews": "Has updates"
-    }
+    },
+    "hasPlan": "Has a diet program"
   },
   "nav": {
     "home": "Home",
     "profile": "Profile",
-    "clients": "Clients"
+    "clients": "Clients",
+    "menu": "My menu"
   },
   "profile": {
     "language": "Language"
@@ -248,5 +250,90 @@
     },
     "profileLink": "My pre-interview form",
     "profileLinkHint": "Update it if anything has changed"
+  },
+  "diet": {
+    "myMenu": "My menu",
+    "sectionTitle": "Diet program",
+    "newPlan": "New program",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteActive": "Delete active program",
+    "confirmDelete": "Delete the program \"{{title}}\"?",
+    "preview": "Menu as the client sees it",
+    "history": "Past programs",
+    "noPlanDietitian": "No program has been written for this client yet.",
+    "noPlanClient": "Your dietitian has not written a menu yet. It will appear here when it is ready.",
+    "loadError": "The diet program could not be loaded",
+    "emptyDay": "No menu for this day.",
+    "or": "or",
+    "today": "today",
+    "startsOn": "starts {{date}}",
+    "type": {
+      "DAILY": "Daily",
+      "WEEKLY": "Weekly"
+    },
+    "days": {
+      "short": {
+        "1": "Mon",
+        "2": "Tue",
+        "3": "Wed",
+        "4": "Thu",
+        "5": "Fri",
+        "6": "Sat",
+        "7": "Sun"
+      },
+      "long": {
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday",
+        "7": "Sunday"
+      }
+    },
+    "quick": {
+      "breakfast": "Breakfast",
+      "protein": "Protein",
+      "carb": "Carbs",
+      "salad": "Salad",
+      "fruit": "Fruit",
+      "nuts": "Nuts",
+      "dairy": "Dairy",
+      "drinks": "Drinks"
+    },
+    "editor": {
+      "back": "Back to client",
+      "newTitle": "New diet program",
+      "editTitle": "Edit program",
+      "startFromCurrent": "Start from the current program ({{title}})",
+      "title": "Title",
+      "startDate": "Start date",
+      "quickAdd": "Quick add",
+      "addAsOption": "Add as option ( / )",
+      "addMealFirst": "Add a meal first",
+      "copyDay": "Copy this day",
+      "copyTo": "Copy the {{day}} menu to these days (their menus will be replaced):",
+      "copyConfirm": "Copy to {{count}} days",
+      "toDailyConfirm": "Switching to daily keeps only the {{day}} menu. Continue?",
+      "mealName": "Meal name",
+      "mealTime": "Time",
+      "items": "Items",
+      "itemsPlaceholder": "One item per line. Separate options with \" / \".",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "removeMeal": "Remove meal",
+      "addMeal": "Add a meal",
+      "customMeal": "Empty meal",
+      "notes": "General note",
+      "notesPlaceholder": "For example: drink at least 2.5 L of water a day.",
+      "titleRequired": "Title cannot be empty",
+      "noMeals": "The program needs at least one meal",
+      "incompleteMeal": "Fill in or remove meals with an empty name or items",
+      "incompleteMealOnDay": "{{day}} has a meal with an empty name or items",
+      "saveError": "The program could not be saved",
+      "save": "Save program",
+      "saving": "Saving..."
+    }
   }
 }

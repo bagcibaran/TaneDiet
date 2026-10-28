@@ -31,6 +31,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @ExceptionHandler(DietPlanInvalidException.class)
+    public ResponseEntity<ErrorResponse> handleDietPlanInvalid(DietPlanInvalidException ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(DietPlanInvalidException.NotFound.class)
+    public ResponseEntity<ErrorResponse> handleDietPlanNotFound(DietPlanInvalidException.NotFound ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
     @ExceptionHandler(IntakeConsentRequiredException.class)
     public ResponseEntity<ErrorResponse> handleIntakeConsentRequired(IntakeConsentRequiredException ex) {
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());

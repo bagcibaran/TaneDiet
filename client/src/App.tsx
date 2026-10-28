@@ -10,6 +10,8 @@ import IntakePage from './pages/IntakePage'
 import ProtectedRoute from './routes/ProtectedRoute'
 import IntakeGate from './routes/IntakeGate'
 import ProfilePage from './pages/ProfilePage'
+import MenuPage from './pages/MenuPage'
+import DietPlanEditorPage from './pages/DietPlanEditorPage'
 
 function App() {
     return (
@@ -44,6 +46,22 @@ function App() {
                     >
                         <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="/profile" element={<ProfilePage />} />
+                        <Route
+                            path="/menu"
+                            element={
+                                <ProtectedRoute allowedRoles={['CLIENT']}>
+                                    <MenuPage />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/clients/:id/diet-plans/:planId"
+                            element={
+                                <ProtectedRoute allowedRoles={['DIETITIAN']}>
+                                    <DietPlanEditorPage />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route
                             path="/clients"
                             element={
