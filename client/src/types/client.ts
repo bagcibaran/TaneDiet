@@ -12,6 +12,10 @@ export type ClientOverview = {
     intakeStatus: IntakeStatus
     // Diyet programı yazılmış mı? (kartta ✓)
     hasPlan: boolean
+    // Hizmet süresi: son gün (null = süresiz), kilitli mi, kaç gün kaldı
+    accessUntil: string | null
+    locked: boolean
+    daysLeft: number | null
 }
 
 export type ClientActivity = {

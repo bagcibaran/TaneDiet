@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ChevronRight, CircleCheck, Search } from 'lucide-react'
+import { ChevronRight, CircleCheck, Link2, Search } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
+import InvitePanel from '../components/invites/InvitePanel'
 import { inputClass } from '../components/ui'
 import { getClients } from '../services/clientService'
 import { toErrorMessage } from '../services/errorMessage'
@@ -18,6 +19,8 @@ function ClientsPage() {
     // Ham hata saklanır, mesaj ekrana çizilirken çevrilir
     const [error, setError] = useState<unknown>(null)
     const [query, setQuery] = useState('')
+    const [inviteOpen, setInviteOpen] = useState(false)
+    const closeInvite = useCallback(() => setInviteOpen(false), [])
 
     useEffect(() => {
         getClients()
@@ -34,28 +37,51 @@ function ClientsPage() {
             client.email.toLocaleLowerCase('tr').includes(normalizedQuery),
     )
 
-    // Kartta gösterilecek bildirimler (boşsa kart sade görünür)
-    const badgesOf = (client: ClientOverview): string[] => {
-        const badges: string[] = []
+    // Kartta gösterilecek bildirimler (boşsa kart sade görünür). Hizmet süresi rozetleri ayrı renkte.
+    const badgesOf = (client: ClientOverview): { label: string; tone: string }[] => {
+        const news = 'bg-mint/40 text-brand'
+        const badges: { label: string; tone: string }[] = []
+        if (client.locked) {
+            badges.push({ label: t('clients.badges.expired'), tone: 'bg-coral/20 text-ink' })
+        } else if (client.daysLeft !== null && client.daysLeft <= 7) {
+            badges.push({ label: t('clients.badges.daysLeft', { count: client.daysLeft }), tone: 'bg-peach text-peach-ink' })
+        }
         if (client.intakeStatus === 'NEW') {
-            badges.push(t('clients.badges.newIntake'))
+            badges.push({ label: t('clients.badges.newIntake'), tone: news })
         }
         if (client.intakeStatus === 'UPDATED') {
-            badges.push(t('clients.badges.intakeUpdated'))
+            badges.push({ label: t('clients.badges.intakeUpdated'), tone: news })
         }
         if (client.newWeightCount > 0) {
-            badges.push(t('clients.badges.newWeights', { count: client.newWeightCount }))
+            badges.push({ label: t('clients.badges.newWeights', { count: client.newWeightCount }), tone: news })
         }
         return badges
     }
 
+    // Köşedeki nokta yalnızca yeni bir şey varsa (hizmet süresi rozeti bildirim sayılmaz)
+    const hasNews = (client: ClientOverview) =>
+        client.intakeStatus === 'NEW' || client.intakeStatus === 'UPDATED' || client.newWeightCount > 0
+
     return (
         <>
             <PageHero>
-                <h1 className="text-3xl font-extrabold tracking-tight">{t('nav.clients')}</h1>
-                {!loading && error === null && (
-                    <p className="mt-1 text-sm text-mint">{t('clients.count', { count: clients.length })}</p>
-                )}
+                <div className="flex items-end justify-between gap-3">
+                    <div>
+                        <h1 className="text-3xl font-extrabold tracking-tight">{t('nav.clients')}</h1>
+                        {!loading && error === null && (
+                            <p className="mt-1 text-sm text-mint">{t('clients.count', { count: clients.length })}</p>
+                        )}
+                    </div>
+                    {/* Ödeme yapan kişiye davet linki */}
+                    <button
+                        type="button"
+                        onClick={() => setInviteOpen(true)}
+                        className="flex shrink-0 items-center gap-1.5 rounded-full bg-honey px-4 py-2 text-sm font-bold text-ink shadow-soft transition hover:brightness-105 active:scale-[0.98]"
+                    >
+                        <Link2 className="h-4 w-4" />
+                        {t('invites.open')}
+                    </button>
+                </div>
             </PageHero>
 
             <PageBody>
@@ -98,7 +124,7 @@ function ClientsPage() {
                                             {/* Adın baş harfi; yeni bir şey varsa köşesinde yeşil nokta */}
                                             <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand font-bold text-cream">
                                                 {client.username.charAt(0).toLocaleUpperCase('tr')}
-                                                {badges.length > 0 && (
+                                                {hasNews(client) && (
                                                     <span
                                                         className="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 rounded-full border-2 border-card bg-honey"
                                                         aria-label={t('clients.badges.hasNews')}
@@ -121,10 +147,10 @@ function ClientsPage() {
                                                     <span className="mt-1 flex flex-wrap gap-1">
                                                         {badges.map((badge) => (
                                                             <span
-                                                                key={badge}
-                                                                className="rounded-full bg-mint/40 px-2 py-0.5 text-xs font-semibold text-brand"
+                                                                key={badge.label}
+                                                                className={`rounded-full px-2 py-0.5 text-xs font-semibold ${badge.tone}`}
                                                             >
-                                                                {badge}
+                                                                {badge.label}
                                                             </span>
                                                         ))}
                                                     </span>
@@ -139,6 +165,8 @@ function ClientsPage() {
                     )}
                 </section>
             </PageBody>
+
+            {inviteOpen && <InvitePanel onClose={closeInvite} />}
         </>
     )
 }

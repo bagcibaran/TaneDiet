@@ -5,11 +5,12 @@
     "email": "E-posta",
     "password": "Şifre",
     "submit": "Giriş yap",
-    "registerPrompt": "Hesabın yok mu?",
-    "registerLink": "Kayıt ol",
     "invalidCredentials": "E-posta veya şifre hatalı",
     "failed": "Giriş yapılamadı",
-    "registered": "Kayıt başarılı, şimdi giriş yapabilirsin"
+    "registered": "Kayıt başarılı, şimdi giriş yapabilirsin",
+    "lockedTitle": "Hizmet süren doldu",
+    "lockedText": "Bilgilerin silinmedi. Diyetisyenin hesabını yeniden açınca kaldığın yerden devam edersin.",
+    "noAccount": "Hesabın yok mu? Kayıt, hizmet aldıktan sonra davet linkiyle yapılır."
   },
   "register": {
     "title": "Hesap oluştur",
@@ -22,7 +23,11 @@
     "loginPrompt": "Zaten hesabın var mı?",
     "loginLink": "Giriş yap",
     "passwordMismatch": "Şifreler eşleşmiyor",
-    "failed": "Kayıt işlemi başarısız"
+    "failed": "Kayıt işlemi başarısız",
+    "inviteOnlyTitle": "Kayıt yalnızca davetle",
+    "inviteOnlyText": "Hesaplar hizmet alan danışanlarımız için açılır. Bilgi almak ve paketleri sormak için WhatsApp'tan yazabilirsin; ödemenin ardından sana bir davet linki göndeririz.",
+    "packageLine": "Paketin: {{months}} ay",
+    "checkingInvite": "Davet linkin kontrol ediliyor..."
   },
   "dashboard": {
     "title": "Kontrol Paneli",
@@ -81,7 +86,10 @@
       "newIntake": "Yeni form",
       "intakeUpdated": "Form güncellendi",
       "newWeights": "{{count}} yeni kilo",
-      "hasNews": "Yeni güncelleme var"
+      "hasNews": "Yeni güncelleme var",
+      "expired": "Süresi doldu",
+      "daysLeft_one": "{{count}} gün kaldı",
+      "daysLeft_other": "{{count}} gün kaldı"
     },
     "hasPlan": "Diyet programı var"
   },
@@ -373,5 +381,87 @@
   },
   "userMenu": {
     "open": "Kullanıcı menüsü"
+  },
+  "whatsapp": {
+    "ask": "Merhaba, online diyet danışmanlığı hakkında bilgi almak istiyorum.",
+    "contact": "WhatsApp'tan yaz",
+    "lockedMessage": "Merhaba, hizmet sürem doldu, devam etmek istiyorum."
+  },
+  "invites": {
+    "open": "Davet oluştur",
+    "title": "Davet linki",
+    "close": "Kapat",
+    "package": "Paket süresi",
+    "months_one": "{{count}} ay",
+    "months_other": "{{count}} ay",
+    "note": "Kimin için? (isteğe bağlı)",
+    "notePlaceholder": "Örneğin: Ayşe Y.",
+    "create": "Link oluştur",
+    "ready_one": "{{count}} aylık davet linki hazır. 7 gün geçerli, tek kullanımlık.",
+    "ready_other": "{{count}} aylık davet linki hazır. 7 gün geçerli, tek kullanımlık.",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı",
+    "share": "WhatsApp'ta paylaş",
+    "shareText_one": "Merhaba! tane. online diyet hesabını bu linkle açabilirsin ({{count}} aylık paket): {{link}}",
+    "shareText_other": "Merhaba! tane. online diyet hesabını bu linkle açabilirsin ({{count}} aylık paket): {{link}}",
+    "openTitle": "Açık davetler",
+    "none": "Açık davet yok.",
+    "unnamed": "İsimsiz davet",
+    "validUntil": "{{date}} tarihine kadar",
+    "delete": "Daveti sil",
+    "error": "Davet işlemi yapılamadı"
+  },
+  "access": {
+    "title": "Hizmet süresi",
+    "unlimited": "Süresiz",
+    "until_one": "{{date}} tarihine kadar · {{count}} gün kaldı",
+    "until_other": "{{date}} tarihine kadar · {{count}} gün kaldı",
+    "locked": "Süresi doldu ({{date}}). Danışan giriş yapamıyor.",
+    "addPackage": "Paket ekle",
+    "months_one": "{{count}} ay",
+    "months_other": "{{count}} ay",
+    "setDate": "Bitiş tarihini ayarla",
+    "save": "Kaydet",
+    "makeUnlimited": "Süresiz yap",
+    "closeNow": "Erişimi hemen kapat",
+    "confirmClose": "Danışanın erişimi hemen kapatılsın mı? Bilgileri silinmez; sonra yeniden açabilirsin.",
+    "error": "Hizmet süresi değiştirilemedi"
+  },
+  "landing": {
+    "clientLogin": "Danışan girişi",
+    "goToApp": "Uygulamaya git",
+    "headline": "Yasaksız, sana göre<br/><em>sürdürülebilir</em> diyet.",
+    "subtitle": "Online danışmanlık, menün ve takibin tek uygulamada.",
+    "dietitianTitle": "Diyetisyen · tane. kurucusu",
+    "whatsappCta": "WhatsApp'tan bilgi al",
+    "chip1": "Kişiye özel menü",
+    "chip2": "Haftalık takip",
+    "chip3": "Telefonundan",
+    "showcaseTitle": "📱 Diyet takip sistemi",
+    "showcaseText": "Hizmet alan danışanlarımız bu ekranları kullanıyor.",
+    "shotHomeTitle": "Merhaba Ayşe",
+    "shotHome": "Ana sayfan",
+    "shotMenu": "Menün cebinde",
+    "shotChart": "İlerleme grafiği",
+    "shotIntake": "Ön görüşme formu",
+    "stepsTitle": "Nasıl başlarım?",
+    "stepsText": "4 adımda, hepsi telefonundan.",
+    "step1Title": "WhatsApp'tan yaz",
+    "step1Text": "Paketleri ve sorularını konuşalım.",
+    "step2Title": "Paketini seç",
+    "step2Text": "Ödeme havale/EFT ile.",
+    "step3Title": "Davet linkin gelsin",
+    "step3Text": "Hesabını aç, ön görüşme formunu doldur.",
+    "step4Title": "Menün telefonunda",
+    "step4Text": "Kilonu gir, ilerlemeni gör.",
+    "recipesTitle": "🥗 Pratik tarifler",
+    "recipesText": "Dokun, malzemeleri ve yapılışı açılsın.",
+    "minutes_one": "{{count}} dk",
+    "minutes_other": "{{count}} dk",
+    "ingredients": "Malzemeler",
+    "steps": "Yapılışı",
+    "close": "Kapat",
+    "finalTitle": "Hazırsan başlayalım 🌿",
+    "finalText": "Sorularını WhatsApp'tan sor, sana uygun paketi birlikte seçelim."
   }
 }

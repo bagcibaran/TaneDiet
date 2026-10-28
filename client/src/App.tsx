@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AppLayout from './AppLayout/Routes/AppLayout.tsx'
 import AppShell from './components/AppShell'
 import LoginPage from './pages/LoginPage'
+import LandingPage from './pages/LandingPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
 import ClientsPage from './pages/ClientsPage.tsx'
@@ -18,8 +19,10 @@ function App() {
         <BrowserRouter>
             <AppLayout>
                 <Routes>
+                    {/* Herkese açık tanıtım sayfası */}
+                    <Route path="/" element={<LandingPage />} />
+
                     {/* Giriş yapmadan açılan sayfalar (sekme çubuğu yok) */}
-                    <Route path="/" element={<LoginPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
 

@@ -52,6 +52,12 @@ export async function apiRequest<T>(
         window.location.replace('/login?reason=expired')
     }
 
+    // Danışanın hizmet süresi doldu (423): oturumu kapat, giriş sayfasında WhatsApp ile birlikte açıkla
+    if (response.status === 423 && token) {
+        clearSession()
+        window.location.replace('/login?reason=locked')
+    }
+
     if (!response.ok) {
         const errorBody = await response.json().catch(() => null)
         throw new ApiError(response.status, errorBody?.message ?? '')

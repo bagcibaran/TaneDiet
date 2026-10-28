@@ -5,11 +5,12 @@
     "email": "Email",
     "password": "Password",
     "submit": "Sign in",
-    "registerPrompt": "Don't have an account?",
-    "registerLink": "Register",
     "invalidCredentials": "Invalid email or password",
     "failed": "Sign in failed",
-    "registered": "Registration successful, you can sign in now"
+    "registered": "Registration successful, you can sign in now",
+    "lockedTitle": "Your service period has ended",
+    "lockedText": "Your data is kept. When your dietitian reopens your account, you continue where you left off.",
+    "noAccount": "No account? Sign-up is done with an invite link after purchase."
   },
   "register": {
     "title": "Create an account",
@@ -22,7 +23,11 @@
     "loginPrompt": "Already have an account?",
     "loginLink": "Sign in",
     "passwordMismatch": "Passwords do not match",
-    "failed": "Registration failed"
+    "failed": "Registration failed",
+    "inviteOnlyTitle": "Sign-up by invitation only",
+    "inviteOnlyText": "Accounts are opened for our clients. Write to us on WhatsApp for information and packages; after payment we send you an invite link.",
+    "packageLine": "Your package: {{months}} months",
+    "checkingInvite": "Checking your invite link..."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -81,7 +86,10 @@
       "newIntake": "New form",
       "intakeUpdated": "Form updated",
       "newWeights": "{{count}} new weights",
-      "hasNews": "Has updates"
+      "hasNews": "Has updates",
+      "expired": "Expired",
+      "daysLeft_one": "{{count}} day left",
+      "daysLeft_other": "{{count}} days left"
     },
     "hasPlan": "Has a diet program"
   },
@@ -373,5 +381,87 @@
   },
   "userMenu": {
     "open": "User menu"
+  },
+  "whatsapp": {
+    "ask": "Hello, I would like information about online diet counselling.",
+    "contact": "Write on WhatsApp",
+    "lockedMessage": "Hello, my service period has ended and I would like to continue."
+  },
+  "invites": {
+    "open": "Create invite",
+    "title": "Invite link",
+    "close": "Close",
+    "package": "Package length",
+    "months_one": "{{count}} month",
+    "months_other": "{{count}} months",
+    "note": "Who is it for? (optional)",
+    "notePlaceholder": "For example: Ayşe Y.",
+    "create": "Create link",
+    "ready_one": "A {{count}}-month invite link is ready. Valid for 7 days, single use.",
+    "ready_other": "A {{count}}-month invite link is ready. Valid for 7 days, single use.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "share": "Share on WhatsApp",
+    "shareText_one": "Hello! You can open your tane. online diyet account with this link ({{count}}-month package): {{link}}",
+    "shareText_other": "Hello! You can open your tane. online diyet account with this link ({{count}}-month package): {{link}}",
+    "openTitle": "Open invites",
+    "none": "No open invites.",
+    "unnamed": "Unnamed invite",
+    "validUntil": "valid until {{date}}",
+    "delete": "Delete invite",
+    "error": "The invite action failed"
+  },
+  "access": {
+    "title": "Service period",
+    "unlimited": "Unlimited",
+    "until_one": "Until {{date}} · {{count}} day left",
+    "until_other": "Until {{date}} · {{count}} days left",
+    "locked": "Expired ({{date}}). The client cannot sign in.",
+    "addPackage": "Add a package",
+    "months_one": "{{count}} month",
+    "months_other": "{{count}} months",
+    "setDate": "Set the end date",
+    "save": "Save",
+    "makeUnlimited": "Make unlimited",
+    "closeNow": "Close access now",
+    "confirmClose": "Close this client's access now? Their data is kept; you can reopen it later.",
+    "error": "The service period could not be changed"
+  },
+  "landing": {
+    "clientLogin": "Client login",
+    "goToApp": "Go to the app",
+    "headline": "No bans, made for you,<br/><em>sustainable</em> diet.",
+    "subtitle": "Online counselling, your menu and your tracking in one app.",
+    "dietitianTitle": "Dietitian · founder of tane.",
+    "whatsappCta": "Get info on WhatsApp",
+    "chip1": "Personal menu",
+    "chip2": "Weekly follow-up",
+    "chip3": "On your phone",
+    "showcaseTitle": "📱 Diet tracking system",
+    "showcaseText": "Our clients use these screens.",
+    "shotHomeTitle": "Hello Ayşe",
+    "shotHome": "Your home",
+    "shotMenu": "Your menu in your pocket",
+    "shotChart": "Progress chart",
+    "shotIntake": "Intake form",
+    "stepsTitle": "How do I start?",
+    "stepsText": "4 steps, all from your phone.",
+    "step1Title": "Write on WhatsApp",
+    "step1Text": "Let's talk about packages and your questions.",
+    "step2Title": "Choose your package",
+    "step2Text": "Payment by bank transfer.",
+    "step3Title": "Get your invite link",
+    "step3Text": "Open your account and fill in the intake form.",
+    "step4Title": "Your menu on your phone",
+    "step4Text": "Enter your weight, see your progress.",
+    "recipesTitle": "🥗 Easy recipes",
+    "recipesText": "Tap to see ingredients and steps.",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min",
+    "ingredients": "Ingredients",
+    "steps": "Steps",
+    "close": "Close",
+    "finalTitle": "Ready? Let's start 🌿",
+    "finalText": "Ask your questions on WhatsApp and we will choose the right package together."
   }
 }

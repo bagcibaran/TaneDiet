@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import AuthLayout from '../AppLayout/Routes/AuthLayout'
+import WhatsAppButton from '../components/WhatsAppButton'
 import { errorTextClass, inputClass, labelClass, primaryButtonClass } from '../components/ui'
 import { loginUser } from '../services/authService'
 import { ApiError } from '../services/apiClient'
@@ -16,9 +17,12 @@ function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    // Hizmet süresi dolan danışan giriş yapmaya çalıştı (423)
+    const [lockedOnLogin, setLockedOnLogin] = useState(false)
     // Başka bir sayfa bizi buraya bir sebeple gönderdiyse (?reason=...) bunu göster
     const [searchParams] = useSearchParams()
     const reason = searchParams.get('reason')
+    const locked = lockedOnLogin || reason === 'locked'
 
     return (
         <AuthLayout>
@@ -29,6 +33,15 @@ function LoginPage() {
                 <p className="mb-4 rounded-2xl bg-peach p-3 text-sm text-peach-ink">
                     {t('errors.sessionExpired')}
                 </p>
+            )}
+
+            {/* Hizmet süresi doldu: hesap açık değil, diyetisyene WhatsApp'tan yazsın */}
+            {locked && (
+                <div className="mb-4 space-y-3 rounded-2xl bg-peach p-4">
+                    <p className="font-bold text-ink">{t('login.lockedTitle')}</p>
+                    <p className="text-sm text-peach-ink">{t('login.lockedText')}</p>
+                    <WhatsAppButton text={t('whatsapp.lockedMessage')} label={t('whatsapp.contact')} />
+                </div>
             )}
 
             {reason === 'registered' && (
@@ -42,6 +55,7 @@ function LoginPage() {
                 onSubmit={async (event) => {
                     event.preventDefault()
                     setError('')
+                    setLockedOnLogin(false)
                     try {
                         const response = await loginUser({ email, password })
                         saveToken(response.token)
@@ -50,6 +64,8 @@ function LoginPage() {
                         // Backend yanlış e-posta/şifre için 404 döndürüyor
                         if (error instanceof ApiError && error.status === 404) {
                             setError(t('login.invalidCredentials'))
+                        } else if (error instanceof ApiError && error.status === 423) {
+                            setLockedOnLogin(true)
                         } else {
                             setError(toErrorMessage(error, t, 'login.failed'))
                         }
@@ -91,12 +107,8 @@ function LoginPage() {
                 </button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-muted">
-                {t('login.registerPrompt')}{' '}
-                <Link to="/register" className="font-semibold text-brand hover:text-brand-dark">
-                    {t('login.registerLink')}
-                </Link>
-            </p>
+            {/* Kayıt yalnızca davetle: hizmet almak isteyen diyetisyene yazar */}
+            <p className="mt-6 text-center text-sm text-muted">{t('login.noAccount')}</p>
         </AuthLayout>
     )
 }

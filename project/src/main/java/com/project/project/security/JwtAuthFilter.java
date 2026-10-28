@@ -1,5 +1,9 @@
 package com.project.project.security;
 
+import com.project.project.entity.User;
+import com.project.project.exception.ClientAccessLockedException;
+import com.project.project.repository.UserRepository;
+import com.project.project.service.impl.ClientAccessService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -14,15 +18,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final UserRepository userRepository;
+    private final ClientAccessService clientAccessService;
 
-    public JwtAuthFilter(JwtService jwtService) {
+    public JwtAuthFilter(JwtService jwtService, UserRepository userRepository, ClientAccessService clientAccessService) {
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
+        this.clientAccessService = clientAccessService;
     }
 
     @Override
@@ -44,6 +54,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String username = claims.getSubject();
             String role = claims.get("role", String.class);
 
+            // Token durumsuz: hizmet süresi dolan danışanın token'ı hâlâ geçerli olabilir.
+            // Bu yüzden danışan her istekte veritabanından kontrol edilir; kilitliyse 423 döner.
+            // /auth/** (giriş, kayıt, davet kontrolü) hariç: telefonda eski bir token kalsa bile bu sayfalar çalışmalı.
+            if ("CLIENT".equals(role) && !isAuthPath(request)) {
+                Optional<User> user = userRepository.findByUsername(username);
+                // Kullanıcı bulunamadı (adı değişti veya silindi): oturum tanınmaz, korumalı istek 401 alır
+                if (user.isEmpty()) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                if (clientAccessService.isLocked(user.get())) {
+                    writeLocked(response);
+                    return;
+                }
+            }
+
             if (role != null) {
                 List<SimpleGrantedAuthority> authorities =
                         List.of(new SimpleGrantedAuthority("ROLE_" + role));
@@ -59,5 +85,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isAuthPath(HttpServletRequest request) {
+        return request.getServletPath().startsWith("/auth/");
+    }
+
+    private void writeLocked(HttpServletResponse response) throws IOException {
+        response.setStatus(423);
+        response.setContentType("application/json");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.getWriter().write("{\"status\":423,\"message\":\"" + ClientAccessLockedException.MESSAGE + "\"}");
     }
 }

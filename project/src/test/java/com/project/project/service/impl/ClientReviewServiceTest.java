@@ -55,7 +55,8 @@ class ClientReviewServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         clientReviewService = new ClientReviewService(
-                userRepository, clientReviewRepository, intakeFormRepository, weightEntryRepository, dietPlanRepository);
+                userRepository, clientReviewRepository, intakeFormRepository, weightEntryRepository, dietPlanRepository,
+                new ClientAccessService(userRepository, java.time.Clock.systemDefaultZone()));
 
         client = new User("betul", "betul@test.com", "hash");
         client.setId(41L);

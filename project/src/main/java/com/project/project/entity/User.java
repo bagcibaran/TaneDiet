@@ -2,6 +2,8 @@ package com.project.project.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "app_user")
 public class User {
@@ -14,6 +16,8 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role = Role.CLIENT;
+    // Hizmet süresinin son günü (dahil). null = süresiz. Yalnızca danışanlar için anlamlı.
+    private LocalDate accessUntil;
 
     public User() {
     }
@@ -68,6 +72,12 @@ public class User {
     public String toString() {
         return "User{id=" + id + ", username='" + username + "', email='" + email + "'}";
     }
+
+    public LocalDate getAccessUntil() {
+        return accessUntil;
+    }
+
+    public void setAccessUntil(LocalDate accessUntil) {
+        this.accessUntil = accessUntil;
+    }
 }
-
-

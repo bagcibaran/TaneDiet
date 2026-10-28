@@ -32,19 +32,22 @@ public class ClientReviewService {
     private final IntakeFormRepository intakeFormRepository;
     private final WeightEntryRepository weightEntryRepository;
     private final DietPlanRepository dietPlanRepository;
+    private final ClientAccessService clientAccessService;
 
     public ClientReviewService(
             UserRepository userRepository,
             ClientReviewRepository clientReviewRepository,
             IntakeFormRepository intakeFormRepository,
             WeightEntryRepository weightEntryRepository,
-            DietPlanRepository dietPlanRepository
+            DietPlanRepository dietPlanRepository,
+            ClientAccessService clientAccessService
     ) {
         this.userRepository = userRepository;
         this.clientReviewRepository = clientReviewRepository;
         this.intakeFormRepository = intakeFormRepository;
         this.weightEntryRepository = weightEntryRepository;
         this.dietPlanRepository = dietPlanRepository;
+        this.clientAccessService = clientAccessService;
     }
 
     // Danışan listesi: her kart için bildirimler
@@ -57,7 +60,7 @@ public class ClientReviewService {
                     long newWeights = weightEntryRepository.countByUserAndEnteredByAndCreatedAtAfter(client, client, since);
                     String intakeStatus = intakeStatus(intakeFormRepository.findByUser(client), review);
                     boolean hasPlan = dietPlanRepository.existsByClient(client);
-                    return new ClientOverviewResponse(client, newWeights, intakeStatus, hasPlan);
+                    return new ClientOverviewResponse(client, newWeights, intakeStatus, hasPlan, clientAccessService.toResponse(client));
                 })
                 .toList();
     }

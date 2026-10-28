@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react'
 import { PageBody, PageHero } from '../components/PageLayout'
 import WeightSection from '../components/WeightSection'
 import IntakeSummary from '../components/intake/IntakeSummary'
+import AccessPanel from '../components/AccessPanel'
 import DietPlanSection from '../components/diet/DietPlanSection'
 import { getUsers } from '../services/userService'
 import { getClientActivity, markClientReviewed } from '../services/clientService'
@@ -94,6 +95,7 @@ function ClientDetailPage() {
             </PageHero>
 
             <PageBody>
+                <AccessPanel clientId={clientId} />
                 <IntakeSummary
                     clientId={clientId}
                     intakeStatus={activity?.intakeStatus}

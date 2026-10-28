@@ -1,4 +1,5 @@
 import type {
+    InviteLookup,
     LoginRequest,
     LoginResponse,
     RegisterRequest,
@@ -18,4 +19,9 @@ export function registerUser(request: RegisterRequest): Promise<UserResponse> {
         method: 'POST',
         body: request,
     })
+}
+
+// Kayıt sayfası davet linkini kontrol eder (geçersizse 404)
+export function lookupInvite(token: string): Promise<InviteLookup> {
+    return apiRequest<InviteLookup>(`/auth/invites/${encodeURIComponent(token)}`)
 }

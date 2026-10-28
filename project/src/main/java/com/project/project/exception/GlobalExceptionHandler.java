@@ -55,6 +55,25 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(AccessRuleException.class)
+    public ResponseEntity<ErrorResponse> handleAccessRule(AccessRuleException ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(InviteInvalidException.class)
+    public ResponseEntity<ErrorResponse> handleInviteInvalid(InviteInvalidException ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    // Hizmet süresi dolan danışan: 423 (frontend giriş sayfasında özel mesaj gösterir)
+    @ExceptionHandler(ClientAccessLockedException.class)
+    public ResponseEntity<ErrorResponse> handleClientAccessLocked(ClientAccessLockedException ex) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.LOCKED.value(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.LOCKED).body(error);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
         ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());

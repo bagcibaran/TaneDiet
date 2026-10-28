@@ -11,10 +11,17 @@ export type LoginResponse = {
     role: Role
 }
 
+// Kayıt yalnızca diyetisyenin davet linkiyle
 export type RegisterRequest = {
     username: string
     email: string
     password: string
+    inviteToken: string
+}
+
+// Davet linki geçerliyse paket süresi (ay). Backend: InviteLookupResponse
+export type InviteLookup = {
+    months: number
 }
 
 export type UserResponse = {
