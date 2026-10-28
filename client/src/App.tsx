@@ -6,7 +6,9 @@ import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
 import ClientsPage from './pages/ClientsPage.tsx'
 import ClientDetailPage from './pages/ClientDetailPage'
+import IntakePage from './pages/IntakePage'
 import ProtectedRoute from './routes/ProtectedRoute'
+import IntakeGate from './routes/IntakeGate'
 import ProfilePage from './pages/ProfilePage'
 
 function App() {
@@ -19,11 +21,24 @@ function App() {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
 
-                    {/* Giriş yapılmış sayfalar: hepsi AppShell çerçevesinin içinde */}
+                    {/* Ön görüşme formu: danışana özel, sekme çubuğu yok */}
+                    <Route
+                        path="/intake"
+                        element={
+                            <ProtectedRoute allowedRoles={['CLIENT']}>
+                                <IntakePage />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* Giriş yapılmış sayfalar: hepsi AppShell çerçevesinin içinde.
+                        IntakeGate, formu doldurmamış danışanı önce forma gönderir. */}
                     <Route
                         element={
                             <ProtectedRoute>
-                                <AppShell />
+                                <IntakeGate>
+                                    <AppShell />
+                                </IntakeGate>
                             </ProtectedRoute>
                         }
                     >

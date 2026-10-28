@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
 import WeightSection from '../components/WeightSection'
+import IntakeSummary from '../components/intake/IntakeSummary'
 import { getUsers } from '../services/userService'
 import { formatKg } from '../utils/format'
 import type { UserResponse } from '../types/auth'
@@ -63,6 +64,7 @@ function ClientDetailPage() {
             </PageHero>
 
             <PageBody>
+                <IntakeSummary clientId={clientId} />
                 <WeightSection clientId={clientId} onSummaryChange={setSummary} />
             </PageBody>
         </>

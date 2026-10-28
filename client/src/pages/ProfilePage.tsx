@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { LogOut } from 'lucide-react'
+import { ChevronRight, ClipboardList, LogOut } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
 import LanguageToggle from '../components/LanguageToggle'
@@ -29,6 +29,23 @@ function ProfilePage() {
             </PageHero>
 
             <PageBody>
+                {/* Danışan ön görüşme formunu buradan güncelleyebilir */}
+                {role === 'CLIENT' && (
+                    <Link
+                        to="/intake"
+                        className="mb-4 flex items-center gap-3 rounded-2xl bg-card p-4 shadow-sm hover:bg-cream"
+                    >
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mint/40 text-brand">
+                            <ClipboardList className="h-5 w-5" />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                            <span className="block font-semibold text-ink">{t('intake.profileLink')}</span>
+                            <span className="block text-sm text-muted">{t('intake.profileLinkHint')}</span>
+                        </span>
+                        <ChevronRight className="h-5 w-5 text-muted" />
+                    </Link>
+                )}
+
                 <button
                     type="button"
                     onClick={handleLogout}

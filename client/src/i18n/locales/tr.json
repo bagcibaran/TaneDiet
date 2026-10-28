@@ -89,5 +89,152 @@
   "home": {
     "greeting": "Merhaba {{name}} 👋",
     "sinceStart": "başlangıçtan beri {{value}}"
+  },
+  "intake": {
+    "title": "Ön görüşme formu",
+    "stepOf": "Adım {{current}} / {{total}}",
+    "back": "Geri",
+    "next": "İleri",
+    "submit": "Gönder",
+    "update": "Kaydet",
+    "cancel": "Vazgeç",
+    "saving": "Kaydediliyor...",
+    "requiredMissing": "Lütfen zorunlu soruları cevaplayın",
+    "optional": "isteğe bağlı",
+    "yes": "Evet",
+    "no": "Hayır",
+    "consent": "Bu formda paylaştığım sağlık bilgilerimin, beslenme danışmanlığı hizmeti kapsamında diyetisyenim tarafından işlenmesine açık rıza veriyorum.",
+    "consentRequired": "Devam etmek için açık rıza kutusunu işaretleyin",
+    "bloodTestNote": "Son 3 ay içinde yapılmış güncel kan tahlili sonuçlarınızı WhatsApp üzerinden iletiniz. Tahlil yaptırmadıysanız şu testleri içeren bir kan tahlili yaptırınız: Tam Kan Sayımı, Açlık Kan Şekeri, İnsülin, HbA1c, Tiroid Testleri (TSH, T3, T4), Demir, B12, D Vitamini, Kolesterol ve Trigliserid Profili, Karaciğer ve Böbrek Fonksiyon Testleri.",
+    "doctorNote": "Kronik bir hastalığınız veya düzenli kullandığınız ilaçlar varsa, doktorunuzdan beslenme ile ilgili özel bir öneri olup olmadığını öğreniniz.",
+    "thanksTitle": "Teşekkürler!",
+    "thanks": "Formunuz diyetisyeninize iletildi. Bilgileriniz değişirse Profil sayfasından istediğiniz zaman güncelleyebilirsiniz.",
+    "goHome": "Ana sayfaya git",
+    "loadError": "Form yüklenemedi",
+    "saveError": "Form kaydedilemedi",
+    "errors": {
+      "range": "{{min}} ile {{max}} arasında olmalı",
+      "pastDate": "Geçmiş bir tarih olmalı",
+      "number": "Geçerli bir sayı girin",
+      "required": "Bu alan zorunlu"
+    },
+    "gate": {
+      "loading": "Bilgileriniz kontrol ediliyor…",
+      "error": "Bilgileriniz kontrol edilemedi",
+      "retry": "Tekrar dene"
+    },
+    "steps": {
+      "personal": "Kişisel bilgiler",
+      "health": "Sağlık geçmişi",
+      "eating": "Beslenme alışkanlıkları",
+      "goals": "Hedef ve beklentiler",
+      "lifestyle": "Yaşam tarzı ve alışkanlıklar",
+      "sport": "Spor ve hareketlilik",
+      "gut": "Mide ve bağırsak sağlığı"
+    },
+    "fields": {
+      "fullName": "Ad soyad",
+      "birthDate": "Doğum tarihi",
+      "gender": "Cinsiyet",
+      "heightCm": "Boy (cm)",
+      "weightKg": "Kilo (kg)",
+      "occupation": "Meslek",
+      "chronicDiseases": "Kronik bir hastalığınız var mı? (diyabet, hipertansiyon, tiroid vb.) Varsa belirtiniz.",
+      "surgeries": "Geçirdiğiniz önemli ameliyatlar var mı? (özellikle mide-bağırsak sistemi ile ilgiliyse)",
+      "medications": "Kullandığınız ilaçlar veya takviyeler var mı?",
+      "allergies": "Besin alerjiniz veya intoleransınız var mı?",
+      "mainMeals": "Günde kaç ana öğün tüketiyorsunuz?",
+      "eatsBreakfast": "Kahvaltı yapıyor musunuz?",
+      "waterIntake": "Günlük su tüketiminiz ne kadar?",
+      "teaCoffee": "Çay/kahve tüketiminiz nedir?",
+      "drinksSoda": "Gazlı içecek tüketiyor musunuz?",
+      "dislikedFoods": "Hangi besinleri sevmiyorsunuz veya tüketmek istemiyorsunuz?",
+      "snacks": "En sık tükettiğiniz atıştırmalıklar nelerdir?",
+      "eatingOut": "Hangi sıklıkla dışarıda yemek yiyorsunuz?",
+      "goal": "Beslenme ile ilgili hedefiniz nedir?",
+      "goalOther": "Hedefiniz \"Diğer\" ise belirtiniz",
+      "previousDiets": "Daha önce diyet yaptınız mı? Yaptıysanız nasıl bir süreç geçirdiniz?",
+      "specialDiet": "Özel bir beslenme programı uyguluyor musunuz? (vegan, vejetaryen vb.)",
+      "programStyle": "Diyet sürecinde hangi tarz bir beslenme programı size daha uygun olur?",
+      "sleepHours": "Günlük uyku süreniz kaç saattir?",
+      "energyLevel": "Gün içinde kendinizi genellikle nasıl hissediyorsunuz?",
+      "smokes": "Sigara kullanıyor musunuz?",
+      "drinksAlcohol": "Alkol tüketiminiz var mı?",
+      "alcoholFrequency": "Alkol tüketiyorsanız sıklığı",
+      "exerciseDays": "Haftada kaç gün egzersiz yapıyorsunuz?",
+      "sportTypes": "Yaptığınız spor türü nedir? (birden fazla seçebilirsiniz)",
+      "sportCardio": "Kardiyo (koşu, yürüyüş, bisiklet vb.)",
+      "sportWeights": "Ağırlık antrenmanı",
+      "sportPilatesYoga": "Pilates / Yoga",
+      "sportOther": "Diğer spor türü",
+      "tracksSteps": "Günlük adım sayınızı takip ediyor musunuz?",
+      "averageSteps": "Ortalama günlük adım sayınız",
+      "digestiveProblems": "Sindirim sisteminizle ilgili bir probleminiz var mı? (kabızlık, ishal, şişkinlik vb.)",
+      "lactoseGlutenSymptoms": "Laktoz veya gluten intoleransı belirtileri yaşıyor musunuz? Şikayetlerinizi yazınız."
+    },
+    "options": {
+      "Gender": {
+        "FEMALE": "Kadın",
+        "MALE": "Erkek"
+      },
+      "MainMeals": {
+        "TWO": "2",
+        "THREE": "3",
+        "FOUR_PLUS": "4+"
+      },
+      "WaterIntake": {
+        "HALF_LITER": "0,5 L",
+        "ONE_LITER": "1 L",
+        "ONE_AND_HALF_LITER": "1,5 L",
+        "TWO_LITERS_PLUS": "2 L+"
+      },
+      "TeaCoffee": {
+        "NONE": "Hiç",
+        "TWO_CUPS": "2 fincan",
+        "THREE_CUPS_PLUS": "3 fincan+"
+      },
+      "Goal": {
+        "LOSE_WEIGHT": "Kilo vermek",
+        "GAIN_WEIGHT": "Kilo almak",
+        "MAINTAIN_WEIGHT": "Kilo korumak",
+        "HEALTHY_HABITS": "Sağlıklı beslenme alışkanlığı kazanmak",
+        "OTHER": "Diğer"
+      },
+      "ProgramStyle": {
+        "STRICT": "Katı kurallı ve net bir program",
+        "FLEXIBLE": "Daha esnek, uyum sağlayabileceğim bir program",
+        "CONSCIOUS_CHOICES": "Bilinçli seçimler yapabileceğim bir liste"
+      },
+      "SleepHours": {
+        "UNDER_4": "4 saat ve altı",
+        "FROM_4_TO_6": "4-6 saat",
+        "FROM_6_TO_8": "6-8 saat",
+        "OVER_8": "8 saat ve üzeri"
+      },
+      "EnergyLevel": {
+        "ENERGETIC": "Enerjik",
+        "MODERATELY_TIRED": "Orta derecede yorgun",
+        "ALWAYS_TIRED": "Sürekli yorgun"
+      },
+      "ExerciseDays": {
+        "NONE": "Hiç",
+        "ONE_TO_TWO": "1-2 gün",
+        "THREE_TO_FOUR": "3-4 gün",
+        "FIVE_PLUS": "5+ gün"
+      }
+    },
+    "summary": {
+      "title": "Ön görüşme bilgileri",
+      "notFilled": "Danışan ön görüşme formunu henüz doldurmadı.",
+      "updatedAt": "Son güncelleme: {{date}}",
+      "none": "Yok",
+      "age": "Yaş",
+      "height": "Boy",
+      "allAnswers": "Tüm cevaplar",
+      "sports": "Spor türleri",
+      "loadError": "Ön görüşme bilgileri yüklenemedi"
+    },
+    "profileLink": "Ön görüşme formum",
+    "profileLinkHint": "Bilgileriniz değiştiyse güncelleyin"
   }
 }

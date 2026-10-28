@@ -89,5 +89,152 @@
   "home": {
     "greeting": "Hi {{name}} 👋",
     "sinceStart": "{{value}} since start"
+  },
+  "intake": {
+    "title": "Pre-interview form",
+    "stepOf": "Step {{current}} of {{total}}",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "update": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "requiredMissing": "Please answer the required questions",
+    "optional": "optional",
+    "yes": "Yes",
+    "no": "No",
+    "consent": "I give my explicit consent for the health information I share in this form to be processed by my dietitian for the purpose of nutrition counselling.",
+    "consentRequired": "Please tick the consent box to continue",
+    "bloodTestNote": "Please send your blood test results from the last 3 months via WhatsApp. If you have not had one, please get a blood test covering: complete blood count, fasting blood glucose, insulin, HbA1c, thyroid tests (TSH, T3, T4), iron, B12, vitamin D, cholesterol and triglyceride profile, liver and kidney function tests.",
+    "doctorNote": "If you have a chronic disease or take medication regularly, ask your doctor whether there is any specific nutrition advice for you.",
+    "thanksTitle": "Thank you!",
+    "thanks": "Your form has been sent to your dietitian. If anything changes, you can update it any time from the Profile page.",
+    "goHome": "Go to home",
+    "loadError": "The form could not be loaded",
+    "saveError": "The form could not be saved",
+    "errors": {
+      "range": "Must be between {{min}} and {{max}}",
+      "pastDate": "Must be a date in the past",
+      "number": "Enter a valid number",
+      "required": "This field is required"
+    },
+    "gate": {
+      "loading": "Checking your details…",
+      "error": "Your details could not be checked",
+      "retry": "Try again"
+    },
+    "steps": {
+      "personal": "Personal details",
+      "health": "Health history",
+      "eating": "Eating habits",
+      "goals": "Goals and expectations",
+      "lifestyle": "Lifestyle and habits",
+      "sport": "Sport and activity",
+      "gut": "Gut health"
+    },
+    "fields": {
+      "fullName": "Full name",
+      "birthDate": "Date of birth",
+      "gender": "Gender",
+      "heightCm": "Height (cm)",
+      "weightKg": "Weight (kg)",
+      "occupation": "Occupation",
+      "chronicDiseases": "Do you have any chronic diseases? (diabetes, hypertension, thyroid, etc.) If so, please specify.",
+      "surgeries": "Have you had any major surgeries? (especially of the digestive system)",
+      "medications": "Do you take any medications or supplements?",
+      "allergies": "Do you have any food allergies or intolerances?",
+      "mainMeals": "How many main meals do you eat per day?",
+      "eatsBreakfast": "Do you eat breakfast?",
+      "waterIntake": "How much water do you drink per day?",
+      "teaCoffee": "How much tea/coffee do you drink?",
+      "drinksSoda": "Do you drink fizzy drinks?",
+      "dislikedFoods": "Which foods do you dislike or not want to eat?",
+      "snacks": "What snacks do you eat most often?",
+      "eatingOut": "How often do you eat out?",
+      "goal": "What is your nutrition goal?",
+      "goalOther": "If your goal is \"Other\", please specify",
+      "previousDiets": "Have you dieted before? If so, how did it go?",
+      "specialDiet": "Do you follow a special diet? (vegan, vegetarian, etc.)",
+      "programStyle": "Which kind of nutrition program would suit you best?",
+      "sleepHours": "How many hours do you sleep per day?",
+      "energyLevel": "How do you usually feel during the day?",
+      "smokes": "Do you smoke?",
+      "drinksAlcohol": "Do you drink alcohol?",
+      "alcoholFrequency": "If you drink alcohol, how often?",
+      "exerciseDays": "How many days a week do you exercise?",
+      "sportTypes": "What kind of sport do you do? (you can choose more than one)",
+      "sportCardio": "Cardio (running, walking, cycling, etc.)",
+      "sportWeights": "Weight training",
+      "sportPilatesYoga": "Pilates / Yoga",
+      "sportOther": "Other sport",
+      "tracksSteps": "Do you track your daily steps?",
+      "averageSteps": "Average daily steps",
+      "digestiveProblems": "Do you have any digestive problems? (constipation, diarrhea, bloating, etc.)",
+      "lactoseGlutenSymptoms": "Do you have symptoms of lactose or gluten intolerance? Please describe."
+    },
+    "options": {
+      "Gender": {
+        "FEMALE": "Female",
+        "MALE": "Male"
+      },
+      "MainMeals": {
+        "TWO": "2",
+        "THREE": "3",
+        "FOUR_PLUS": "4+"
+      },
+      "WaterIntake": {
+        "HALF_LITER": "0.5 L",
+        "ONE_LITER": "1 L",
+        "ONE_AND_HALF_LITER": "1.5 L",
+        "TWO_LITERS_PLUS": "2 L+"
+      },
+      "TeaCoffee": {
+        "NONE": "None",
+        "TWO_CUPS": "2 cups",
+        "THREE_CUPS_PLUS": "3+ cups"
+      },
+      "Goal": {
+        "LOSE_WEIGHT": "Lose weight",
+        "GAIN_WEIGHT": "Gain weight",
+        "MAINTAIN_WEIGHT": "Maintain weight",
+        "HEALTHY_HABITS": "Build healthy eating habits",
+        "OTHER": "Other"
+      },
+      "ProgramStyle": {
+        "STRICT": "A strict, clear program",
+        "FLEXIBLE": "A more flexible program I can adapt to",
+        "CONSCIOUS_CHOICES": "A list to make conscious choices from"
+      },
+      "SleepHours": {
+        "UNDER_4": "4 hours or less",
+        "FROM_4_TO_6": "4–6 hours",
+        "FROM_6_TO_8": "6–8 hours",
+        "OVER_8": "8 hours or more"
+      },
+      "EnergyLevel": {
+        "ENERGETIC": "Energetic",
+        "MODERATELY_TIRED": "Moderately tired",
+        "ALWAYS_TIRED": "Always tired"
+      },
+      "ExerciseDays": {
+        "NONE": "None",
+        "ONE_TO_TWO": "1–2 days",
+        "THREE_TO_FOUR": "3–4 days",
+        "FIVE_PLUS": "5+ days"
+      }
+    },
+    "summary": {
+      "title": "Pre-interview details",
+      "notFilled": "This client has not filled in the pre-interview form yet.",
+      "updatedAt": "Last updated: {{date}}",
+      "none": "None",
+      "age": "Age",
+      "height": "Height",
+      "allAnswers": "All answers",
+      "sports": "Sports",
+      "loadError": "Pre-interview details could not be loaded"
+    },
+    "profileLink": "My pre-interview form",
+    "profileLinkHint": "Update it if anything has changed"
   }
 }
