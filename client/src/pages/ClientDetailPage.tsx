@@ -7,8 +7,10 @@ import { PageBody, PageHero } from '../components/PageLayout'
 import WeightSection from '../components/WeightSection'
 import IntakeSummary from '../components/intake/IntakeSummary'
 import { getUsers } from '../services/userService'
+import { getClientActivity, markClientReviewed } from '../services/clientService'
 import { formatKg } from '../utils/format'
 import type { UserResponse } from '../types/auth'
+import type { ClientActivity } from '../types/client'
 import type { WeightSummary } from '../types/weight'
 
 // Diyetisyenin bir danışanı yönettiği sayfa: /clients/:id
@@ -21,12 +23,39 @@ function ClientDetailPage() {
 
     const [client, setClient] = useState<UserResponse | null>(null)
     const [summary, setSummary] = useState<WeightSummary | null>(null)
+    // Diyetisyen son baktığından beri neler yeni (sayfada işaretlemek için)
+    const [activity, setActivity] = useState<ClientActivity | null>(null)
 
     // Sayfa başlığında danışanın adını göstermek için
     useEffect(() => {
         getUsers()
             .then((users) => setClient(users.find((user) => user.id === clientId) ?? null))
             .catch(() => setClient(null))
+    }, [clientId])
+
+    // Önce neyin yeni olduğunu al, sonra "görüldü" yap. Sıra önemli: önce görüldü yapılırsa yeniler kaybolur.
+    useEffect(() => {
+        if (Number.isNaN(clientId)) {
+            return
+        }
+
+        let cancelled = false
+        getClientActivity(clientId)
+            .then((result) => {
+                // StrictMode efekti iki kez çalıştırır; iptal edilen ilk çalışma "görüldü" yapmasın
+                if (cancelled) {
+                    return
+                }
+                setActivity(result)
+                return markClientReviewed(clientId)
+            })
+            .catch(() => {
+                // Bildirimler yalnızca yardımcı bilgi; alınamazsa sayfa yine çalışır
+            })
+
+        return () => {
+            cancelled = true
+        }
     }, [clientId])
 
     // Adreste sayı yoksa (/clients/abc) listeye geri gönder
@@ -64,8 +93,16 @@ function ClientDetailPage() {
             </PageHero>
 
             <PageBody>
-                <IntakeSummary clientId={clientId} />
-                <WeightSection clientId={clientId} onSummaryChange={setSummary} />
+                <IntakeSummary
+                    clientId={clientId}
+                    intakeStatus={activity?.intakeStatus}
+                    changedFields={activity?.changedFields ?? []}
+                />
+                <WeightSection
+                    clientId={clientId}
+                    onSummaryChange={setSummary}
+                    highlightIds={activity?.newWeightEntryIds ?? []}
+                />
             </PageBody>
         </>
     )

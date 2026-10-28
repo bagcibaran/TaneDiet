@@ -25,9 +25,11 @@ type WeightSectionProps = {
     clientId?: number
     // Özet her yüklendiğinde çağrılır (sayfa başlığında güncel kiloyu göstermek için)
     onSummaryChange?: (summary: WeightSummary) => void
+    // Diyetisyen son baktığından beri danışanın girdiği kayıtlar: "Yeni" etiketiyle işaretlenir
+    highlightIds?: number[]
 }
 
-function WeightSection({ clientId, onSummaryChange }: WeightSectionProps) {
+function WeightSection({ clientId, onSummaryChange, highlightIds = [] }: WeightSectionProps) {
     const { t, i18n } = useTranslation()
     const currentUsername = getUsername()
 
@@ -137,12 +139,22 @@ function WeightSection({ clientId, onSummaryChange }: WeightSectionProps) {
             {!loading && !error && entries.length > 0 && (
                 <ul className="mt-4 divide-y divide-line">
                     {entries.map((entry) => (
-                        <li key={entry.id} className="flex items-center justify-between gap-3 py-3">
+                        <li
+                            key={entry.id}
+                            className={`flex items-center justify-between gap-3 py-3 ${
+                                highlightIds.includes(entry.id) ? '-mx-2 rounded-lg bg-mint/30 px-2' : ''
+                            }`}
+                        >
                             <span className="text-muted">
                                 {formatDate(entry.measuredOn)}
                                 <span className="ml-2 text-xs text-muted/70">
                                     {entry.enteredBy}
                                 </span>
+                                {highlightIds.includes(entry.id) && (
+                                    <span className="ml-2 rounded-full bg-brand px-2 py-0.5 text-[0.65rem] font-semibold text-cream">
+                                        {t('weights.new')}
+                                    </span>
+                                )}
                             </span>
 
                             <span className="ml-auto font-semibold text-ink">

@@ -67,7 +67,8 @@
     "deleteError": "Weight entry could not be deleted",
     "sinceStart": "Since start",
     "last7Days": "Last 7 days",
-    "last30Days": "Last 30 days"
+    "last30Days": "Last 30 days",
+    "new": "New"
   },
   "clients": {
     "title": "Client",
@@ -75,7 +76,13 @@
     "count": "{{count}} clients",
     "empty": "No clients yet",
     "search": "Search clients",
-    "noMatch": "No clients match your search"
+    "noMatch": "No clients match your search",
+    "badges": {
+      "newIntake": "New form",
+      "intakeUpdated": "Form updated",
+      "newWeights": "{{count}} new weights",
+      "hasNews": "Has updates"
+    }
   },
   "nav": {
     "home": "Home",
@@ -234,7 +241,10 @@
       "height": "Height",
       "allAnswers": "All answers",
       "sports": "Sports",
-      "loadError": "Pre-interview details could not be loaded"
+      "loadError": "Pre-interview details could not be loaded",
+      "newBanner": "The client has just filled in the pre-interview form.",
+      "updatedBanner": "{{count}} answers changed since your last visit. They are highlighted.",
+      "changed": "Updated"
     },
     "profileLink": "My pre-interview form",
     "profileLinkHint": "Update it if anything has changed"

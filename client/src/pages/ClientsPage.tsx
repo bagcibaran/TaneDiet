@@ -6,34 +6,26 @@ import { ChevronRight, Search } from 'lucide-react'
 import { PageBody, PageHero } from '../components/PageLayout'
 import LanguageToggle from '../components/LanguageToggle'
 import { inputClass } from '../components/ui'
-import { getUsers } from '../services/userService'
+import { getClients } from '../services/clientService'
 import { toErrorMessage } from '../services/errorMessage'
-import type { UserResponse } from '../types/auth'
+import type { ClientOverview } from '../types/client'
 
-// Diyetisyenin danışan listesi
+// Diyetisyenin danışan listesi: arama + her kartta bildirimler
 function ClientsPage() {
     const { t } = useTranslation()
 
-    const [clients, setClients] = useState<UserResponse[]>([])
+    const [clients, setClients] = useState<ClientOverview[]>([])
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState('')
+    // Ham hata saklanır, mesaj ekrana çizilirken çevrilir
+    const [error, setError] = useState<unknown>(null)
     const [query, setQuery] = useState('')
 
     useEffect(() => {
-        async function loadClients() {
-            try {
-                const users = await getUsers()
-                // Listede yalnızca danışanlar; diyetisyenler gösterilmez
-                setClients(users.filter((user) => user.role === 'CLIENT'))
-            } catch (error) {
-                setError(toErrorMessage(error, t, 'users.loadError'))
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        loadClients()
-    }, [t])
+        getClients()
+            .then(setClients)
+            .catch(setError)
+            .finally(() => setLoading(false))
+    }, [])
 
     // Arama: kullanıcı adında veya e-postada geçen danışanlar (Türkçe büyük/küçük harf: İ/i, I/ı)
     const normalizedQuery = query.trim().toLocaleLowerCase('tr')
@@ -43,11 +35,26 @@ function ClientsPage() {
             client.email.toLocaleLowerCase('tr').includes(normalizedQuery),
     )
 
+    // Kartta gösterilecek bildirimler (boşsa kart sade görünür)
+    const badgesOf = (client: ClientOverview): string[] => {
+        const badges: string[] = []
+        if (client.intakeStatus === 'NEW') {
+            badges.push(t('clients.badges.newIntake'))
+        }
+        if (client.intakeStatus === 'UPDATED') {
+            badges.push(t('clients.badges.intakeUpdated'))
+        }
+        if (client.newWeightCount > 0) {
+            badges.push(t('clients.badges.newWeights', { count: client.newWeightCount }))
+        }
+        return badges
+    }
+
     return (
         <>
             <PageHero aside={<LanguageToggle />}>
                 <h1 className="text-3xl font-extrabold tracking-tight">{t('nav.clients')}</h1>
-                {!loading && !error && (
+                {!loading && error === null && (
                     <p className="mt-1 text-sm text-mint">{t('clients.count', { count: clients.length })}</p>
                 )}
             </PageHero>
@@ -69,36 +76,57 @@ function ClientsPage() {
                 <section className="rounded-2xl bg-card p-2 shadow-sm">
                     {loading && <p className="p-4 text-muted">{t('dashboard.loading')}</p>}
 
-                    {error && <p className="p-4 text-red-700">{error}</p>}
+                    {error !== null && <p className="p-4 text-red-700">{toErrorMessage(error, t, 'users.loadError')}</p>}
 
-                    {!loading && !error && clients.length === 0 && (
+                    {!loading && error === null && clients.length === 0 && (
                         <p className="p-4 text-muted">{t('clients.empty')}</p>
                     )}
 
-                    {!loading && !error && clients.length > 0 && visibleClients.length === 0 && (
+                    {!loading && error === null && clients.length > 0 && visibleClients.length === 0 && (
                         <p className="p-4 text-muted">{t('clients.noMatch')}</p>
                     )}
 
-                    {!loading && !error && visibleClients.length > 0 && (
+                    {!loading && error === null && visibleClients.length > 0 && (
                         <ul className="divide-y divide-line">
-                            {visibleClients.map((client) => (
-                                <li key={client.id}>
-                                    <Link
-                                        to={`/clients/${client.id}`}
-                                        className="flex items-center gap-3 rounded-xl px-3 py-3 hover:bg-cream"
-                                    >
-                                        {/* Adın baş harfi, yuvarlak rozet içinde */}
-                                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand font-bold text-cream">
-                                            {client.username.charAt(0).toLocaleUpperCase('tr')}
-                                        </span>
-                                        <span className="min-w-0 flex-1">
-                                            <span className="block font-semibold text-ink">{client.username}</span>
-                                            <span className="block truncate text-sm text-muted">{client.email}</span>
-                                        </span>
-                                        <ChevronRight className="h-5 w-5 text-muted" />
-                                    </Link>
-                                </li>
-                            ))}
+                            {visibleClients.map((client) => {
+                                const badges = badgesOf(client)
+                                return (
+                                    <li key={client.id}>
+                                        <Link
+                                            to={`/clients/${client.id}`}
+                                            className="flex items-center gap-3 rounded-xl px-3 py-3 hover:bg-cream"
+                                        >
+                                            {/* Adın baş harfi; yeni bir şey varsa köşesinde yeşil nokta */}
+                                            <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand font-bold text-cream">
+                                                {client.username.charAt(0).toLocaleUpperCase('tr')}
+                                                {badges.length > 0 && (
+                                                    <span
+                                                        className="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 rounded-full border-2 border-card bg-amber-400"
+                                                        aria-label={t('clients.badges.hasNews')}
+                                                    />
+                                                )}
+                                            </span>
+                                            <span className="min-w-0 flex-1">
+                                                <span className="block font-semibold text-ink">{client.username}</span>
+                                                <span className="block truncate text-sm text-muted">{client.email}</span>
+                                                {badges.length > 0 && (
+                                                    <span className="mt-1 flex flex-wrap gap-1">
+                                                        {badges.map((badge) => (
+                                                            <span
+                                                                key={badge}
+                                                                className="rounded-full bg-mint/40 px-2 py-0.5 text-xs font-semibold text-brand"
+                                                            >
+                                                                {badge}
+                                                            </span>
+                                                        ))}
+                                                    </span>
+                                                )}
+                                            </span>
+                                            <ChevronRight className="h-5 w-5 text-muted" />
+                                        </Link>
+                                    </li>
+                                )
+                            })}
                         </ul>
                     )}
                 </section>

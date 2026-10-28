@@ -67,7 +67,8 @@
     "deleteError": "Kilo kaydı silinemedi",
     "sinceStart": "Başlangıçtan beri",
     "last7Days": "Son 7 gün",
-    "last30Days": "Son 30 gün"
+    "last30Days": "Son 30 gün",
+    "new": "Yeni"
   },
   "clients": {
     "title": "Danışan",
@@ -75,7 +76,13 @@
     "count": "{{count}} danışan",
     "empty": "Henüz danışan yok",
     "search": "Danışan ara",
-    "noMatch": "Aramayla eşleşen danışan yok"
+    "noMatch": "Aramayla eşleşen danışan yok",
+    "badges": {
+      "newIntake": "Yeni form",
+      "intakeUpdated": "Form güncellendi",
+      "newWeights": "{{count}} yeni kilo",
+      "hasNews": "Yeni güncelleme var"
+    }
   },
   "nav": {
     "home": "Ana sayfa",
@@ -234,7 +241,10 @@
       "height": "Boy",
       "allAnswers": "Tüm cevaplar",
       "sports": "Spor türleri",
-      "loadError": "Ön görüşme bilgileri yüklenemedi"
+      "loadError": "Ön görüşme bilgileri yüklenemedi",
+      "newBanner": "Danışan ön görüşme formunu yeni doldurdu.",
+      "updatedBanner": "Son bakışınızdan beri {{count}} soru güncellendi. Değişenler işaretli.",
+      "changed": "Güncellendi"
     },
     "profileLink": "Ön görüşme formum",
     "profileLinkHint": "Bilgileriniz değiştiyse güncelleyin"

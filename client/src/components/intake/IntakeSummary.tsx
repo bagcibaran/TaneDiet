@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ChevronDown } from 'lucide-react'
+import { BellDot, ChevronDown } from 'lucide-react'
 
 import { INTAKE_STEPS, type IntakeFieldConfig, type IntakeFieldName } from '../../intake/intakeSteps'
 import { getClientIntake } from '../../services/intakeService'
 import { toErrorMessage } from '../../services/errorMessage'
 import type { IntakeForm } from '../../types/intake'
+import type { IntakeStatus } from '../../types/client'
 
 type IntakeSummaryProps = {
     clientId: number
+    // Diyetisyen son baktığından beri: form yeni mi, güncellendi mi, hangi sorular değişti?
+    intakeStatus?: IntakeStatus
+    changedFields?: string[]
 }
 
 // Diyetisyenin ilk bakışta görmek istediği cevaplar
@@ -27,19 +31,38 @@ const FIELDS_BY_NAME = new Map<IntakeFieldName, IntakeFieldConfig>(
 )
 
 // Diyetisyenin danışan sayfasında gördüğü ön görüşme özeti
-function IntakeSummary({ clientId }: IntakeSummaryProps) {
+function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSummaryProps) {
     const { t, i18n } = useTranslation()
 
     const [form, setForm] = useState<IntakeForm | undefined>(undefined)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState('')
+    // Ham hata saklanır, mesaj ekrana çizilirken çevrilir
+    const [error, setError] = useState<unknown>(null)
 
     useEffect(() => {
+        let cancelled = false
         getClientIntake(clientId)
-            .then(setForm)
-            .catch((error) => setError(toErrorMessage(error, t, 'intake.summary.loadError')))
-            .finally(() => setLoading(false))
-    }, [clientId, t])
+            .then((result) => {
+                if (!cancelled) {
+                    setForm(result)
+                }
+            })
+            .catch((error) => {
+                if (!cancelled) {
+                    setError(error)
+                }
+            })
+            .finally(() => {
+                if (!cancelled) {
+                    setLoading(false)
+                }
+            })
+        return () => {
+            cancelled = true
+        }
+    }, [clientId])
+
+    const isChanged = (name: string) => changedFields.includes(name)
 
     // Bir cevabı ekranda okunacak metne çevirir; boş cevaplar "Yok"
     const formatAnswer = (name: IntakeFieldName): string => {
@@ -61,16 +84,43 @@ function IntakeSummary({ clientId }: IntakeSummaryProps) {
         return typeof value === 'number' ? value.toLocaleString(i18n.language) : value
     }
 
+    // Bir cevap satırı; değiştiyse açık yeşil zemin ve "Güncellendi" etiketi
+    const answerRow = (name: IntakeFieldName, bold: boolean) => (
+        <div key={name} className={`py-2 ${isChanged(name) ? '-mx-2 rounded-lg bg-mint/30 px-2' : ''}`}>
+            <dt className={`text-xs text-muted ${bold ? 'font-semibold' : ''}`}>
+                {t(`intake.fields.${name}`)}
+                {isChanged(name) && (
+                    <span className="ml-2 rounded-full bg-brand px-2 py-0.5 text-[0.65rem] font-semibold text-cream">
+                        {t('intake.summary.changed')}
+                    </span>
+                )}
+            </dt>
+            <dd className="mt-0.5 whitespace-pre-line text-ink">{formatAnswer(name)}</dd>
+        </div>
+    )
+
     return (
         <section className="mb-4 rounded-2xl bg-card p-5 shadow-sm">
             <h2 className="text-lg font-bold text-ink">{t('intake.summary.title')}</h2>
 
             {loading && <p className="mt-3 text-muted">{t('dashboard.loading')}</p>}
-            {error && <p className="mt-3 text-sm text-red-700">{error}</p>}
-            {!loading && !error && !form && <p className="mt-3 text-muted">{t('intake.summary.notFilled')}</p>}
+            {error !== null && (
+                <p className="mt-3 text-sm text-red-700">{toErrorMessage(error, t, 'intake.summary.loadError')}</p>
+            )}
+            {!loading && error === null && !form && <p className="mt-3 text-muted">{t('intake.summary.notFilled')}</p>}
 
-            {!loading && !error && form && (
+            {!loading && error === null && form && (
                 <>
+                    {/* Bildirim: form yeni mi, hangi sorular değişti? */}
+                    {(intakeStatus === 'NEW' || (intakeStatus === 'UPDATED' && changedFields.length > 0)) && (
+                        <p className="mt-3 flex items-start gap-2 rounded-xl bg-mint/30 p-3 text-sm text-ink">
+                            <BellDot className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+                            {intakeStatus === 'NEW'
+                                ? t('intake.summary.newBanner')
+                                : t('intake.summary.updatedBanner', { count: changedFields.length })}
+                        </p>
+                    )}
+
                     {/* Yaş, boy, son güncelleme */}
                     <div className="mt-3 flex flex-wrap gap-2 text-sm">
                         <span className="rounded-full bg-cream px-3 py-1 text-ink">
@@ -81,40 +131,39 @@ function IntakeSummary({ clientId }: IntakeSummaryProps) {
                         </span>
                         <span className="rounded-full bg-cream px-3 py-1 text-muted">
                             {t('intake.summary.updatedAt', {
-                                date: new Date(form.updatedAt).toLocaleDateString(i18n.language),
+                                // "2026-10-28T03:14:26.409288" → yalnızca gün (uzun kesirli saniyeyi her tarayıcı okumaz)
+                                date: new Date(`${form.updatedAt.slice(0, 10)}T00:00:00`).toLocaleDateString(i18n.language),
                             })}
                         </span>
                     </div>
 
                     {/* Önemli cevaplar */}
-                    <dl className="mt-4 divide-y divide-line">
-                        {HIGHLIGHTS.map((name) => (
-                            <div key={name} className="py-2">
-                                <dt className="text-xs font-semibold text-muted">{t(`intake.fields.${name}`)}</dt>
-                                <dd className="mt-0.5 whitespace-pre-line text-ink">{formatAnswer(name)}</dd>
-                            </div>
-                        ))}
-                    </dl>
+                    <dl className="mt-4 divide-y divide-line">{HIGHLIGHTS.map((name) => answerRow(name, true))}</dl>
 
-                    {/* Tüm cevaplar, bölüm bölüm açılır */}
+                    {/* Tüm cevaplar, bölüm bölüm açılır. Değişen soru olan bölümler açık gelir. */}
                     <p className="mt-4 text-sm font-semibold text-muted">{t('intake.summary.allAnswers')}</p>
                     <div className="mt-2 space-y-2">
-                        {INTAKE_STEPS.map((step) => (
-                            <details key={step.key} className="group rounded-xl bg-cream px-4 py-3">
-                                <summary className="flex cursor-pointer list-none items-center justify-between font-semibold text-ink">
-                                    {t(`intake.steps.${step.key}`)}
-                                    <ChevronDown className="h-4 w-4 text-muted transition group-open:rotate-180" />
-                                </summary>
-                                <dl className="mt-2 divide-y divide-line">
-                                    {step.fields.map((field) => (
-                                        <div key={field.name} className="py-2">
-                                            <dt className="text-xs text-muted">{t(`intake.fields.${field.name}`)}</dt>
-                                            <dd className="mt-0.5 whitespace-pre-line text-ink">{formatAnswer(field.name)}</dd>
-                                        </div>
-                                    ))}
-                                </dl>
-                            </details>
-                        ))}
+                        {INTAKE_STEPS.map((step) => {
+                            const stepChanged = step.fields.some((field) => isChanged(field.name))
+                            return (
+                                <details
+                                    key={`${step.key}-${stepChanged}`}
+                                    open={stepChanged}
+                                    className="group rounded-xl bg-cream px-4 py-3"
+                                >
+                                    <summary className="flex cursor-pointer list-none items-center justify-between font-semibold text-ink">
+                                        <span className="flex items-center gap-2">
+                                            {t(`intake.steps.${step.key}`)}
+                                            {stepChanged && <span className="h-2 w-2 rounded-full bg-brand" />}
+                                        </span>
+                                        <ChevronDown className="h-4 w-4 text-muted transition group-open:rotate-180" />
+                                    </summary>
+                                    <dl className="mt-2 divide-y divide-line">
+                                        {step.fields.map((field) => answerRow(field.name, false))}
+                                    </dl>
+                                </details>
+                            )
+                        })}
                     </div>
                 </>
             )}
