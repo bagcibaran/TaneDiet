@@ -6,14 +6,123 @@
 
     --color-brand: #006a3a;        /* koyu yeşil: başlık alanı, butonlar */
     --color-brand-dark: #00552e;   /* butonun üzerine gelince */
+    --color-brand-deep: #004d29;   /* başlık geçişinin koyu ucu */
+    --color-brand-light: #3a9d66;  /* başlık geçişinin açık ucu */
     --color-mint: #b8dcc5;         /* yeşil zemin üzerindeki küçük yazılar */
     --color-cream: #f4f1ea;        /* sayfa zemini */
     --color-card: #fffdf8;         /* kartlar */
     --color-line: #e6e1d4;         /* ince çizgiler, kenarlıklar */
     --color-ink: #1d3b2a;          /* ana metin */
     --color-muted: #5b6b60;        /* ikincil metin */
+
+    /* Sıcak vurgu ve kutucuk zeminleri (yeşilin yanında, az kullanılır) */
+    --color-honey: #f2b84b;        /* başarı rozeti, kullanıcı simgesi */
+    --color-honey-light: #ffe2a3;
+    --color-peach: #fdebd0;
+    --color-lilac: #e9e4f7;
+    --color-sky: #dff0fb;
+    --color-sage: #e3f1e7;
+    --color-coral: #e58a6d;        /* menü listesindeki renkli noktalar */
+    --color-peach-ink: #b8741a;    /* açık zeminlerin üzerindeki ikon renkleri */
+    --color-lilac-ink: #6a4fb3;
+    --color-sky-ink: #2a7bb0;
+
+    --shadow-soft: 0 8px 24px rgb(0 85 46 / 0.09);
+    --shadow-float: 0 12px 32px rgb(0 0 0 / 0.22);
+
+    --animate-rise: rise 0.55s ease both;
+    --animate-pop: pop 0.45s ease both;
+    --animate-floaty: floaty 6s ease-in-out infinite;
+
+    @keyframes rise {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes pop {
+        0% {
+            opacity: 0;
+            transform: scale(0.6);
+        }
+        70% {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes floaty {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-8px);
+        }
+    }
+
+    @keyframes shine {
+        from {
+            background-position: -200% 0;
+        }
+        to {
+            background-position: 200% 0;
+        }
+    }
 }
 
 body {
     @apply bg-cream text-ink antialiased;
+}
+
+/* Sayfa içeriği açılışta sırayla kayarak gelir (PageBody'nin doğrudan çocukları) */
+@utility stagger {
+    & > * {
+        animation: var(--animate-rise);
+    }
+    & > *:nth-child(2) {
+        animation-delay: 0.08s;
+    }
+    & > *:nth-child(3) {
+        animation-delay: 0.16s;
+    }
+    & > *:nth-child(4) {
+        animation-delay: 0.24s;
+    }
+    & > *:nth-child(n + 5) {
+        animation-delay: 0.32s;
+    }
+}
+
+/* Parlayan altın rozet: önce zıplayarak gelir, sonra geçişli zemin soldan sağa kayar */
+@utility shine-gold {
+    animation:
+        pop 0.45s ease both,
+        shine 3s 1.2s linear infinite;
+    background-image: linear-gradient(
+        110deg,
+        var(--color-honey) 30%,
+        var(--color-honey-light) 50%,
+        var(--color-honey) 70%
+    );
+    background-size: 200% 100%;
+}
+
+/* Hareketi azaltmak isteyen kullanıcılar için (telefon ayarı) animasyonlar kapanır */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

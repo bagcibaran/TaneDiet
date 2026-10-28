@@ -144,7 +144,7 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
         })
 
     const mealForm = (
-        <form onSubmit={saveMeal} className="space-y-2 rounded-2xl bg-card p-4 shadow-sm ring-2 ring-brand">
+        <form onSubmit={saveMeal} className="space-y-2 rounded-3xl bg-card p-4 shadow-soft ring-2 ring-brand">
             <div className="flex gap-2">
                 <div className="min-w-0 flex-1">
                     <input
@@ -298,7 +298,7 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
         <div className="space-y-6">
             {/* Hazır öğünler */}
             <section className="space-y-3">
-                <div className="rounded-2xl bg-card px-4 py-3 shadow-sm">
+                <div className="rounded-3xl bg-card px-4 py-3 shadow-soft">
                     <h2 className="text-lg font-bold text-ink">{t('diet.library.mealsTitle')}</h2>
                     <p className="text-sm text-muted">{t('diet.library.mealsHint')}</p>
                 </div>
@@ -307,7 +307,7 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
                     editingMeal === meal.id ? (
                         <div key={meal.id}>{mealForm}</div>
                     ) : (
-                        <article key={meal.id} className="rounded-2xl bg-card p-4 shadow-sm">
+                        <article key={meal.id} className="rounded-3xl bg-card p-4 shadow-soft">
                             <div className="flex items-start justify-between gap-2">
                                 <h3 className="font-bold text-ink">
                                     {meal.name}
@@ -353,7 +353,7 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
                     <button
                         type="button"
                         onClick={() => startMealEdit(null)}
-                        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-brand bg-card px-4 py-3 text-sm font-semibold text-brand hover:bg-cream"
+                        className="flex w-full items-center justify-center gap-2 rounded-3xl border border-dashed border-brand bg-card px-4 py-3 text-sm font-semibold text-brand hover:bg-cream"
                     >
                         <Plus className="h-4 w-4" />
                         {t('diet.library.newMeal')}
@@ -363,13 +363,13 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
 
             {/* Hızlı maddeler */}
             <section className="space-y-3">
-                <div className="rounded-2xl bg-card px-4 py-3 shadow-sm">
+                <div className="rounded-3xl bg-card px-4 py-3 shadow-soft">
                     <h2 className="text-lg font-bold text-ink">{t('diet.library.itemsTitle')}</h2>
                     <p className="text-sm text-muted">{t('diet.library.itemsHint')}</p>
                 </div>
 
                 {library.categories.map((category) => (
-                    <article key={category.id} className="rounded-2xl bg-card p-4 shadow-sm">
+                    <article key={category.id} className="rounded-3xl bg-card p-4 shadow-soft">
                         {editingCategory === category.id ? (
                             categoryNameInput
                         ) : (
@@ -514,7 +514,7 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
                 ))}
 
                 {editingCategory === 'new' ? (
-                    <div className="rounded-2xl bg-card p-4 shadow-sm ring-2 ring-brand">
+                    <div className="rounded-3xl bg-card p-4 shadow-soft ring-2 ring-brand">
                         {categoryNameInput}
                         {errorAt('category-new')}
                     </div>
@@ -525,7 +525,7 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
                             setEditingCategory('new')
                             setCategoryDraft('')
                         }}
-                        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-brand bg-card px-4 py-3 text-sm font-semibold text-brand hover:bg-cream"
+                        className="flex w-full items-center justify-center gap-2 rounded-3xl border border-dashed border-brand bg-card px-4 py-3 text-sm font-semibold text-brand hover:bg-cream"
                     >
                         <Plus className="h-4 w-4" />
                         {t('diet.library.newCategory')}

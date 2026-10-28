@@ -51,13 +51,13 @@ function UserMenu() {
                 onClick={() => setOpen((value) => !value)}
                 aria-label={t('userMenu.open')}
                 aria-expanded={open}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-cream font-bold text-brand ring-2 ring-mint/40 transition hover:ring-cream"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-honey font-bold text-ink ring-2 ring-white/30 transition hover:scale-105 hover:ring-cream"
             >
                 {username.charAt(0).toLocaleUpperCase('tr')}
             </button>
 
             {open && (
-                <div className="absolute right-0 top-12 z-50 w-64 rounded-2xl bg-card p-2 text-ink shadow-lg ring-1 ring-line">
+                <div className="absolute right-0 top-12 z-50 w-64 origin-top-right animate-pop rounded-3xl bg-card p-2 text-ink shadow-float ring-1 ring-line">
                     <div className="px-3 py-2">
                         <p className="truncate font-semibold">{username}</p>
                         {role && <p className="text-xs text-muted">{t(`roles.${role}`)}</p>}

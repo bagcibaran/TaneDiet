@@ -34,7 +34,7 @@ function QuickPanel({ library, loadError, optionMode, onOptionModeChange, onAddM
     const category = library?.categories.find((item) => item.id === categoryId) ?? library?.categories[0]
 
     return (
-        <section className="sticky top-0 z-30 space-y-3 rounded-2xl bg-card p-4 shadow-md">
+        <section className="sticky top-0 z-30 space-y-3 rounded-3xl bg-card p-4 shadow-soft">
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1">
                     <Zap className="h-4 w-4 text-brand" />

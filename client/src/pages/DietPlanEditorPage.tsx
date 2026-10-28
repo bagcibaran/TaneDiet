@@ -393,9 +393,9 @@ function DietPlanEditorPage() {
             </PageHero>
 
             <PageBody>
-                {loading && <p className="rounded-2xl bg-card p-5 text-muted shadow-sm">{t('dashboard.loading')}</p>}
+                {loading && <p className="rounded-3xl bg-card p-5 text-muted shadow-soft">{t('dashboard.loading')}</p>}
                 {loadError !== null && (
-                    <p className="rounded-2xl bg-card p-5 text-red-700 shadow-sm">
+                    <p className="rounded-3xl bg-card p-5 text-red-700 shadow-soft">
                         {toErrorMessage(loadError, t, 'diet.loadError')}
                     </p>
                 )}
@@ -415,7 +415,7 @@ function DietPlanEditorPage() {
                         )}
 
                         {/* Program bilgileri */}
-                        <section className="space-y-4 rounded-2xl bg-card p-5 shadow-sm">
+                        <section className="space-y-4 rounded-3xl bg-card p-5 shadow-soft">
                             <div className="flex gap-2">
                                 {(['DAILY', 'WEEKLY'] as PlanType[]).map((type) => (
                                     <button
@@ -477,7 +477,7 @@ function DietPlanEditorPage() {
                                     </button>
                                 </div>
                                 {showCopy && (
-                                    <div className="space-y-3 rounded-xl bg-card p-4 shadow-sm">
+                                    <div className="space-y-3 rounded-xl bg-card p-4 shadow-soft">
                                         <p className="text-sm text-muted">
                                             {t('diet.editor.copyTo', { day: t(`diet.days.long.${day}`) })}
                                         </p>
@@ -519,7 +519,7 @@ function DietPlanEditorPage() {
                                     key={meal.key}
                                     onFocusCapture={() => setSelectedKey(meal.key)}
                                     onClick={() => setSelectedKey(meal.key)}
-                                    className={`space-y-2 rounded-2xl bg-card p-4 shadow-sm transition ${
+                                    className={`space-y-2 rounded-3xl bg-card p-4 shadow-soft transition ${
                                         selectedKey === meal.key ? 'ring-2 ring-brand' : ''
                                     } ${flashKey === meal.key ? 'bg-mint/40' : ''}`}
                                 >
@@ -655,7 +655,7 @@ function DietPlanEditorPage() {
                         </section>
 
                         {/* Genel not */}
-                        <section className="rounded-2xl bg-card p-5 shadow-sm">
+                        <section className="rounded-3xl bg-card p-5 shadow-soft">
                             <label htmlFor="plan-notes" className={labelClass}>
                                 {t('diet.editor.notes')}
                             </label>

@@ -5,6 +5,7 @@ import { Info, LogOut } from 'lucide-react'
 
 import Logo from '../components/Logo'
 import LanguageToggle from '../components/LanguageToggle'
+import { HeroBlobs } from '../components/PageLayout'
 import IntakeField from '../components/intake/IntakeField'
 import { errorTextClass, primaryButtonClass } from '../components/ui'
 import { INTAKE_STEPS, fromForm, toRequest, validateField, type IntakeAnswers } from '../intake/intakeSteps'
@@ -163,8 +164,9 @@ function IntakePage() {
     return (
         <main className="min-h-screen bg-cream pb-10">
             {/* Yeşil başlık: logo, dil, adım ve ilerleme çubuğu */}
-            <div className="rounded-b-[2rem] bg-brand px-5 pb-16 pt-6 text-cream">
-                <div className="mx-auto max-w-xl">
+            <div className="relative rounded-b-[2.25rem] bg-linear-160 from-brand-deep via-brand to-brand-light px-5 pb-16 pt-6 text-cream">
+                <HeroBlobs />
+                <div className="relative mx-auto max-w-xl">
                     <div className="flex items-start justify-between">
                         <Logo />
                         <LanguageToggle />
@@ -191,7 +193,7 @@ function IntakePage() {
             </div>
 
             <div className="mx-auto -mt-10 max-w-xl px-4">
-                <section className="rounded-2xl bg-card p-5 shadow-sm">
+                <section className="rounded-3xl bg-card p-5 shadow-soft">
                     {loadError !== null && (
                         <p className={errorTextClass}>{toErrorMessage(loadError, t, 'intake.loadError')}</p>
                     )}

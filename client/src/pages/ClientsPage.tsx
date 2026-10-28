@@ -68,11 +68,11 @@ function ClientsPage() {
                         onChange={(event) => setQuery(event.target.value)}
                         placeholder={t('clients.search')}
                         aria-label={t('clients.search')}
-                        className={`${inputClass} bg-card pl-10 shadow-sm`}
+                        className={`${inputClass} bg-card pl-10 shadow-soft`}
                     />
                 </div>
 
-                <section className="rounded-2xl bg-card p-2 shadow-sm">
+                <section className="rounded-3xl bg-card p-2 shadow-soft">
                     {loading && <p className="p-4 text-muted">{t('dashboard.loading')}</p>}
 
                     {error !== null && <p className="p-4 text-red-700">{toErrorMessage(error, t, 'users.loadError')}</p>}
@@ -100,7 +100,7 @@ function ClientsPage() {
                                                 {client.username.charAt(0).toLocaleUpperCase('tr')}
                                                 {badges.length > 0 && (
                                                     <span
-                                                        className="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 rounded-full border-2 border-card bg-amber-400"
+                                                        className="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 rounded-full border-2 border-card bg-honey"
                                                         aria-label={t('clients.badges.hasNews')}
                                                     />
                                                 )}

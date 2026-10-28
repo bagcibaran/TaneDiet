@@ -42,10 +42,10 @@ function DietLibraryPage() {
 
             <PageBody>
                 {library === null && error === null && (
-                    <p className="rounded-2xl bg-card p-5 text-muted shadow-sm">{t('dashboard.loading')}</p>
+                    <p className="rounded-3xl bg-card p-5 text-muted shadow-soft">{t('dashboard.loading')}</p>
                 )}
                 {error !== null && (
-                    <p className="rounded-2xl bg-card p-5 text-red-700 shadow-sm">
+                    <p className="rounded-3xl bg-card p-5 text-red-700 shadow-soft">
                         {toErrorMessage(error, t, 'diet.library.loadError')}
                     </p>
                 )}

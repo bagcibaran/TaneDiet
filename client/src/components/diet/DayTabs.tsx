@@ -29,7 +29,7 @@ function DayTabs({ selected, onSelect, markToday = false }: DayTabsProps) {
                 >
                     {t(`diet.days.short.${day}`)}
                     {markToday && day === today && (
-                        <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-amber-400" />
+                        <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-honey" />
                     )}
                 </button>
             ))}

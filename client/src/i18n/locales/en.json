@@ -99,7 +99,14 @@
   },
   "home": {
     "greeting": "Hi {{name}} 👋",
-    "sinceStart": "{{value}} since start"
+    "sinceStart": "{{value}} since start",
+    "sinceStartBadge": "{{value}} since start",
+    "days7": "7 days",
+    "days30": "30 days",
+    "start": "Start",
+    "todayMenu": "Today's menu",
+    "seeAll": "All",
+    "noMenu": "Your menu will appear here once your dietitian prepares it."
   },
   "intake": {
     "title": "Pre-interview form",

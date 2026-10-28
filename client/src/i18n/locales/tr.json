@@ -99,7 +99,14 @@
   },
   "home": {
     "greeting": "Merhaba {{name}} 👋",
-    "sinceStart": "başlangıçtan beri {{value}}"
+    "sinceStart": "başlangıçtan beri {{value}}",
+    "sinceStartBadge": "Başlangıçtan beri {{value}}",
+    "days7": "7 gün",
+    "days30": "30 gün",
+    "start": "Başlangıç",
+    "todayMenu": "Bugünün menüsü",
+    "seeAll": "Tümü",
+    "noMenu": "Diyetisyenin menünü hazırlayınca burada görünecek."
   },
   "intake": {
     "title": "Ön görüşme formu",

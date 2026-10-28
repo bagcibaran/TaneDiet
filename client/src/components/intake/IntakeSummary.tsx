@@ -104,7 +104,7 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
     )
 
     return (
-        <section className="mb-4 rounded-2xl bg-card p-5 shadow-sm">
+        <section className="mb-4 rounded-3xl bg-card p-5 shadow-soft">
             {/* Başlık satırı: başlık, yenilik etiketi ve Görüntüle / Gizle düğmesi */}
             <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mint/40 text-brand">
@@ -113,7 +113,7 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
                 <div className="min-w-0 flex-1">
                     <h2 className="font-bold text-ink">{t('intake.summary.title')}</h2>
                     {hasNews && (
-                        <span className="mt-0.5 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                        <span className="mt-0.5 inline-block rounded-full bg-peach px-2 py-0.5 text-xs font-semibold text-peach-ink">
                             {intakeStatus === 'NEW' ? t('clients.badges.newIntake') : t('clients.badges.intakeUpdated')}
                         </span>
                     )}

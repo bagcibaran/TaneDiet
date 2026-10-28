@@ -27,9 +27,11 @@ type WeightSectionProps = {
     onSummaryChange?: (summary: WeightSummary) => void
     // Diyetisyen son baktığından beri danışanın girdiği kayıtlar: "Yeni" etiketiyle işaretlenir
     highlightIds?: number[]
+    // false: 7/30 gün kartları gösterilmez (danışan ana sayfası bunları en üstte kutucuk olarak gösteriyor)
+    showSummaryCards?: boolean
 }
 
-function WeightSection({ clientId, onSummaryChange, highlightIds = [] }: WeightSectionProps) {
+function WeightSection({ clientId, onSummaryChange, highlightIds = [], showSummaryCards = true }: WeightSectionProps) {
     const { t, i18n } = useTranslation()
     const currentUsername = getUsername()
 
@@ -109,10 +111,10 @@ function WeightSection({ clientId, onSummaryChange, highlightIds = [] }: WeightS
     }
 
     return (
-        <section className="rounded-2xl bg-card p-5 shadow-sm">
+        <section className="rounded-3xl bg-card p-5 shadow-soft">
             <h2 className="text-lg font-bold text-ink">{t('weights.title')}</h2>
 
-            {summary && summary.points.length > 0 && (
+            {showSummaryCards && summary && summary.points.length > 0 && (
                 <WeightSummaryCards summary={summary} />
             )}
 

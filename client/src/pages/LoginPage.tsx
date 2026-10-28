@@ -26,7 +26,7 @@ function LoginPage() {
             <p className="mb-6 mt-1 text-muted">{t('login.subtitle')}</p>
 
             {reason === 'expired' && (
-                <p className="mb-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
+                <p className="mb-4 rounded-2xl bg-peach p-3 text-sm text-peach-ink">
                     {t('errors.sessionExpired')}
                 </p>
             )}

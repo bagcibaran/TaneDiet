@@ -44,16 +44,16 @@ function MenuPage() {
             </PageHero>
 
             <PageBody>
-                {loading && <p className="rounded-2xl bg-card p-5 text-muted shadow-sm">{t('dashboard.loading')}</p>}
+                {loading && <p className="rounded-3xl bg-card p-5 text-muted shadow-soft">{t('dashboard.loading')}</p>}
 
                 {error !== null && (
-                    <p className="rounded-2xl bg-card p-5 text-red-700 shadow-sm">
+                    <p className="rounded-3xl bg-card p-5 text-red-700 shadow-soft">
                         {toErrorMessage(error, t, 'diet.loadError')}
                     </p>
                 )}
 
                 {!loading && error === null && !plan && (
-                    <p className="rounded-2xl bg-card p-5 text-muted shadow-sm">{t('diet.noPlanClient')}</p>
+                    <p className="rounded-3xl bg-card p-5 text-muted shadow-soft">{t('diet.noPlanClient')}</p>
                 )}
 
                 {plan && (
@@ -73,7 +73,7 @@ function MenuPage() {
                         <DayMenu meals={meals} />
 
                         {plan.notes && (
-                            <div className="flex gap-3 rounded-xl bg-card p-4 text-sm text-ink shadow-sm">
+                            <div className="flex gap-3 rounded-xl bg-card p-4 text-sm text-ink shadow-soft">
                                 <StickyNote className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                                 <p className="whitespace-pre-line">{plan.notes}</p>
                             </div>

@@ -52,7 +52,7 @@ function DietPlanSection({ clientId }: DietPlanSectionProps) {
     const history = plans.slice(1)
 
     return (
-        <section className="mb-4 rounded-2xl bg-card p-5 shadow-sm">
+        <section className="mb-4 rounded-3xl bg-card p-5 shadow-soft">
             <div className="flex items-center justify-between gap-2">
                 <h2 className="text-lg font-bold text-ink">{t('diet.sectionTitle')}</h2>
                 <Link

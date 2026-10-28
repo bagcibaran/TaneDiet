@@ -30,39 +30,43 @@ function AppShell() {
     const showBottomBar = tabs.length > 1
 
     return (
-        // pb-24: telefonda içerik alttaki sekme çubuğunun arkasında kalmasın
-        <div className={`min-h-screen sm:pb-0 ${showBottomBar ? 'pb-24' : 'pb-8'}`}>
-            {/* Bilgisayar: üstte yatay menü (telefonda gizli) */}
-            <header className="hidden bg-brand sm:block">
+        // pb-28: telefonda içerik yüzen alt menünün arkasında kalmasın
+        <div className={`relative min-h-screen sm:pb-8 ${showBottomBar ? 'pb-28' : 'pb-8'}`}>
+            {/* Bilgisayar: hap şeklinde sekmeler, sayfanın yeşil başlığının üstünde şeffaf durur (tek parça görünsün diye; telefonda gizli) */}
+            <header className="absolute inset-x-0 top-0 z-30 hidden sm:block">
                 <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
                     <Logo />
-                    <nav className="flex items-center gap-2">
-                        {tabs.map((tab) => (
-                            <NavLink
-                                key={tab.to}
-                                to={tab.to}
-                                className={({ isActive }) =>
-                                    `rounded-full px-4 py-2 text-sm font-semibold transition ${
-                                        isActive ? 'bg-cream text-brand' : 'text-mint hover:text-cream'
-                                    }`
-                                }
-                            >
-                                {t(tab.labelKey)}
-                            </NavLink>
-                        ))}
-                        <div className="ml-2">
-                            <UserMenu />
-                        </div>
-                    </nav>
+                    <div className="flex items-center gap-3">
+                        <nav className="flex gap-1 rounded-full bg-black/15 p-1">
+                            {tabs.map((tab) => {
+                                const Icon = tab.icon
+                                return (
+                                    <NavLink
+                                        key={tab.to}
+                                        to={tab.to}
+                                        className={({ isActive }) =>
+                                            `flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                                isActive ? 'bg-cream text-brand shadow-sm' : 'text-mint hover:text-cream'
+                                            }`
+                                        }
+                                    >
+                                        <Icon className="h-4 w-4" />
+                                        {t(tab.labelKey)}
+                                    </NavLink>
+                                )
+                            })}
+                        </nav>
+                        <UserMenu />
+                    </div>
                 </div>
             </header>
 
             {/* O anki sayfa buraya gelir */}
             <Outlet />
 
-            {/* Telefon: altta sekme çubuğu (bilgisayarda gizli) */}
+            {/* Telefon: altta yüzen koyu hap menü (bilgisayarda gizli) */}
             {showBottomBar && (
-                <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-line bg-card sm:hidden">
+                <nav className="fixed inset-x-4 bottom-3 z-40 flex gap-1 rounded-full bg-ink/90 p-1.5 shadow-float backdrop-blur-md sm:hidden">
                     {tabs.map((tab) => {
                         const Icon = tab.icon
                         return (
@@ -70,8 +74,8 @@ function AppShell() {
                                 key={tab.to}
                                 to={tab.to}
                                 className={({ isActive }) =>
-                                    `flex flex-1 flex-col items-center gap-1 py-2 text-xs ${
-                                        isActive ? 'font-semibold text-brand' : 'text-muted'
+                                    `flex flex-1 items-center justify-center gap-2 rounded-full py-2.5 text-xs transition ${
+                                        isActive ? 'animate-pop bg-cream font-bold text-brand' : 'text-mint'
                                     }`
                                 }
                             >

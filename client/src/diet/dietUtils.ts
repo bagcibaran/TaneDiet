@@ -38,3 +38,6 @@ export function isSameMeal(a: { name: string; time: string | null }, b: { name: 
     const normalizeTime = (time: string | null) => (time ?? '').trim()
     return normalizeName(a.name) === normalizeName(b.name) && normalizeTime(a.time) === normalizeTime(b.time)
 }
+
+// Menü listelerinde öğünlerin renkli noktaları (sırayla tekrar eder): ana sayfa ve gün menüsü aynı renkleri kullanır
+export const MEAL_DOT_COLORS = ['bg-honey', 'bg-coral', 'bg-brand', 'bg-brand-light'] as const
