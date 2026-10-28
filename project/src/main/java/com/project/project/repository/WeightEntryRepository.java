@@ -11,4 +11,6 @@ public interface WeightEntryRepository extends JpaRepository<WeightEntry, Long> 
 
     List<WeightEntry> findAllByUserOrderByMeasuredOnDescCreatedAtDesc(User user);
     Optional<WeightEntry> findByIdAndUser(Long id, User user);
+
+    boolean existsByUser(User user);
 }
