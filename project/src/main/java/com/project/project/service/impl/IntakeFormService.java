@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -56,6 +59,7 @@ public class IntakeFormService {
         }
 
         IntakeForm form = existing.orElseGet(() -> new IntakeForm(user));
+        Map<String, Object> before = form.answerSnapshot();
         apply(form, request);
 
         if (firstTime) {
@@ -65,7 +69,18 @@ public class IntakeFormService {
                 weightEntryRepository.save(new WeightEntry(user, request.getWeightKg(), LocalDate.now(), user));
             }
         } else {
-            form.touch();
+            // Diyetisyene bildirim: hangi sorular değişti?
+            Map<String, Object> after = form.answerSnapshot();
+            List<String> changed = new ArrayList<>();
+            for (Map.Entry<String, Object> answer : after.entrySet()) {
+                if (!IntakeForm.sameAnswer(before.get(answer.getKey()), answer.getValue())) {
+                    changed.add(answer.getKey());
+                }
+            }
+            if (!changed.isEmpty()) {
+                form.addChangedFields(changed);
+                form.touch();
+            }
         }
 
         return new IntakeFormResponse(intakeFormRepository.save(form));

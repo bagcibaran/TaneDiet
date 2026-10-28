@@ -3,9 +3,17 @@ package com.project.project.entity;
 import com.project.project.entity.IntakeOptions.*;
 import jakarta.persistence.*;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 // Danışanın ön görüşme formu. Her danışanın en fazla bir formu var (tabloda UNIQUE user_id).
 @Entity
@@ -97,6 +105,14 @@ public class IntakeForm {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // Diyetisyen son baktığından beri değişen sorular, virgülle ayrılmış alan adları (ör. "medications,goal")
+    @Column(columnDefinition = "TEXT")
+    private String changedFields;
+
+    // Cevap olmayan alanlar: değişiklik karşılaştırmasına girmez
+    private static final Set<String> NON_ANSWER_FIELDS =
+            Set.of("id", "user", "consentGivenAt", "createdAt", "updatedAt", "changedFields");
+
     public IntakeForm() {
     }
 
@@ -107,6 +123,54 @@ public class IntakeForm {
     }
 
     // Form her güncellendiğinde "son güncelleme" zamanını yeniler
+    // Bütün cevapların o anki hali: alan adı → değer. Değişen soruları bulmak için kullanılır.
+    // Alanları tek tek yazmak yerine sınıfın kendi alanlarını okur, böylece yeni bir soru eklenince unutulmaz.
+    public Map<String, Object> answerSnapshot() {
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        for (Field field : IntakeForm.class.getDeclaredFields()) {
+            if (java.lang.reflect.Modifier.isStatic(field.getModifiers()) || NON_ANSWER_FIELDS.contains(field.getName())) {
+                continue;
+            }
+            try {
+                snapshot.put(field.getName(), field.get(this));
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+        return snapshot;
+    }
+
+    // İki cevap aynı mı? 72.4 ile 72.40 aynı sayıdır (BigDecimal.equals ölçeğe de bakar, compareTo bakmaz).
+    public static boolean sameAnswer(Object before, Object after) {
+        if (before instanceof BigDecimal a && after instanceof BigDecimal b) {
+            return a.compareTo(b) == 0;
+        }
+        return java.util.Objects.equals(before, after);
+    }
+
+    public List<String> getChangedFields() {
+        if (changedFields == null || changedFields.isBlank()) {
+            return List.of();
+        }
+        return Arrays.asList(changedFields.split(","));
+    }
+
+    // Yeni değişen soruları listeye ekler (aynı soru iki kez yazılmaz, sıra korunur)
+    public void addChangedFields(Collection<String> fields) {
+        List<String> merged = new ArrayList<>(getChangedFields());
+        for (String field : fields) {
+            if (!merged.contains(field)) {
+                merged.add(field);
+            }
+        }
+        changedFields = merged.isEmpty() ? null : String.join(",", merged);
+    }
+
+    // Diyetisyen danışanın sayfasına bakınca çağrılır
+    public void clearChangedFields() {
+        changedFields = null;
+    }
+
     public void touch() {
         this.updatedAt = LocalDateTime.now();
     }

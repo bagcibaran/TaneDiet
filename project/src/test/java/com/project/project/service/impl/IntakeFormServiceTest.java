@@ -168,4 +168,53 @@ class IntakeFormServiceTest {
 
         assertEquals(30, response.getAge());
     }
+
+    // İlk gönderimdeki formu kaydedip geri verir (güncelleme testleri için hazır form)
+    private IntakeForm submittedForm() {
+        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.empty());
+        when(weightEntryRepository.existsByUser(client)).thenReturn(true);
+        IntakeFormRequest first = validRequest();
+        first.setConsent(true);
+        intakeFormService.saveMyForm("betul", first);
+
+        ArgumentCaptor<IntakeForm> saved = ArgumentCaptor.forClass(IntakeForm.class);
+        verify(intakeFormRepository).save(saved.capture());
+        IntakeForm form = saved.getValue();
+        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.of(form));
+        return form;
+    }
+
+    @Test
+    void saveMyForm_firstTime_hasNoChangedFields() {
+        IntakeForm form = submittedForm();
+
+        assertTrue(form.getChangedFields().isEmpty());
+    }
+
+    @Test
+    void saveMyForm_update_recordsOnlyChangedFields() {
+        IntakeForm form = submittedForm();
+        IntakeFormRequest update = validRequest();
+        update.setMedications("D vitamini");
+        update.setWeightKg(new BigDecimal("72.4")); // aynı sayı, farklı yazım: değişiklik sayılmaz
+
+        intakeFormService.saveMyForm("betul", update);
+
+        assertEquals(java.util.List.of("medications"), form.getChangedFields());
+    }
+
+    @Test
+    void saveMyForm_secondUpdate_accumulatesChangedFieldsWithoutDuplicates() {
+        IntakeForm form = submittedForm();
+        IntakeFormRequest update = validRequest();
+        update.setMedications("D vitamini");
+        intakeFormService.saveMyForm("betul", update);
+
+        IntakeFormRequest second = validRequest();
+        second.setMedications("Demir");
+        second.setGoal(Goal.MAINTAIN_WEIGHT);
+        intakeFormService.saveMyForm("betul", second);
+
+        assertEquals(java.util.List.of("medications", "goal"), form.getChangedFields());
+    }
 }
