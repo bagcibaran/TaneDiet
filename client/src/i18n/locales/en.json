@@ -73,7 +73,9 @@
     "title": "Client",
     "back": "Clients",
     "count": "{{count}} clients",
-    "empty": "No clients yet"
+    "empty": "No clients yet",
+    "search": "Search clients",
+    "noMatch": "No clients match your search"
   },
   "nav": {
     "home": "Home",

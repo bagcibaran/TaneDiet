@@ -73,7 +73,9 @@
     "title": "Danışan",
     "back": "Danışanlar",
     "count": "{{count}} danışan",
-    "empty": "Henüz danışan yok"
+    "empty": "Henüz danışan yok",
+    "search": "Danışan ara",
+    "noMatch": "Aramayla eşleşen danışan yok"
   },
   "nav": {
     "home": "Ana sayfa",

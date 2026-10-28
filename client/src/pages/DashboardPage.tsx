@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { PageBody, PageHero } from '../components/PageLayout'
+import LanguageToggle from '../components/LanguageToggle'
 import WeightSection from '../components/WeightSection'
 import { getRole, getUsername } from '../services/session'
 import { formatKg } from '../utils/format'
@@ -23,7 +24,7 @@ function DashboardPage() {
 
     return (
         <>
-            <PageHero>
+            <PageHero aside={<LanguageToggle />}>
                 <p className="text-sm text-mint">{t('home.greeting', { name: getUsername() })}</p>
                 <p className="mt-1 text-5xl font-extrabold tracking-tight">
                     {latest !== null ? formatKg(latest, i18n.language) : '—'}
