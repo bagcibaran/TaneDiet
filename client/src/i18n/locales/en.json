@@ -87,7 +87,6 @@
   },
   "nav": {
     "home": "Home",
-    "profile": "Profile",
     "clients": "Clients",
     "menu": "My menu"
   },
@@ -246,7 +245,9 @@
       "loadError": "Pre-interview details could not be loaded",
       "newBanner": "The client has just filled in the pre-interview form.",
       "updatedBanner": "{{count}} answers changed since your last visit. They are highlighted.",
-      "changed": "Updated"
+      "changed": "Updated",
+      "show": "View",
+      "hide": "Hide"
     },
     "profileLink": "My pre-interview form",
     "profileLinkHint": "Update it if anything has changed"
@@ -335,5 +336,8 @@
       "save": "Save program",
       "saving": "Saving..."
     }
+  },
+  "userMenu": {
+    "open": "User menu"
   }
 }

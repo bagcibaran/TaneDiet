@@ -87,7 +87,6 @@
   },
   "nav": {
     "home": "Ana sayfa",
-    "profile": "Profil",
     "clients": "Danışanlar",
     "menu": "Menüm"
   },
@@ -246,7 +245,9 @@
       "loadError": "Ön görüşme bilgileri yüklenemedi",
       "newBanner": "Danışan ön görüşme formunu yeni doldurdu.",
       "updatedBanner": "Son bakışınızdan beri {{count}} soru güncellendi. Değişenler işaretli.",
-      "changed": "Güncellendi"
+      "changed": "Güncellendi",
+      "show": "Görüntüle",
+      "hide": "Gizle"
     },
     "profileLink": "Ön görüşme formum",
     "profileLinkHint": "Bilgileriniz değiştiyse güncelleyin"
@@ -335,5 +336,8 @@
       "save": "Programı kaydet",
       "saving": "Kaydediliyor..."
     }
+  },
+  "userMenu": {
+    "open": "Kullanıcı menüsü"
   }
 }

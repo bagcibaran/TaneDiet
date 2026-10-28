@@ -9,7 +9,6 @@ import ClientDetailPage from './pages/ClientDetailPage'
 import IntakePage from './pages/IntakePage'
 import ProtectedRoute from './routes/ProtectedRoute'
 import IntakeGate from './routes/IntakeGate'
-import ProfilePage from './pages/ProfilePage'
 import MenuPage from './pages/MenuPage'
 import DietPlanEditorPage from './pages/DietPlanEditorPage'
 
@@ -45,7 +44,7 @@ function App() {
                         }
                     >
                         <Route path="/dashboard" element={<DashboardPage />} />
-                        <Route path="/profile" element={<ProfilePage />} />
+                        <Route path="/profile" element={<Navigate to="/dashboard" replace />} />
                         <Route
                             path="/menu"
                             element={

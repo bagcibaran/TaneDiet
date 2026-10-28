@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BellDot, ChevronDown } from 'lucide-react'
+import { BellDot, ChevronDown, ClipboardList } from 'lucide-react'
 
 import { INTAKE_STEPS, type IntakeFieldConfig, type IntakeFieldName } from '../../intake/intakeSteps'
 import { getClientIntake } from '../../services/intakeService'
@@ -38,6 +38,8 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
     const [loading, setLoading] = useState(true)
     // Ham hata saklanır, mesaj ekrana çizilirken çevrilir
     const [error, setError] = useState<unknown>(null)
+    // Bilgiler sayfada çok yer kaplamasın: kapalı başlar, "Görüntüle" ile açılır
+    const [expanded, setExpanded] = useState(false)
 
     useEffect(() => {
         let cancelled = false
@@ -63,6 +65,8 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
     }, [clientId])
 
     const isChanged = (name: string) => changedFields.includes(name)
+    // Diyetisyen son baktığından beri yeni bir şey var mı? (başlıkta küçük etiket)
+    const hasNews = intakeStatus === 'NEW' || (intakeStatus === 'UPDATED' && changedFields.length > 0)
 
     // Bir cevabı ekranda okunacak metne çevirir; boş cevaplar "Yok"
     const formatAnswer = (name: IntakeFieldName): string => {
@@ -101,7 +105,31 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
 
     return (
         <section className="mb-4 rounded-2xl bg-card p-5 shadow-sm">
-            <h2 className="text-lg font-bold text-ink">{t('intake.summary.title')}</h2>
+            {/* Başlık satırı: başlık, yenilik etiketi ve Görüntüle / Gizle düğmesi */}
+            <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mint/40 text-brand">
+                    <ClipboardList className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                    <h2 className="font-bold text-ink">{t('intake.summary.title')}</h2>
+                    {hasNews && (
+                        <span className="mt-0.5 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                            {intakeStatus === 'NEW' ? t('clients.badges.newIntake') : t('clients.badges.intakeUpdated')}
+                        </span>
+                    )}
+                </div>
+                {!loading && error === null && form && (
+                    <button
+                        type="button"
+                        onClick={() => setExpanded((value) => !value)}
+                        aria-expanded={expanded}
+                        className="flex shrink-0 items-center gap-1 rounded-full border border-line px-3 py-1.5 text-sm font-semibold text-brand hover:border-brand"
+                    >
+                        {expanded ? t('intake.summary.hide') : t('intake.summary.show')}
+                        <ChevronDown className={`h-4 w-4 transition ${expanded ? 'rotate-180' : ''}`} />
+                    </button>
+                )}
+            </div>
 
             {loading && <p className="mt-3 text-muted">{t('dashboard.loading')}</p>}
             {error !== null && (
@@ -109,10 +137,10 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
             )}
             {!loading && error === null && !form && <p className="mt-3 text-muted">{t('intake.summary.notFilled')}</p>}
 
-            {!loading && error === null && form && (
+            {!loading && error === null && form && expanded && (
                 <>
                     {/* Bildirim: form yeni mi, hangi sorular değişti? */}
-                    {(intakeStatus === 'NEW' || (intakeStatus === 'UPDATED' && changedFields.length > 0)) && (
+                    {hasNews && (
                         <p className="mt-3 flex items-start gap-2 rounded-xl bg-mint/30 p-3 text-sm text-ink">
                             <BellDot className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                             {intakeStatus === 'NEW'

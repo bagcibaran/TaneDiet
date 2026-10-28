@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { StickyNote } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
-import LanguageToggle from '../components/LanguageToggle'
 import DayMenu from '../components/diet/DayMenu'
 import DayTabs from '../components/diet/DayTabs'
 import { getMyDietPlan } from '../services/dietService'
@@ -33,7 +32,7 @@ function MenuPage() {
 
     return (
         <>
-            <PageHero aside={<LanguageToggle />}>
+            <PageHero>
                 <p className="text-sm text-mint">{t('diet.myMenu')}</p>
                 <h1 className="text-3xl font-extrabold tracking-tight">{plan ? plan.title : t('diet.myMenu')}</h1>
                 {plan && (

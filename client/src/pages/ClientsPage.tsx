@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { ChevronRight, CircleCheck, Search } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
-import LanguageToggle from '../components/LanguageToggle'
 import { inputClass } from '../components/ui'
 import { getClients } from '../services/clientService'
 import { toErrorMessage } from '../services/errorMessage'
@@ -52,7 +51,7 @@ function ClientsPage() {
 
     return (
         <>
-            <PageHero aside={<LanguageToggle />}>
+            <PageHero>
                 <h1 className="text-3xl font-extrabold tracking-tight">{t('nav.clients')}</h1>
                 {!loading && error === null && (
                     <p className="mt-1 text-sm text-mint">{t('clients.count', { count: clients.length })}</p>

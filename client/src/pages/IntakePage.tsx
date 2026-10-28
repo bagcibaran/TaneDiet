@@ -260,7 +260,7 @@ function IntakePage() {
                                     hasSavedForm && (
                                         <button
                                             type="button"
-                                            onClick={() => navigate('/profile')}
+                                            onClick={() => navigate('/dashboard')}
                                             className="flex-1 rounded-full border border-line px-4 py-3 font-semibold text-muted hover:border-brand hover:text-brand"
                                         >
                                             {t('intake.cancel')}
