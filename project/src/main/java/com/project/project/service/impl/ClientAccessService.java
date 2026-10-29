@@ -75,7 +75,12 @@ public class ClientAccessService {
                 requirePackageMonths(request.getMonths());
                 // Kilitli veya süresizse bugünden, hâlâ açıksa mevcut son günden uzatılır
                 LocalDate base = client.getAccessUntil() == null || isLocked(client) ? today() : client.getAccessUntil();
-                client.setAccessUntil(base.plusMonths(request.getMonths()));
+                LocalDate end = base.plusMonths(request.getMonths());
+                // Ayın son günü biten paket yine ayın son gününde biter (31 Oca → 28 Şub → 31 Mar; 28 Mar'a kaymaz)
+                if (base.getDayOfMonth() == base.lengthOfMonth()) {
+                    end = end.withDayOfMonth(end.lengthOfMonth());
+                }
+                client.setAccessUntil(end);
             }
             case SET_DATE -> {
                 if (request.getDate() == null) {

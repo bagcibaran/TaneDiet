@@ -27,7 +27,9 @@
     "inviteOnlyTitle": "Sign-up by invitation only",
     "inviteOnlyText": "Accounts are opened for our clients. Write to us on WhatsApp for information and packages; after payment we send you an invite link.",
     "packageLine": "Your package: {{months}} months",
-    "checkingInvite": "Checking your invite link..."
+    "checkingInvite": "Checking your invite link...",
+    "passwordHint": "At least 8 characters",
+    "passwordTooShort": "The password must be at least 8 characters"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -142,7 +144,10 @@
       "range": "Must be between {{min}} and {{max}}",
       "pastDate": "Must be a date in the past",
       "number": "Enter a valid number",
-      "required": "This field is required"
+      "required": "This field is required",
+      "tooLong": "At most {{max}} characters",
+      "decimals": "Use at most 2 decimal places (e.g. 72.45)",
+      "tooOld": "Must be 1900 or later"
     },
     "gate": {
       "loading": "Checking your details…",
@@ -376,7 +381,8 @@
       "cancel": "Cancel",
       "close": "Close",
       "loadError": "The presets could not be loaded",
-      "saveError": "Could not be saved"
+      "saveError": "Could not be saved",
+      "confirmDeleteMeal": "Delete the preset meal \"{{name}}\"?"
     }
   },
   "userMenu": {
@@ -425,7 +431,8 @@
     "makeUnlimited": "Make unlimited",
     "closeNow": "Close access now",
     "confirmClose": "Close this client's access now? Their data is kept; you can reopen it later.",
-    "error": "The service period could not be changed"
+    "error": "The service period could not be changed",
+    "confirmPastDate": "This date is in the past: the client's access closes immediately. Continue?"
   },
   "landing": {
     "clientLogin": "Client login",

@@ -2,18 +2,23 @@ package com.project.project.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 // Herkese açık kayıt: yalnızca diyetisyenin gönderdiği davet linkiyle (inviteToken)
 public class RegisterRequest {
 
-    @NotBlank(message = "Username alanı boş olamaz!!!")
+    @NotBlank(message = "Kullanıcı adı boş olamaz")
+    @Size(max = 50, message = "Kullanıcı adı en fazla 50 karakter olabilir")
     private String username;
 
-    @NotBlank(message = "Email alanı boş olamaz!!!")
-    @Email(message = "Email alanı formata uygun olmalı!!")
+    @NotBlank(message = "E-posta boş olamaz")
+    @Email(message = "Geçerli bir e-posta adresi girin")
+    @Size(max = 100, message = "E-posta en fazla 100 karakter olabilir")
     private String email;
 
-    @NotBlank(message = "Password alanı boş olamaz!!!")
+    // BCrypt 72 bayttan sonrasını yok sayar
+    @NotBlank(message = "Şifre boş olamaz")
+    @Size(min = 8, max = 72, message = "Şifre en az 8, en fazla 72 karakter olmalı")
     private String password;
 
     @NotBlank(message = "Kayıt yalnızca davet linkiyle yapılabilir")

@@ -16,8 +16,10 @@ function RegisterPage() {
     const [searchParams] = useSearchParams()
     const inviteToken = searchParams.get('invite') ?? ''
 
-    // Davet kontrolü: null = kontrol ediliyor, 0 = geçersiz, diğerleri = paket süresi (ay)
-    const [inviteMonths, setInviteMonths] = useState<number | null>(inviteToken === '' ? 0 : null)
+    // Davet kontrolünün sonucu, hangi token için olduğuyla birlikte (adres değişince eski sonuç kullanılmaz)
+    const [lookup, setLookup] = useState<{ token: string; months: number } | null>(null)
+    // null = kontrol ediliyor, 0 = geçersiz/yok, diğerleri = paket süresi (ay)
+    const inviteMonths = inviteToken === '' ? 0 : lookup?.token === inviteToken ? lookup.months : null
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -32,12 +34,12 @@ function RegisterPage() {
         lookupInvite(inviteToken)
             .then((invite) => {
                 if (!cancelled) {
-                    setInviteMonths(invite.months)
+                    setLookup({ token: inviteToken, months: invite.months })
                 }
             })
             .catch(() => {
                 if (!cancelled) {
-                    setInviteMonths(0)
+                    setLookup({ token: inviteToken, months: 0 })
                 }
             })
         return () => {
@@ -48,6 +50,11 @@ function RegisterPage() {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setError('')
+
+        if (password.length < 8) {
+            setError(t('register.passwordTooShort'))
+            return
+        }
 
         if (password !== confirmPassword) {
             setError(t('register.passwordMismatch'))
@@ -138,8 +145,12 @@ function RegisterPage() {
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                         required
+                        minLength={8}
+                        maxLength={72}
+                        aria-describedby="password-hint"
                         className={inputClass}
                     />
+                    <p id="password-hint" className="mt-1 text-xs text-muted">{t('register.passwordHint')}</p>
                 </div>
 
                 <div>

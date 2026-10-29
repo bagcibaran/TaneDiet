@@ -41,3 +41,19 @@ export function isSameMeal(a: { name: string; time: string | null }, b: { name: 
 
 // Menü listelerinde öğünlerin renkli noktaları (sırayla tekrar eder): ana sayfa ve gün menüsü aynı renkleri kullanır
 export const MEAL_DOT_COLORS = ['bg-honey', 'bg-coral', 'bg-brand', 'bg-brand-light'] as const
+
+// Hazır öğünler saate göre, saatsizler sonda (backend ile aynı sıra)
+export function sortTemplates<T extends { id: number; time: string | null }>(meals: T[]): T[] {
+    return [...meals].sort((a, b) => {
+        if (a.time === b.time) {
+            return a.id - b.id
+        }
+        if (a.time === null) {
+            return 1
+        }
+        if (b.time === null) {
+            return -1
+        }
+        return a.time.localeCompare(b.time)
+    })
+}

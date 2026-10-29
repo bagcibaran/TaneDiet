@@ -136,6 +136,26 @@ class ClientAccessServiceTest {
         assertEquals(LocalDate.of(2027, 2, 28), response.getAccessUntil());
     }
 
+    // Ayın son günü biten paket uzatılınca yine ayın son gününde biter: 28 Şubat + 1 ay = 31 Mart (28 Mart'a kaymaz)
+    @Test
+    void addMonthsKeepsMonthEnd() {
+        client.setAccessUntil(LocalDate.of(2027, 2, 28));
+
+        ClientAccessResponse response = service.updateAccess(41L, request(Action.ADD_MONTHS, 1, null));
+
+        assertEquals(LocalDate.of(2027, 3, 31), response.getAccessUntil());
+    }
+
+    // Ay ortasında biten paket ay ortasında kalır
+    @Test
+    void addMonthsMidMonthUnchanged() {
+        client.setAccessUntil(LocalDate.of(2027, 3, 15));
+
+        ClientAccessResponse response = service.updateAccess(41L, request(Action.ADD_MONTHS, 1, null));
+
+        assertEquals(LocalDate.of(2027, 4, 15), response.getAccessUntil());
+    }
+
     @Test
     void addMonthsRejectsTwo() {
         assertThrows(AccessRuleException.class, () -> service.updateAccess(41L, request(Action.ADD_MONTHS, 2, null)));

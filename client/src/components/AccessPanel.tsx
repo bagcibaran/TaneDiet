@@ -54,6 +54,16 @@ function AccessPanel({ clientId }: AccessPanelProps) {
         }
     }
 
+    // Bugünden önceki bir tarih hesabı hemen kapatır: "hemen kapat" gibi önce sorulur
+    const setEndDate = () => {
+        const today = new Date()
+        const todayText = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+        if (date < todayText && !window.confirm(t('access.confirmPastDate'))) {
+            return
+        }
+        void apply({ action: 'SET_DATE', date })
+    }
+
     const closeNow = () => {
         if (window.confirm(t('access.confirmClose'))) {
             void apply({ action: 'CLOSE_NOW' })
@@ -129,7 +139,7 @@ function AccessPanel({ clientId }: AccessPanelProps) {
                         <button
                             type="button"
                             disabled={busy || date === ''}
-                            onClick={() => void apply({ action: 'SET_DATE', date })}
+                            onClick={setEndDate}
                             className={smallButton}
                         >
                             {t('access.save')}

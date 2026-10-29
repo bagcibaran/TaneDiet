@@ -8,7 +8,7 @@ import LanguageToggle from '../components/LanguageToggle'
 import { HeroBlobs } from '../components/PageLayout'
 import IntakeField from '../components/intake/IntakeField'
 import { errorTextClass, primaryButtonClass } from '../components/ui'
-import { INTAKE_STEPS, fromForm, toRequest, validateField, type IntakeAnswers } from '../intake/intakeSteps'
+import { INTAKE_STEPS, fromForm, isVisible, toRequest, validateField, type IntakeAnswers } from '../intake/intakeSteps'
 import { getMyIntake, saveMyIntake } from '../services/intakeService'
 import { toErrorMessage } from '../services/errorMessage'
 import { clearSession, getUsername } from '../services/session'
@@ -107,7 +107,8 @@ function IntakePage() {
     // Bu adımdaki soruları kontrol eder; hata varsa gösterir ve false döner
     const validateStep = (): boolean => {
         const errors: Record<string, string> = {}
-        for (const field of current.fields) {
+        // Yalnızca görünen sorular kontrol edilir
+        for (const field of current.fields.filter((item) => isVisible(item, answers))) {
             const error = validateField(field, answers[field.name])
             if (error) {
                 errors[field.name] = error
@@ -221,7 +222,7 @@ function IntakePage() {
                                 </div>
                             )}
 
-                            {current.fields.map((field) => (
+                            {current.fields.filter((field) => isVisible(field, answers)).map((field) => (
                                 <IntakeField
                                     key={field.name}
                                     field={field}

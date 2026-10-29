@@ -8,7 +8,7 @@ import DayTabs from '../components/diet/DayTabs'
 import LibrarySheet from '../components/diet/LibrarySheet'
 import QuickPanel from '../components/diet/QuickPanel'
 import { errorTextClass, inputClass, labelClass, primaryButtonClass } from '../components/ui'
-import { WEEKDAYS, isSameMeal, mealsOfDay } from '../diet/dietUtils'
+import { WEEKDAYS, isSameMeal, mealsOfDay, sortTemplates } from '../diet/dietUtils'
 import { createDietPlan, getClientDietPlans, updateDietPlan } from '../services/dietService'
 import { createMealTemplate, getDietLibrary, updateMealTemplate } from '../services/dietLibraryService'
 import { toErrorMessage } from '../services/errorMessage'
@@ -185,10 +185,11 @@ function DietPlanEditorPage() {
                 current
                     ? {
                           ...current,
-                          meals:
+                          meals: sortTemplates(
                               replaceId === null
                                   ? [...current.meals, saved]
                                   : current.meals.map((template) => (template.id === saved.id ? saved : template)),
+                          ),
                       }
                     : current,
             )

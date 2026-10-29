@@ -8,8 +8,7 @@ import WeightSection from '../components/WeightSection'
 import IntakeSummary from '../components/intake/IntakeSummary'
 import AccessPanel from '../components/AccessPanel'
 import DietPlanSection from '../components/diet/DietPlanSection'
-import { getUsers } from '../services/userService'
-import { getClientActivity, markClientReviewed } from '../services/clientService'
+import { getClient, getClientActivity, markClientReviewed } from '../services/clientService'
 import { formatKg } from '../utils/format'
 import type { UserResponse } from '../types/auth'
 import type { ClientActivity } from '../types/client'
@@ -30,9 +29,24 @@ function ClientDetailPage() {
 
     // Sayfa başlığında danışanın adını göstermek için
     useEffect(() => {
-        getUsers()
-            .then((users) => setClient(users.find((user) => user.id === clientId) ?? null))
-            .catch(() => setClient(null))
+        if (Number.isNaN(clientId)) {
+            return
+        }
+        let cancelled = false
+        getClient(clientId)
+            .then((result) => {
+                if (!cancelled) {
+                    setClient(result)
+                }
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setClient(null)
+                }
+            })
+        return () => {
+            cancelled = true
+        }
     }, [clientId])
 
     // Önce neyin yeni olduğunu al, sonra "görüldü" yap. Sıra önemli: önce görüldü yapılırsa yeniler kaybolur.

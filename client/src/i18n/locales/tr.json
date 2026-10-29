@@ -27,7 +27,9 @@
     "inviteOnlyTitle": "Kayıt yalnızca davetle",
     "inviteOnlyText": "Hesaplar hizmet alan danışanlarımız için açılır. Bilgi almak ve paketleri sormak için WhatsApp'tan yazabilirsin; ödemenin ardından sana bir davet linki göndeririz.",
     "packageLine": "Paketin: {{months}} ay",
-    "checkingInvite": "Davet linkin kontrol ediliyor..."
+    "checkingInvite": "Davet linkin kontrol ediliyor...",
+    "passwordHint": "En az 8 karakter",
+    "passwordTooShort": "Şifre en az 8 karakter olmalı"
   },
   "dashboard": {
     "title": "Kontrol Paneli",
@@ -142,7 +144,10 @@
       "range": "{{min}} ile {{max}} arasında olmalı",
       "pastDate": "Geçmiş bir tarih olmalı",
       "number": "Geçerli bir sayı girin",
-      "required": "Bu alan zorunlu"
+      "required": "Bu alan zorunlu",
+      "tooLong": "En fazla {{max}} karakter olabilir",
+      "decimals": "En fazla 2 ondalık basamak yazın (ör. 72,45)",
+      "tooOld": "1900 veya sonrası bir tarih olmalı"
     },
     "gate": {
       "loading": "Bilgileriniz kontrol ediliyor…",
@@ -376,7 +381,8 @@
       "cancel": "Vazgeç",
       "close": "Kapat",
       "loadError": "Hazırlar yüklenemedi",
-      "saveError": "Kaydedilemedi"
+      "saveError": "Kaydedilemedi",
+      "confirmDeleteMeal": "\"{{name}}\" hazır öğünü silinsin mi?"
     }
   },
   "userMenu": {
@@ -425,7 +431,8 @@
     "makeUnlimited": "Süresiz yap",
     "closeNow": "Erişimi hemen kapat",
     "confirmClose": "Danışanın erişimi hemen kapatılsın mı? Bilgileri silinmez; sonra yeniden açabilirsin.",
-    "error": "Hizmet süresi değiştirilemedi"
+    "error": "Hizmet süresi değiştirilemedi",
+    "confirmPastDate": "Bu tarih geçmişte: danışanın erişimi hemen kapanır. Devam edilsin mi?"
   },
   "landing": {
     "clientLogin": "Danışan girişi",

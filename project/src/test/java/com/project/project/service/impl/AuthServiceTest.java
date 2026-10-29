@@ -8,7 +8,9 @@ import com.project.project.entity.User;
 import com.project.project.exception.AccessRuleException;
 import com.project.project.exception.ClientAccessLockedException;
 import com.project.project.exception.InviteInvalidException;
+import com.project.project.exception.TooManyAttemptsException;
 import com.project.project.repository.UserRepository;
+import com.project.project.security.AuthRateLimiter;
 import com.project.project.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class AuthServiceTest {
@@ -52,7 +55,7 @@ class AuthServiceTest {
         // Bugün = 28 Ekim 2026; hizmet süresi kuralları gerçek sınıfla
         Clock clock = Clock.fixed(Instant.parse("2026-10-28T09:00:00Z"), ZoneId.of("Europe/Istanbul"));
         ClientAccessService access = new ClientAccessService(userRepository, clock);
-        authService = new AuthService(userRepository, passwordEncoder, jwtService, inviteService, access);
+        authService = new AuthService(userRepository, passwordEncoder, jwtService, inviteService, access, new AuthRateLimiter(clock));
 
         User dietitian = new User("diyetisyen", "d@test.com", "hash");
         dietitian.setRole(Role.DIETITIAN);
@@ -122,7 +125,7 @@ class AuthServiceTest {
         client.setAccessUntil(LocalDate.of(2026, 10, 27));
         when(userRepository.findByEmail("ayse@test.com")).thenReturn(Optional.of(client));
 
-        assertThrows(ClientAccessLockedException.class, () -> authService.login(loginRequest()));
+        assertThrows(ClientAccessLockedException.class, () -> authService.login(loginRequest(), "1.1.1.1"));
         verify(jwtService, never()).generateToken(any());
     }
 
@@ -132,6 +135,34 @@ class AuthServiceTest {
         client.setAccessUntil(LocalDate.of(2026, 10, 28));
         when(userRepository.findByEmail("ayse@test.com")).thenReturn(Optional.of(client));
 
-        assertEquals("jwt", authService.login(loginRequest()).getToken());
+        assertEquals("jwt", authService.login(loginRequest(), "1.1.1.1").getToken());
+    }
+
+    // 5 hatalı denemeden sonra doğru şifre de 15 dakika kabul edilmez
+    @Test
+    void fiveWrongPasswordsBlockLogin() {
+        User client = new User("ayse", "ayse@test.com", "encoded");
+        when(userRepository.findByEmail("ayse@test.com")).thenReturn(Optional.of(client));
+        LoginRequest wrong = loginRequest();
+        wrong.setPassword("yanlis");
+
+        for (int i = 0; i < 5; i++) {
+            assertThrows(com.project.project.exception.UserNotFoundException.class, () -> authService.login(wrong, "1.1.1.1"));
+        }
+
+        assertThrows(TooManyAttemptsException.class, () -> authService.login(loginRequest(), "1.1.1.1"));
+        verify(jwtService, never()).generateToken(any());
+    }
+
+    // Bilinmeyen e-postada da şifre karşılaştırması yapılır: yanıt süresi hesabın var olup olmadığını ele vermesin
+    @Test
+    void unknownEmailStillChecksAPassword() {
+        when(userRepository.findByEmail("yok@test.com")).thenReturn(Optional.empty());
+        LoginRequest request = loginRequest();
+        request.setEmail("yok@test.com");
+
+        assertThrows(com.project.project.exception.UserNotFoundException.class, () -> authService.login(request, "1.1.1.1"));
+
+        verify(passwordEncoder).matches(eq("Sifre123!"), any());
     }
 }

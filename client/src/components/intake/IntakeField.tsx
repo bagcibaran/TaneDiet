@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Check } from 'lucide-react'
 
 import { inputClass, labelClass } from '../ui'
-import type { IntakeFieldConfig } from '../../intake/intakeSteps'
+import { EARLIEST_DATE, maxLengthOf, type IntakeFieldConfig } from '../../intake/intakeSteps'
 
 type IntakeFieldProps = {
     field: IntakeFieldConfig
@@ -22,13 +22,26 @@ function IntakeField({ field, value, onChange, error }: IntakeFieldProps) {
     const id = `intake-${field.name}`
     const label = t(`intake.fields.${field.name}`)
     const text = typeof value === 'string' ? value : ''
+    const maxLength = maxLengthOf(field)
+    // Seçenekli sorularda etiketin bağlanacağı tek bir giriş yok: etiket metin olur, grup ona aria-labelledby ile bağlanır
+    const isGroup = field.kind === 'choice' || field.kind === 'yesNo'
+    const labelId = `${id}-label`
 
-    const labelRow = (
-        <label htmlFor={id} className={labelClass}>
+    const labelContent = (
+        <>
             {label}
             {!field.required && field.kind !== 'check' && (
                 <span className="ml-1 font-normal text-muted">({t('intake.optional')})</span>
             )}
+        </>
+    )
+    const labelRow = isGroup ? (
+        <p id={labelId} className={labelClass}>
+            {labelContent}
+        </p>
+    ) : (
+        <label htmlFor={id} className={labelClass}>
+            {labelContent}
         </label>
     )
 
@@ -36,12 +49,26 @@ function IntakeField({ field, value, onChange, error }: IntakeFieldProps) {
     switch (field.kind) {
         case 'longText':
             control = (
-                <textarea id={id} rows={3} value={text} onChange={(event) => onChange(event.target.value)} className={inputClass} />
+                <textarea
+                    id={id}
+                    rows={3}
+                    value={text}
+                    maxLength={maxLength}
+                    onChange={(event) => onChange(event.target.value)}
+                    className={inputClass}
+                />
             )
             break
         case 'date':
             control = (
-                <input id={id} type="date" value={text} onChange={(event) => onChange(event.target.value)} className={inputClass} />
+                <input
+                    id={id}
+                    type="date"
+                    min={EARLIEST_DATE}
+                    value={text}
+                    onChange={(event) => onChange(event.target.value)}
+                    className={inputClass}
+                />
             )
             break
         case 'number':
@@ -59,7 +86,7 @@ function IntakeField({ field, value, onChange, error }: IntakeFieldProps) {
             break
         case 'choice':
             control = (
-                <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={label}>
+                <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby={labelId}>
                     {field.options?.map((option) => (
                         <button
                             key={option}
@@ -77,7 +104,7 @@ function IntakeField({ field, value, onChange, error }: IntakeFieldProps) {
             break
         case 'yesNo':
             control = (
-                <div className="flex gap-2" role="radiogroup" aria-label={label}>
+                <div className="flex gap-2" role="radiogroup" aria-labelledby={labelId}>
                     {[true, false].map((option) => (
                         <button
                             key={String(option)}
@@ -112,7 +139,14 @@ function IntakeField({ field, value, onChange, error }: IntakeFieldProps) {
             )
         default:
             control = (
-                <input id={id} type="text" value={text} onChange={(event) => onChange(event.target.value)} className={inputClass} />
+                <input
+                    id={id}
+                    type="text"
+                    value={text}
+                    maxLength={maxLength}
+                    onChange={(event) => onChange(event.target.value)}
+                    className={inputClass}
+                />
             )
     }
 
@@ -122,7 +156,7 @@ function IntakeField({ field, value, onChange, error }: IntakeFieldProps) {
             {control}
             {error && (
                 <p className="mt-1 text-sm text-red-700">
-                    {t(error, { min: field.min, max: field.max })}
+                    {t(error, { min: field.min, max: error === 'intake.errors.tooLong' ? maxLength : field.max })}
                 </p>
             )}
         </div>

@@ -170,4 +170,19 @@ class ClientReviewServiceTest {
 
         assertTrue(clientReviewService.listClients().get(0).isHasPlan());
     }
+
+    // Danışan sayfası tek danışanı ister (eskiden bütün kullanıcı listesi çekiliyordu)
+    @Test
+    void getClientReturnsClient() {
+        assertEquals("betul", clientReviewService.getClient(41L).getUsername());
+    }
+
+    @Test
+    void getClientOfDietitianIs404() {
+        User dietitian = new User("diyetisyen", "d@test.com", "hash");
+        dietitian.setRole(Role.DIETITIAN);
+        when(userRepository.findById(28L)).thenReturn(Optional.of(dietitian));
+
+        assertThrows(com.project.project.exception.UserNotFoundException.class, () -> clientReviewService.getClient(28L));
+    }
 }

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Check, Pencil, Plus, Trash2, X } from 'lucide-react'
 
 import { errorTextClass, inputClass } from '../ui'
-import { itemLines } from '../../diet/dietUtils'
+import { itemLines, sortTemplates } from '../../diet/dietUtils'
 import {
     addQuickItem,
     createMealTemplate,
@@ -26,21 +26,6 @@ type DietLibraryManagerProps = {
 }
 
 type MealDraft = { name: string; time: string; items: string }
-
-// Hazır öğünler saate göre, saatsizler sonda (backend ile aynı sıra)
-const sortMeals = (meals: MealTemplate[]) =>
-    [...meals].sort((a, b) => {
-        if (a.time === b.time) {
-            return a.id - b.id
-        }
-        if (a.time === null) {
-            return 1
-        }
-        if (b.time === null) {
-            return -1
-        }
-        return a.time.localeCompare(b.time)
-    })
 
 const toRequest = (draft: MealDraft): MealTemplateRequest => ({
     name: draft.name.trim(),
@@ -125,23 +110,27 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
             const request = toRequest(mealDraft)
             if (editingMeal === 'new') {
                 const created = await createMealTemplate(request)
-                onChange((current) => ({ ...current, meals: sortMeals([...current.meals, created]) }))
+                onChange((current) => ({ ...current, meals: sortTemplates([...current.meals, created]) }))
             } else if (editingMeal !== null) {
                 const updated = await updateMealTemplate(editingMeal, request)
                 onChange((current) => ({
                     ...current,
-                    meals: sortMeals(current.meals.map((meal) => (meal.id === updated.id ? updated : meal))),
+                    meals: sortTemplates(current.meals.map((meal) => (meal.id === updated.id ? updated : meal))),
                 }))
             }
             setEditingMeal(null)
         })
     }
 
-    const removeMeal = (id: number) =>
-        run(`meal-${id}`, async () => {
-            await deleteMealTemplate(id)
-            onChange((current) => ({ ...current, meals: current.meals.filter((meal) => meal.id !== id) }))
+    const removeMeal = (meal: MealTemplate) => {
+        if (!window.confirm(t('diet.library.confirmDeleteMeal', { name: meal.name }))) {
+            return
+        }
+        void run(`meal-${meal.id}`, async () => {
+            await deleteMealTemplate(meal.id)
+            onChange((current) => ({ ...current, meals: current.meals.filter((item) => item.id !== meal.id) }))
         })
+    }
 
     const mealForm = (
         <form onSubmit={saveMeal} className="space-y-2 rounded-3xl bg-card p-4 shadow-soft ring-2 ring-brand">
@@ -324,7 +313,7 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => void removeMeal(meal.id)}
+                                        onClick={() => removeMeal(meal)}
                                         disabled={busy}
                                         aria-label={t('diet.delete')}
                                         className="rounded-full p-2 text-red-700 hover:bg-red-50"

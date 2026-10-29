@@ -2,6 +2,7 @@ package com.project.project.service.impl;
 
 import com.project.project.dto.ClientActivityResponse;
 import com.project.project.dto.ClientOverviewResponse;
+import com.project.project.dto.UserResponse;
 import com.project.project.entity.ClientReview;
 import com.project.project.entity.IntakeForm;
 import com.project.project.entity.Role;
@@ -63,6 +64,11 @@ public class ClientReviewService {
                     return new ClientOverviewResponse(client, newWeights, intakeStatus, hasPlan, clientAccessService.toResponse(client));
                 })
                 .toList();
+    }
+
+    // Danışan sayfasının başlığı için tek danışan (danışan değilse 404)
+    public UserResponse getClient(Long clientId) {
+        return new UserResponse(findClientById(clientId));
     }
 
     // Danışan sayfasında neyin yeni olduğunu söyler (henüz "görüldü" yapmaz)

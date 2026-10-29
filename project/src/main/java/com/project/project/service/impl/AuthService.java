@@ -11,6 +11,7 @@ import com.project.project.exception.ClientAccessLockedException;
 import com.project.project.exception.InviteInvalidException;
 import com.project.project.exception.UserNotFoundException;
 import com.project.project.repository.UserRepository;
+import com.project.project.security.AuthRateLimiter;
 import com.project.project.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,19 +27,25 @@ public class AuthService {
     private final JwtService jwtService;
     private final InviteService inviteService;
     private final ClientAccessService clientAccessService;
+    private final AuthRateLimiter rateLimiter;
+    // Bilinmeyen e-postada da bir şifre karşılaştırılır: yanıt süresi hesabın var olup olmadığını ele vermesin
+    private final String dummyPasswordHash;
 
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
             InviteService inviteService,
-            ClientAccessService clientAccessService
+            ClientAccessService clientAccessService,
+            AuthRateLimiter rateLimiter
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.inviteService = inviteService;
         this.clientAccessService = clientAccessService;
+        this.rateLimiter = rateLimiter;
+        this.dummyPasswordHash = passwordEncoder.encode("tane-dummy-password");
     }
 
     // Kayıt yalnızca davetle: hizmet süresi bugünden itibaren davetteki paket kadar.
@@ -61,9 +68,14 @@ public class AuthService {
         return new UserResponse(saved);
     }
 
-    public LoginResponse login(LoginRequest request) {
+    // ip: deneme sınırı için (aynı hesap ya da aynı yerden çok fazla hatalı deneme → 429)
+    public LoginResponse login(LoginRequest request, String ip) {
+        rateLimiter.checkLogin(request.getEmail(), ip);
+
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isEmpty()) {
+            passwordEncoder.matches(request.getPassword(), dummyPasswordHash);
+            rateLimiter.recordLoginFailure(request.getEmail(), ip);
             throw new UserNotFoundException("Email veya şifre hatalı");
         }
 
@@ -71,8 +83,10 @@ public class AuthService {
 
         boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!passwordMatches) {
+            rateLimiter.recordLoginFailure(request.getEmail(), ip);
             throw new UserNotFoundException("Email veya şifre hatalı");
         }
+        rateLimiter.recordLoginSuccess(request.getEmail());
 
         // Hizmet süresi dolan danışan giriş yapamaz (verileri silinmez; diyetisyen açınca devam eder)
         if (clientAccessService.isLocked(user)) {

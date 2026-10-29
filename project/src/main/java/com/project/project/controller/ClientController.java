@@ -2,6 +2,7 @@ package com.project.project.controller;
 
 import com.project.project.dto.ClientActivityResponse;
 import com.project.project.dto.ClientOverviewResponse;
+import com.project.project.dto.UserResponse;
 import com.project.project.service.impl.ClientReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +26,12 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<List<ClientOverviewResponse>> listClients() {
         return ResponseEntity.ok(clientReviewService.listClients());
+    }
+
+    // Tek danışan (danışan sayfasının başlığı için)
+    @GetMapping("/{clientId}")
+    public ResponseEntity<UserResponse> getClient(@PathVariable Long clientId) {
+        return ResponseEntity.ok(clientReviewService.getClient(clientId));
     }
 
     // Danışanın sayfasında neyin yeni olduğu (görüldü yapmaz)

@@ -20,7 +20,8 @@ function InvitePanel({ onClose }: InvitePanelProps) {
     const [months, setMonths] = useState<number>(3)
     const [note, setNote] = useState('')
     const [created, setCreated] = useState<Invite | null>(null)
-    const [copied, setCopied] = useState(false)
+    // Son kopyalanan linkin token'ı ("Kopyalandı" yalnızca onda görünür)
+    const [copiedToken, setCopiedToken] = useState<string | null>(null)
     const [invites, setInvites] = useState<Invite[]>([])
     const [busy, setBusy] = useState(false)
     // Ham hata saklanır, mesaj ekrana çizilirken çevrilir
@@ -66,7 +67,7 @@ function InvitePanel({ onClose }: InvitePanelProps) {
         try {
             const invite = await createInvite({ months, note: note.trim() === '' ? null : note.trim() })
             setCreated(invite)
-            setCopied(false)
+            setCopiedToken(null)
             setNote('')
             setInvites((current) => [invite, ...current])
         } catch (caught) {
@@ -76,13 +77,13 @@ function InvitePanel({ onClose }: InvitePanelProps) {
         }
     }
 
-    const handleCopy = async (link: string) => {
+    const handleCopy = async (token: string) => {
         try {
-            await navigator.clipboard.writeText(link)
-            setCopied(true)
+            await navigator.clipboard.writeText(inviteLink(token))
+            setCopiedToken(token)
         } catch {
             // Pano izni yoksa kullanıcı linki elle seçip kopyalayabilir
-            setCopied(false)
+            setCopiedToken(null)
         }
     }
 
@@ -157,11 +158,11 @@ function InvitePanel({ onClose }: InvitePanelProps) {
                             <div className="flex gap-2">
                                 <button
                                     type="button"
-                                    onClick={() => void handleCopy(createdLink)}
+                                    onClick={() => void handleCopy(created.token)}
                                     className="flex flex-1 items-center justify-center gap-1 rounded-full border border-brand bg-card px-3 py-2 text-sm font-semibold text-brand"
                                 >
-                                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                                    {copied ? t('invites.copied') : t('invites.copy')}
+                                    {copiedToken === created.token ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                                    {copiedToken === created.token ? t('invites.copied') : t('invites.copy')}
                                 </button>
                                 <a
                                     href={whatsappShareLink(t('invites.shareText', { link: createdLink, count: created.months }))}
@@ -194,11 +195,11 @@ function InvitePanel({ onClose }: InvitePanelProps) {
                                 </span>
                                 <button
                                     type="button"
-                                    onClick={() => void handleCopy(inviteLink(invite.token))}
-                                    aria-label={t('invites.copy')}
+                                    onClick={() => void handleCopy(invite.token)}
+                                    aria-label={copiedToken === invite.token ? t('invites.copied') : t('invites.copy')}
                                     className="rounded-full p-2 text-muted hover:bg-cream hover:text-brand"
                                 >
-                                    <Copy className="h-4 w-4" />
+                                    {copiedToken === invite.token ? <Check className="h-4 w-4 text-brand" /> : <Copy className="h-4 w-4" />}
                                 </button>
                                 <button
                                     type="button"
