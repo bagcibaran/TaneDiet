@@ -13,7 +13,7 @@ function FloatingWhatsApp() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={t('whatsapp.contact')}
-            className="fixed bottom-4 right-4 z-40 flex h-14 w-14 animate-pulse-ring items-center justify-center rounded-full bg-whatsapp text-whatsapp-ink shadow-float transition hover:scale-105"
+            className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 flex h-14 w-14 animate-pulse-ring items-center justify-center rounded-full bg-whatsapp text-whatsapp-ink shadow-float transition hover:scale-105"
         >
             <MessageCircle className="h-7 w-7" />
         </a>

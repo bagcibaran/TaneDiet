@@ -9,6 +9,7 @@ import RecipeRow from '../components/landing/RecipeRow'
 import AboutCard from '../components/landing/AboutCard'
 import FinalCall from '../components/landing/FinalCall'
 import FloatingWhatsApp from '../components/landing/FloatingWhatsApp'
+import LandingFooter from '../components/landing/LandingFooter'
 
 // Başlık + kısa açıklama + içerik; bölümler sırayla kayarak gelir
 function Section({ title, subtitle, children }: { title?: string; subtitle?: string; children: ReactNode }) {
@@ -26,7 +27,7 @@ function LandingPage() {
     const { t } = useTranslation()
 
     return (
-        <main className="min-h-screen bg-cream pb-24">
+        <main className="min-h-screen bg-cream">
             <LandingHero />
 
             <div className="mx-auto max-w-3xl px-5">
@@ -53,6 +54,8 @@ function LandingPage() {
                 <Section>
                     <FinalCall />
                 </Section>
+
+                <LandingFooter />
             </div>
 
             <FloatingWhatsApp />

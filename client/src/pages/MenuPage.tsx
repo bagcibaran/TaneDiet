@@ -5,14 +5,17 @@ import { StickyNote } from 'lucide-react'
 import { PageBody, PageHero } from '../components/PageLayout'
 import DayMenu from '../components/diet/DayMenu'
 import DayTabs from '../components/diet/DayTabs'
+import { LoadingCards } from '../components/Skeleton'
 import { getMyDietPlan } from '../services/dietService'
 import { toErrorMessage } from '../services/errorMessage'
 import { mealsOfDay, todayIndex } from '../diet/dietUtils'
 import type { DietPlan } from '../types/diet'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 // Danışanın "Menüm" sekmesi: diyetisyenin yazdığı aktif program
 function MenuPage() {
     const { t, i18n } = useTranslation()
+    usePageTitle(t('nav.menu'))
 
     const [plan, setPlan] = useState<DietPlan | undefined>(undefined)
     const [loading, setLoading] = useState(true)
@@ -44,10 +47,10 @@ function MenuPage() {
             </PageHero>
 
             <PageBody>
-                {loading && <p className="rounded-3xl bg-card p-5 text-muted shadow-soft">{t('dashboard.loading')}</p>}
+                {loading && <LoadingCards count={3} label={t('dashboard.loading')} />}
 
                 {error !== null && (
-                    <p className="rounded-3xl bg-card p-5 text-red-700 shadow-soft">
+                    <p className="rounded-3xl bg-card p-5 text-danger shadow-soft">
                         {toErrorMessage(error, t, 'diet.loadError')}
                     </p>
                 )}
@@ -73,7 +76,7 @@ function MenuPage() {
                         <DayMenu meals={meals} />
 
                         {plan.notes && (
-                            <div className="flex gap-3 rounded-xl bg-card p-4 text-sm text-ink shadow-soft">
+                            <div className="flex gap-3 rounded-3xl bg-card p-5 text-sm text-ink shadow-soft">
                                 <StickyNote className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                                 <p className="whitespace-pre-line">{plan.notes}</p>
                             </div>

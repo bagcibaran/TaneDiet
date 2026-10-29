@@ -9,9 +9,11 @@ import { loginUser } from '../services/authService'
 import { ApiError } from '../services/apiClient'
 import { toErrorMessage } from '../services/errorMessage'
 import { saveToken } from '../services/session'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 function LoginPage() {
     const { t } = useTranslation()
+    usePageTitle(t('login.submit'))
     const navigate = useNavigate()
 
     const [email, setEmail] = useState('')
@@ -19,6 +21,8 @@ function LoginPage() {
     const [error, setError] = useState('')
     // Hizmet süresi dolan danışan giriş yapmaya çalıştı (423)
     const [lockedOnLogin, setLockedOnLogin] = useState(false)
+    // İstek sürerken düğme kilitli: iki kez basılınca iki istek gitmesin
+    const [submitting, setSubmitting] = useState(false)
     // Başka bir sayfa bizi buraya bir sebeple gönderdiyse (?reason=...) bunu göster
     const [searchParams] = useSearchParams()
     const reason = searchParams.get('reason')
@@ -45,7 +49,7 @@ function LoginPage() {
             )}
 
             {reason === 'registered' && (
-                <p className="mb-4 rounded-xl bg-mint/40 p-3 text-sm text-brand">
+                <p className="mb-4 rounded-2xl bg-sage p-3 text-sm text-brand">
                     {t('login.registered')}
                 </p>
             )}
@@ -54,8 +58,12 @@ function LoginPage() {
                 className="space-y-4"
                 onSubmit={async (event) => {
                     event.preventDefault()
+                    if (submitting) {
+                        return
+                    }
                     setError('')
                     setLockedOnLogin(false)
+                    setSubmitting(true)
                     try {
                         const response = await loginUser({ email, password })
                         saveToken(response.token)
@@ -69,6 +77,8 @@ function LoginPage() {
                         } else {
                             setError(toErrorMessage(error, t, 'login.failed'))
                         }
+                    } finally {
+                        setSubmitting(false)
                     }
                 }}
             >
@@ -102,8 +112,8 @@ function LoginPage() {
 
                 {error && <p className={errorTextClass}>{error}</p>}
 
-                <button type="submit" className={primaryButtonClass}>
-                    {t('login.submit')}
+                <button type="submit" disabled={submitting} className={primaryButtonClass}>
+                    {submitting ? t('login.submitting') : t('login.submit')}
                 </button>
             </form>
 

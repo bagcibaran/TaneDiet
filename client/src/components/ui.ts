@@ -8,4 +8,4 @@ export const inputClass =
 export const primaryButtonClass =
     'w-full rounded-full bg-brand px-4 py-3 font-semibold text-cream shadow-soft transition hover:bg-brand-dark active:scale-[0.98] disabled:opacity-50'
 
-export const errorTextClass = 'text-sm text-red-700'
+export const errorTextClass = 'text-sm text-danger'

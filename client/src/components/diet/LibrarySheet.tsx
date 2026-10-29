@@ -56,7 +56,7 @@ function LibrarySheet({ open, library, onChange, onClose }: LibrarySheetProps) {
                 </button>
             </header>
             <div className="flex-1 overflow-y-auto">
-                <div className="mx-auto max-w-5xl px-4 py-5">
+                <div className="mx-auto max-w-5xl px-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-5">
                     <DietLibraryManager library={library} onChange={onChange} />
                 </div>
             </div>

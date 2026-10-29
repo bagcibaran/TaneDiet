@@ -6,6 +6,8 @@ import { ArrowDown, ArrowLeft, ArrowUp, CalendarRange, Copy, Star, Trash2 } from
 import { PageBody, PageHero } from '../components/PageLayout'
 import DayTabs from '../components/diet/DayTabs'
 import LibrarySheet from '../components/diet/LibrarySheet'
+import { useFeedback } from '../components/feedback/useFeedback'
+import { LoadingCards } from '../components/Skeleton'
 import QuickPanel from '../components/diet/QuickPanel'
 import { errorTextClass, inputClass, labelClass, primaryButtonClass } from '../components/ui'
 import { WEEKDAYS, isSameMeal, mealsOfDay, sortTemplates } from '../diet/dietUtils'
@@ -14,6 +16,7 @@ import { createMealTemplate, getDietLibrary, updateMealTemplate } from '../servi
 import { toErrorMessage } from '../services/errorMessage'
 import type { DietPlan, DietPlanRequest, PlanType } from '../types/diet'
 import type { DietLibrary, MealTemplate } from '../types/dietLibrary'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 // Ekranda düzenlenen öğün. key yalnızca React listesi ve seçim için (kaydedilmez).
 type EditorMeal = {
@@ -59,7 +62,9 @@ function daysFromPlan(plan: DietPlan): EditorDays {
 // Diyetisyenin program yazma/düzenleme ekranı: /clients/:id/diet-plans/new ve /clients/:id/diet-plans/:planId
 function DietPlanEditorPage() {
     const { t } = useTranslation()
+    usePageTitle(t('diet.sectionTitle'))
     const navigate = useNavigate()
+    const { toast, confirm } = useFeedback()
     const { id, planId } = useParams()
     const clientId = Number(id)
     const editingId = planId === undefined || planId === 'new' ? null : Number(planId)
@@ -280,7 +285,7 @@ function DietPlanEditorPage() {
         flashTimer.current = window.setTimeout(() => setFlashKey(null), 600)
     }
 
-    const changeType = (next: PlanType) => {
+    const changeType = async (next: PlanType) => {
         if (next === planType) {
             return
         }
@@ -290,7 +295,11 @@ function DietPlanEditorPage() {
             setDays(Object.fromEntries(WEEKDAYS.map((weekday) => [weekday, cloneMeals(base)])))
             setDay(1)
         } else {
-            if (!window.confirm(t('diet.editor.toDailyConfirm', { day: t(`diet.days.long.${day}`) }))) {
+            const ok = await confirm({
+                title: t('diet.editor.toDailyConfirm', { day: t(`diet.days.long.${day}`) }),
+                confirmLabel: t('common.continue'),
+            })
+            if (!ok) {
                 return
             }
             setDays({ 0: cloneMeals(days[day] ?? []) })
@@ -361,6 +370,7 @@ function DietPlanEditorPage() {
             } else {
                 await createDietPlan(clientId, request)
             }
+            toast(t('diet.editor.savedToast'))
             navigate(`/clients/${clientId}`)
         } catch (error) {
             setSaveError(toErrorMessage(error, t, 'diet.editor.saveError'))
@@ -394,9 +404,9 @@ function DietPlanEditorPage() {
             </PageHero>
 
             <PageBody>
-                {loading && <p className="rounded-3xl bg-card p-5 text-muted shadow-soft">{t('dashboard.loading')}</p>}
+                {loading && <LoadingCards count={3} label={t('dashboard.loading')} />}
                 {loadError !== null && (
-                    <p className="rounded-3xl bg-card p-5 text-red-700 shadow-soft">
+                    <p className="rounded-3xl bg-card p-5 text-danger shadow-soft">
                         {toErrorMessage(loadError, t, 'diet.loadError')}
                     </p>
                 )}
@@ -408,7 +418,7 @@ function DietPlanEditorPage() {
                             <button
                                 type="button"
                                 onClick={() => loadPlan(activePlan, false)}
-                                className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-brand bg-card px-4 py-3 text-sm font-semibold text-brand hover:bg-cream"
+                                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-brand bg-card px-4 py-3 text-sm font-semibold text-brand hover:bg-cream"
                             >
                                 <Copy className="h-4 w-4" />
                                 {t('diet.editor.startFromCurrent', { title: activePlan.title })}
@@ -422,7 +432,7 @@ function DietPlanEditorPage() {
                                     <button
                                         key={type}
                                         type="button"
-                                        onClick={() => changeType(type)}
+                                        onClick={() => void changeType(type)}
                                         className={`flex-1 ${chipClass(planType === type)} py-2`}
                                     >
                                         {t(`diet.type.${type}`)}
@@ -478,7 +488,7 @@ function DietPlanEditorPage() {
                                     </button>
                                 </div>
                                 {showCopy && (
-                                    <div className="space-y-3 rounded-xl bg-card p-4 shadow-soft">
+                                    <div className="space-y-3 rounded-3xl bg-card p-4 shadow-soft">
                                         <p className="text-sm text-muted">
                                             {t('diet.editor.copyTo', { day: t(`diet.days.long.${day}`) })}
                                         </p>
@@ -599,7 +609,7 @@ function DietPlanEditorPage() {
                                                 type="button"
                                                 onClick={() => removeMeal(meal.key)}
                                                 aria-label={t('diet.editor.removeMeal')}
-                                                className="rounded-full p-2 text-red-700 hover:bg-red-50"
+                                                className="rounded-full p-2 text-danger hover:bg-danger-soft"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </button>
@@ -608,7 +618,7 @@ function DietPlanEditorPage() {
 
                                     {/* Aynı ad ve saatte hazır öğün var: güncellensin mi, yeni mi eklensin? */}
                                     {templateChoice?.mealKey === meal.key && (
-                                        <div className="space-y-2 rounded-xl bg-cream p-3">
+                                        <div className="space-y-2 rounded-2xl bg-cream p-3">
                                             <p className="text-sm text-ink">
                                                 {t('diet.editor.templateExists', { name: templateChoice.match.name })}
                                             </p>
@@ -643,7 +653,7 @@ function DietPlanEditorPage() {
                                     {cardNotice?.key === meal.key && (
                                         <p
                                             role="status"
-                                            className={`text-sm font-semibold ${cardNotice.isError ? 'text-red-700' : 'text-brand'}`}
+                                            className={`text-sm font-semibold ${cardNotice.isError ? 'text-danger' : 'text-brand'}`}
                                         >
                                             {cardNotice.error !== undefined
                                                 ? toErrorMessage(cardNotice.error, t, cardNotice.messageKey)

@@ -1,10 +1,12 @@
+import { Suspense } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BookMarked, Home, Users, UtensilsCrossed, type LucideIcon } from 'lucide-react'
 
 import Logo from './Logo'
 import UserMenu from './UserMenu'
-import { getRole } from '../services/session'
+import { LoadingCards } from './Skeleton'
+import { getRole, homePath } from '../services/session'
 
 type Tab = {
     to: string
@@ -30,12 +32,16 @@ function AppShell() {
     const showBottomBar = tabs.length > 1
 
     return (
-        // pb-28: telefonda içerik yüzen alt menünün arkasında kalmasın
-        <div className={`relative min-h-screen sm:pb-8 ${showBottomBar ? 'pb-28' : 'pb-8'}`}>
+        // Telefonda içerik yüzen alt menünün arkasında kalmasın (iPhone alt çizgisi dahil)
+        <div
+            className={`relative min-h-screen sm:pb-8 ${
+                showBottomBar ? 'pb-[calc(7rem+env(safe-area-inset-bottom))]' : 'pb-[calc(2rem+env(safe-area-inset-bottom))]'
+            }`}
+        >
             {/* Bilgisayar: hap şeklinde sekmeler, sayfanın yeşil başlığının üstünde şeffaf durur (tek parça görünsün diye; telefonda gizli) */}
             <header className="absolute inset-x-0 top-0 z-30 hidden sm:block">
                 <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-                    <Logo />
+                    <Logo to={homePath()} />
                     <div className="flex items-center gap-3">
                         <nav className="flex gap-1 rounded-full bg-black/15 p-1">
                             {tabs.map((tab) => {
@@ -62,11 +68,19 @@ function AppShell() {
             </header>
 
             {/* O anki sayfa buraya gelir */}
-            <Outlet />
+            <Suspense
+                fallback={
+                    <div className="mx-auto max-w-5xl px-4 pt-6 sm:pt-28">
+                        <LoadingCards count={2} label={t('dashboard.loading')} />
+                    </div>
+                }
+            >
+                <Outlet />
+            </Suspense>
 
             {/* Telefon: altta yüzen koyu hap menü (bilgisayarda gizli) */}
             {showBottomBar && (
-                <nav className="fixed inset-x-4 bottom-3 z-40 flex gap-1 rounded-full bg-ink/90 p-1.5 shadow-float backdrop-blur-md sm:hidden">
+                <nav className="fixed inset-x-4 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 flex gap-1 rounded-full bg-ink/90 p-1.5 shadow-float backdrop-blur-md sm:hidden">
                     {tabs.map((tab) => {
                         const Icon = tab.icon
                         return (

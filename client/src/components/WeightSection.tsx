@@ -16,6 +16,8 @@ import { toErrorMessage } from '../services/errorMessage'
 import { getUsername } from '../services/session'
 import { formatKg } from '../utils/format'
 import WeightForm from './WeightForm'
+import { useFeedback } from './feedback/useFeedback'
+import { SkeletonCard } from './Skeleton'
 import WeightSummaryCards from './WeightSummaryCards'
 import WeightChart from './WeightChart'
 import type { CreateWeightEntryRequest, WeightEntry, WeightSummary } from '../types/weight'
@@ -33,6 +35,7 @@ type WeightSectionProps = {
 
 function WeightSection({ clientId, onSummaryChange, highlightIds = [], showSummaryCards = true }: WeightSectionProps) {
     const { t, i18n } = useTranslation()
+    const { toast, confirm } = useFeedback()
     const currentUsername = getUsername()
 
     const [entries, setEntries] = useState<WeightEntry[]>([])
@@ -89,10 +92,11 @@ function WeightSection({ clientId, onSummaryChange, highlightIds = [], showSumma
     const handleAdd = async (request: CreateWeightEntryRequest) => {
         await addToApi(request)
         await reload()
+        toast(t('weights.added'))
     }
 
     const handleDelete = async (entry: WeightEntry) => {
-        if (!window.confirm(t('weights.confirmDelete'))) {
+        if (!(await confirm({ title: t('weights.confirmDelete'), confirmLabel: t('common.delete'), danger: true }))) {
             return
         }
 
@@ -100,6 +104,7 @@ function WeightSection({ clientId, onSummaryChange, highlightIds = [], showSumma
         try {
             await deleteFromApi(entry.id)
             await reload()
+            toast(t('common.deleted'))
         } catch (error) {
             setActionError(toErrorMessage(error, t, 'weights.deleteError'))
         }
@@ -125,14 +130,14 @@ function WeightSection({ clientId, onSummaryChange, highlightIds = [], showSumma
             <WeightForm onSubmit={handleAdd} />
 
             {actionError && (
-                <p className="mt-4 text-sm text-red-700">{actionError}</p>
+                <p className="mt-4 text-sm text-danger">{actionError}</p>
             )}
 
             {loading && (
-                <p className="mt-4 text-muted">{t('dashboard.loading')}</p>
+                <SkeletonCard bare lines={4} label={t('dashboard.loading')} />
             )}
 
-            {error && <p className="mt-4 text-red-700">{error}</p>}
+            {error && <p className="mt-4 text-danger">{error}</p>}
 
             {!loading && !error && entries.length === 0 && (
                 <p className="mt-4 text-muted">{t('weights.empty')}</p>
@@ -149,8 +154,13 @@ function WeightSection({ clientId, onSummaryChange, highlightIds = [], showSumma
                         >
                             <span className="text-muted">
                                 {formatDate(entry.measuredOn)}
+                                {/* Kim girdi: kullanıcı adı yerine "Sen" / "Diyetisyenin" / "Danışan" */}
                                 <span className="ml-2 text-xs text-muted/70">
-                                    {entry.enteredBy}
+                                    {entry.enteredBy === currentUsername
+                                        ? t('weights.byYou')
+                                        : clientId !== undefined
+                                          ? t('weights.byClient')
+                                          : t('weights.byDietitian')}
                                 </span>
                                 {highlightIds.includes(entry.id) && (
                                     <span className="ml-2 rounded-full bg-brand px-2 py-0.5 text-[0.65rem] font-semibold text-cream">
@@ -168,7 +178,7 @@ function WeightSection({ clientId, onSummaryChange, highlightIds = [], showSumma
                                     type="button"
                                     onClick={() => handleDelete(entry)}
                                     aria-label={t('weights.delete')}
-                                    className="rounded-full p-2 text-red-700 hover:bg-red-50"
+                                    className="rounded-full p-2.5 text-danger hover:bg-danger-soft"
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </button>

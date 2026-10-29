@@ -16,7 +16,7 @@ function WeightSummaryCards({ summary }: WeightSummaryCardsProps) {
         if (value === null || value === 0) {
             return 'text-muted'
         }
-        return value < 0 ? 'text-brand' : 'text-red-700'
+        return value < 0 ? 'text-brand' : 'text-danger'
     }
 
     const cards = [
@@ -27,7 +27,7 @@ function WeightSummaryCards({ summary }: WeightSummaryCardsProps) {
     return (
         <div className="mt-4 grid grid-cols-2 gap-3">
             {cards.map((card) => (
-                <div key={card.label} className="rounded-xl bg-cream p-4 text-center">
+                <div key={card.label} className="rounded-2xl bg-cream p-4 text-center">
                     <p className={`text-2xl font-extrabold tracking-tight ${changeColor(card.value)}`}>
                         {card.value === null ? '—' : formatKg(card.value, i18n.language, true)}
                     </p>

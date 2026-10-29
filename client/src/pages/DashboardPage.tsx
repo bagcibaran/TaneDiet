@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { CalendarDays, ChevronRight, Flag, Salad, Trophy, TrendingDown, type LucideIcon } from 'lucide-react'
+import { CalendarDays, ChevronRight, Flag, Salad, Scale, Trophy, TrendingDown, type LucideIcon } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
 import WeightSection from '../components/WeightSection'
 import { getMyDietPlan } from '../services/dietService'
+import { toErrorMessage } from '../services/errorMessage'
 import { getRole, getUsername } from '../services/session'
 import { MEAL_DOT_COLORS, mealsOfDay, todayIndex } from '../diet/dietUtils'
 import { formatKg } from '../utils/format'
 import type { DietPlan } from '../types/diet'
 import type { WeightSummary } from '../types/weight'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 type Tile = {
     icon: LucideIcon
@@ -25,8 +27,11 @@ type Tile = {
 // Danışanın ana sayfası: başlıkta güncel kilo ve başarı rozeti, kutucuklar, bugünün menüsü, kilo takibi
 function DashboardPage() {
     const { t, i18n } = useTranslation()
+    usePageTitle(t('nav.home'))
     const [summary, setSummary] = useState<WeightSummary | null>(null)
     const [plan, setPlan] = useState<DietPlan | undefined>(undefined)
+    // Menü yüklenemezse ana sayfa yine çalışır; kartta hata gösterilir (ham hata, ekranda çevrilir)
+    const [menuError, setMenuError] = useState<unknown>(null)
 
     useEffect(() => {
         if (getRole() === 'DIETITIAN') {
@@ -39,8 +44,11 @@ function DashboardPage() {
                     setPlan(result)
                 }
             })
-            // Menü yüklenemezse ana sayfa yine çalışır; menü kartı "henüz yok" der
-            .catch(() => undefined)
+            .catch((error) => {
+                if (!cancelled) {
+                    setMenuError(error)
+                }
+            })
         return () => {
             cancelled = true
         }
@@ -65,7 +73,7 @@ function DashboardPage() {
         if (value === null || value === 0) {
             return 'text-ink'
         }
-        return value < 0 ? 'text-brand' : 'text-red-700'
+        return value < 0 ? 'text-brand' : 'text-danger'
     }
 
     const todaysMeals = plan ? mealsOfDay(plan.meals, plan.planType === 'DAILY' ? 0 : todayIndex()) : []
@@ -74,7 +82,8 @@ function DashboardPage() {
         <>
             <PageHero>
                 <p className="text-lg font-semibold text-cream/95">{t('home.greeting', { name: getUsername() })}</p>
-                <p className="mt-1 text-5xl font-extrabold tracking-tight">{latest !== null ? formatKg(latest, i18n.language) : '—'}</p>
+                {/* Henüz kilo yoksa büyük sayı yerine boşluk: karşılama kartı ilk adımı anlatır */}
+                {latest !== null && <p className="mt-1 text-5xl font-extrabold tracking-tight">{formatKg(latest, i18n.language)}</p>}
                 {change !== null && change < 0 && (
                     // Kilo verdiyse parlayan altın rozet
                     <span className="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold text-ink shine-gold">
@@ -90,26 +99,41 @@ function DashboardPage() {
             </PageHero>
 
             <PageBody>
-                {/* Renkli kutucuklar: son 7 gün, son 30 gün, başlangıç kilosu */}
-                <div className="mb-4 grid grid-cols-3 gap-2 sm:gap-3">
-                    {tiles.map((tile) => {
-                        const Icon = tile.icon
-                        return (
-                            <div
-                                key={tile.label}
-                                className="rounded-3xl bg-card p-3 shadow-soft transition hover:-translate-y-1 hover:-rotate-1 sm:p-4"
-                            >
-                                <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${tile.tone}`}>
-                                    <Icon className="h-5 w-5" />
-                                </span>
-                                <p className={`mt-2 text-base font-extrabold tracking-tight sm:text-xl ${changeColor(tile.change)}`}>
-                                    {tile.value}
-                                </p>
-                                <p className="text-xs text-muted">{tile.label}</p>
-                            </div>
-                        )
-                    })}
-                </div>
+                {/* Yeni danışan: henüz kilo yok → kutucuklar yerine karşılama ve ilk adım */}
+                {summary !== null && latest === null ? (
+                    <div className="mb-4 flex items-center gap-4 rounded-3xl bg-card p-5 shadow-soft">
+                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-peach text-peach-ink">
+                            <Scale className="h-6 w-6" />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                            <span className="block font-bold text-ink">{t('home.welcomeTitle')}</span>
+                            <span className="block text-sm text-muted">{t('home.welcomeText')}</span>
+                        </span>
+                        <a href="#kilo" className="shrink-0 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-cream shadow-soft">
+                            {t('home.welcomeCta')}
+                        </a>
+                    </div>
+                ) : (
+                    <div className="mb-4 grid grid-cols-3 gap-2 sm:gap-3">
+                        {tiles.map((tile) => {
+                            const Icon = tile.icon
+                            return (
+                                <div
+                                    key={tile.label}
+                                    className="rounded-3xl bg-card p-3 shadow-soft transition hover:-translate-y-1 sm:p-4"
+                                >
+                                    <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${tile.tone}`}>
+                                        <Icon className="h-5 w-5" />
+                                    </span>
+                                    <p className={`mt-2 text-base font-extrabold tracking-tight sm:text-xl ${changeColor(tile.change)}`}>
+                                        {tile.value}
+                                    </p>
+                                    <p className="text-xs text-muted">{tile.label}</p>
+                                </div>
+                            )
+                        })}
+                    </div>
+                )}
 
                 {/* Bugünün menüsü: öğün adları ve saatleri; ayrıntı "Menüm" sekmesinde */}
                 <Link
@@ -138,12 +162,17 @@ function DashboardPage() {
                                 </span>
                             ))}
                         </span>
+                    ) : menuError !== null ? (
+                        <span className="mt-2 block text-sm text-danger">{toErrorMessage(menuError, t, 'diet.loadError')}</span>
                     ) : (
                         <span className="mt-2 block text-sm text-muted">{t('home.noMenu')}</span>
                     )}
                 </Link>
 
-                <WeightSection onSummaryChange={setSummary} showSummaryCards={false} />
+                {/* "Kilomu gir" düğmesi buraya kaydırır */}
+                <div id="kilo" className="scroll-mt-4">
+                    <WeightSection onSummaryChange={setSummary} showSummaryCards={false} />
+                </div>
             </PageBody>
         </>
     )

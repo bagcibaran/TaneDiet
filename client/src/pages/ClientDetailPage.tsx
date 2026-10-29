@@ -13,6 +13,7 @@ import { formatKg } from '../utils/format'
 import type { UserResponse } from '../types/auth'
 import type { ClientActivity } from '../types/client'
 import type { WeightSummary } from '../types/weight'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 // Diyetisyenin bir danışanı yönettiği sayfa: /clients/:id
 function ClientDetailPage() {
@@ -23,6 +24,7 @@ function ClientDetailPage() {
     const clientId = Number(id)
 
     const [client, setClient] = useState<UserResponse | null>(null)
+    usePageTitle(client?.username)
     const [summary, setSummary] = useState<WeightSummary | null>(null)
     // Diyetisyen son baktığından beri neler yeni (sayfada işaretlemek için)
     const [activity, setActivity] = useState<ClientActivity | null>(null)

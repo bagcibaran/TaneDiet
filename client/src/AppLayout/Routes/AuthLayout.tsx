@@ -15,7 +15,7 @@ function AuthLayout({ children }: AuthLayoutProps) {
             <div className="relative rounded-b-[2.25rem] bg-linear-160 from-brand-deep via-brand to-brand-light px-5 pb-20 pt-8">
                 <HeroBlobs />
                 <div className="relative mx-auto flex max-w-md animate-rise items-start justify-between">
-                    <Logo size="lg" />
+                    <Logo size="lg" to="/" />
                     <LanguageToggle />
                 </div>
             </div>

@@ -34,7 +34,7 @@ function RecipeSheet({ recipe, onClose }: RecipeSheetProps) {
     return createPortal(
         <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true" aria-label={recipe.name}>
             <button type="button" aria-label={t('landing.close')} onClick={onClose} className="absolute inset-0 bg-ink/40" />
-            <div className="relative max-h-[85vh] w-full max-w-lg animate-rise overflow-y-auto rounded-t-[2rem] bg-card shadow-float sm:rounded-[2rem]">
+            <div className="relative max-h-[85vh] w-full max-w-lg animate-rise overflow-y-auto rounded-t-[2rem] bg-card pb-[env(safe-area-inset-bottom)] shadow-float sm:rounded-[2rem] sm:pb-0">
                 <div className={`flex h-32 items-center justify-center text-7xl ${TONE_CLASSES[recipe.tone]}`}>{recipe.emoji}</div>
                 <button
                     type="button"

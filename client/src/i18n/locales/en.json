@@ -10,7 +10,8 @@
     "registered": "Registration successful, you can sign in now",
     "lockedTitle": "Your service period has ended",
     "lockedText": "Your data is kept. When your dietitian reopens your account, you continue where you left off.",
-    "noAccount": "No account? Sign-up is done with an invite link after purchase."
+    "noAccount": "No account? Sign-up is done with an invite link after purchase.",
+    "submitting": "Signing in..."
   },
   "register": {
     "title": "Create an account",
@@ -29,26 +30,14 @@
     "packageLine": "Your package: {{months}} months",
     "checkingInvite": "Checking your invite link...",
     "passwordHint": "At least 8 characters",
-    "passwordTooShort": "The password must be at least 8 characters"
+    "passwordTooShort": "The password must be at least 8 characters",
+    "submitting": "Creating account..."
   },
   "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Welcome",
     "logout": "Logout",
-    "tasksTitle": "My Tasks",
-    "loading": "Loading...",
-    "empty": "You have no tasks yet",
-    "loadError": "Tasks could not be loaded",
-    "newTask": "New task",
-    "addTask": "Add task",
-    "createError": "Task could not be created",
-    "updateError": "Task could not be updated",
-    "deleteError": "Task could not be deleted"
+    "loading": "Loading..."
   },
   "users": {
-    "title": "Users",
-    "back": "Back to dashboard",
-    "role": "Role",
     "loadError": "Users could not be loaded"
   },
   "roles": {
@@ -75,7 +64,11 @@
     "sinceStart": "Since start",
     "last7Days": "Last 7 days",
     "last30Days": "Last 30 days",
-    "new": "New"
+    "new": "New",
+    "added": "Weight saved",
+    "byYou": "You",
+    "byClient": "Client",
+    "byDietitian": "Your dietitian"
   },
   "clients": {
     "title": "Client",
@@ -93,7 +86,8 @@
       "daysLeft_one": "{{count}} day left",
       "daysLeft_other": "{{count}} days left"
     },
-    "hasPlan": "Has a diet program"
+    "hasPlan": "Has a diet program",
+    "emptyHint": "Send an invite link to a client who has paid; they appear here once they open their account."
   },
   "nav": {
     "home": "Home",
@@ -105,7 +99,8 @@
     "language": "Language"
   },
   "brand": {
-    "tagline": "online diet"
+    "tagline": "online diet",
+    "home": "Back to home"
   },
   "home": {
     "greeting": "Hi {{name}} 👋",
@@ -116,7 +111,10 @@
     "start": "Start",
     "todayMenu": "Today's menu",
     "seeAll": "All",
-    "noMenu": "Your menu will appear here once your dietitian prepares it."
+    "noMenu": "Your menu will appear here once your dietitian prepares it.",
+    "welcomeTitle": "Welcome! 🌿",
+    "welcomeText": "Start by entering your first weight; your progress will show here.",
+    "welcomeCta": "Enter my weight"
   },
   "intake": {
     "title": "Pre-interview form",
@@ -136,7 +134,7 @@
     "bloodTestNote": "Please send your blood test results from the last 3 months via WhatsApp. If you have not had one, please get a blood test covering: complete blood count, fasting blood glucose, insulin, HbA1c, thyroid tests (TSH, T3, T4), iron, B12, vitamin D, cholesterol and triglyceride profile, liver and kidney function tests.",
     "doctorNote": "If you have a chronic disease or take medication regularly, ask your doctor whether there is any specific nutrition advice for you.",
     "thanksTitle": "Thank you!",
-    "thanks": "Your form has been sent to your dietitian. If anything changes, you can update it any time from the Profile page.",
+    "thanks": "Your form was sent to your dietitian. If anything changes, update it anytime from the menu at the top right (\"My intake form\").",
     "goHome": "Go to home",
     "loadError": "The form could not be loaded",
     "saveError": "The form could not be saved",
@@ -354,7 +352,8 @@
       "addAsNew": "Add as new",
       "templateNeedsName": "Give the meal a name first",
       "addToAllDays": "Add to all days",
-      "addedToAllDays": "Added to the other days"
+      "addedToAllDays": "Added to the other days",
+      "savedToast": "Program saved"
     },
     "library": {
       "pageHint": "Edit the meals and items you write often",
@@ -432,7 +431,8 @@
     "closeNow": "Close access now",
     "confirmClose": "Close this client's access now? Their data is kept; you can reopen it later.",
     "error": "The service period could not be changed",
-    "confirmPastDate": "This date is in the past: the client's access closes immediately. Continue?"
+    "confirmPastDate": "This date is in the past: the client's access closes immediately. Continue?",
+    "saved": "Service period updated"
   },
   "landing": {
     "clientLogin": "Client login",
@@ -469,6 +469,20 @@
     "steps": "Steps",
     "close": "Close",
     "finalTitle": "Ready? Let's start 🌿",
-    "finalText": "Ask your questions on WhatsApp and we will choose the right package together."
+    "finalText": "Ask your questions on WhatsApp and we will choose the right package together.",
+    "footerText": "No bans, made for you: sustainable online diet counselling."
+  },
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "continue": "Continue",
+    "saved": "Saved",
+    "deleted": "Deleted"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The page you are looking for may have moved or never existed.",
+    "toHome": "Back to the home page",
+    "toApp": "Back to the app"
   }
 }

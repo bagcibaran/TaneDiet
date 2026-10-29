@@ -8,10 +8,12 @@ import WhatsAppButton from '../components/WhatsAppButton'
 import { errorTextClass, inputClass, labelClass, primaryButtonClass } from '../components/ui'
 import { lookupInvite, registerUser } from '../services/authService'
 import { toErrorMessage } from '../services/errorMessage'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 // Kayıt yalnızca diyetisyenin gönderdiği davet linkiyle: /register?invite=<token>
 function RegisterPage() {
     const { t } = useTranslation()
+    usePageTitle(t('register.title'))
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const inviteToken = searchParams.get('invite') ?? ''
@@ -25,6 +27,8 @@ function RegisterPage() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [error, setError] = useState('')
+    // İstek sürerken düğme kilitli: iki kez basılınca iki istek gitmesin
+    const [submitting, setSubmitting] = useState(false)
 
     useEffect(() => {
         if (inviteToken === '') {
@@ -49,6 +53,9 @@ function RegisterPage() {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        if (submitting) {
+            return
+        }
         setError('')
 
         if (password.length < 8) {
@@ -61,12 +68,15 @@ function RegisterPage() {
             return
         }
 
+        setSubmitting(true)
         try {
             await registerUser({ username, email, password, inviteToken })
             navigate('/login?reason=registered')
         } catch (error) {
             // 409 gelirse backend'in mesajı gösterilir: "Bu e-posta adresi zaten kayıtlı" gibi
             setError(toErrorMessage(error, t, 'register.failed'))
+        } finally {
+            setSubmitting(false)
         }
     }
 
@@ -169,8 +179,8 @@ function RegisterPage() {
 
                 {error && <p className={errorTextClass}>{error}</p>}
 
-                <button type="submit" className={primaryButtonClass}>
-                    {t('register.submit')}
+                <button type="submit" disabled={submitting} className={primaryButtonClass}>
+                    {submitting ? t('register.submitting') : t('register.submit')}
                 </button>
             </form>
 

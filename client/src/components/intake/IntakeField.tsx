@@ -155,7 +155,7 @@ function IntakeField({ field, value, onChange, error }: IntakeFieldProps) {
             {labelRow}
             {control}
             {error && (
-                <p className="mt-1 text-sm text-red-700">
+                <p className="mt-1 text-sm text-danger">
                     {t(error, { min: field.min, max: error === 'intake.errors.tooLong' ? maxLength : field.max })}
                 </p>
             )}

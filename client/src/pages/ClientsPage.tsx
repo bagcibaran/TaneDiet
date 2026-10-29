@@ -1,18 +1,21 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ChevronRight, CircleCheck, Link2, Search } from 'lucide-react'
+import { ChevronRight, CircleCheck, Link2, Search, UserPlus } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
 import InvitePanel from '../components/invites/InvitePanel'
+import { SkeletonCard } from '../components/Skeleton'
 import { inputClass } from '../components/ui'
 import { getClients } from '../services/clientService'
 import { toErrorMessage } from '../services/errorMessage'
 import type { ClientOverview } from '../types/client'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 // Diyetisyenin danışan listesi: arama + her kartta bildirimler
 function ClientsPage() {
     const { t } = useTranslation()
+    usePageTitle(t('nav.clients'))
 
     const [clients, setClients] = useState<ClientOverview[]>([])
     const [loading, setLoading] = useState(true)
@@ -99,12 +102,31 @@ function ClientsPage() {
                 </div>
 
                 <section className="rounded-3xl bg-card p-2 shadow-soft">
-                    {loading && <p className="p-4 text-muted">{t('dashboard.loading')}</p>}
+                    {loading && (
+                        <div className="px-3 pb-3">
+                            <SkeletonCard bare lines={4} label={t('dashboard.loading')} />
+                        </div>
+                    )}
 
-                    {error !== null && <p className="p-4 text-red-700">{toErrorMessage(error, t, 'users.loadError')}</p>}
+                    {error !== null && <p className="p-4 text-danger">{toErrorMessage(error, t, 'users.loadError')}</p>}
 
                     {!loading && error === null && clients.length === 0 && (
-                        <p className="p-4 text-muted">{t('clients.empty')}</p>
+                        // Henüz danışan yok: ilk adım davet göndermek
+                        <div className="flex flex-col items-center px-6 py-10 text-center">
+                            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sage text-brand">
+                                <UserPlus className="h-7 w-7" />
+                            </span>
+                            <p className="mt-4 font-bold text-ink">{t('clients.empty')}</p>
+                            <p className="mt-1 max-w-xs text-sm text-muted">{t('clients.emptyHint')}</p>
+                            <button
+                                type="button"
+                                onClick={() => setInviteOpen(true)}
+                                className="mt-5 flex items-center gap-1.5 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-cream shadow-soft"
+                            >
+                                <Link2 className="h-4 w-4" />
+                                {t('invites.open')}
+                            </button>
+                        </div>
                     )}
 
                     {!loading && error === null && clients.length > 0 && visibleClients.length === 0 && (

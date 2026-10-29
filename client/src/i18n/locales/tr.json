@@ -10,7 +10,8 @@
     "registered": "Kayıt başarılı, şimdi giriş yapabilirsin",
     "lockedTitle": "Hizmet süren doldu",
     "lockedText": "Bilgilerin silinmedi. Diyetisyenin hesabını yeniden açınca kaldığın yerden devam edersin.",
-    "noAccount": "Hesabın yok mu? Kayıt, hizmet aldıktan sonra davet linkiyle yapılır."
+    "noAccount": "Hesabın yok mu? Kayıt, hizmet aldıktan sonra davet linkiyle yapılır.",
+    "submitting": "Giriş yapılıyor..."
   },
   "register": {
     "title": "Hesap oluştur",
@@ -29,26 +30,14 @@
     "packageLine": "Paketin: {{months}} ay",
     "checkingInvite": "Davet linkin kontrol ediliyor...",
     "passwordHint": "En az 8 karakter",
-    "passwordTooShort": "Şifre en az 8 karakter olmalı"
+    "passwordTooShort": "Şifre en az 8 karakter olmalı",
+    "submitting": "Hesap açılıyor..."
   },
   "dashboard": {
-    "title": "Kontrol Paneli",
-    "welcome": "Hoş geldin",
     "logout": "Çıkış yap",
-    "tasksTitle": "Görevlerim",
-    "loading": "Yükleniyor...",
-    "empty": "Henüz görevin yok",
-    "loadError": "Görevler yüklenemedi",
-    "newTask": "Yeni görev",
-    "addTask": "Görev ekle",
-    "createError": "Görev oluşturulamadı",
-    "updateError": "Görev güncellenemedi",
-    "deleteError": "Görev silinemedi"
+    "loading": "Yükleniyor..."
   },
   "users": {
-    "title": "Kullanıcılar",
-    "back": "Kontrol paneline dön",
-    "role": "Rol",
     "loadError": "Kullanıcılar yüklenemedi"
   },
   "roles": {
@@ -75,7 +64,11 @@
     "sinceStart": "Başlangıçtan beri",
     "last7Days": "Son 7 gün",
     "last30Days": "Son 30 gün",
-    "new": "Yeni"
+    "new": "Yeni",
+    "added": "Kilo kaydedildi",
+    "byYou": "Sen",
+    "byClient": "Danışan",
+    "byDietitian": "Diyetisyenin"
   },
   "clients": {
     "title": "Danışan",
@@ -93,7 +86,8 @@
       "daysLeft_one": "{{count}} gün kaldı",
       "daysLeft_other": "{{count}} gün kaldı"
     },
-    "hasPlan": "Diyet programı var"
+    "hasPlan": "Diyet programı var",
+    "emptyHint": "Ödeme yapan danışanına bir davet linki gönder; hesabını açınca burada görünür."
   },
   "nav": {
     "home": "Ana sayfa",
@@ -105,7 +99,8 @@
     "language": "Dil"
   },
   "brand": {
-    "tagline": "online diyet"
+    "tagline": "online diyet",
+    "home": "Ana sayfaya dön"
   },
   "home": {
     "greeting": "Merhaba {{name}} 👋",
@@ -116,7 +111,10 @@
     "start": "Başlangıç",
     "todayMenu": "Bugünün menüsü",
     "seeAll": "Tümü",
-    "noMenu": "Diyetisyenin menünü hazırlayınca burada görünecek."
+    "noMenu": "Diyetisyenin menünü hazırlayınca burada görünecek.",
+    "welcomeTitle": "Hoş geldin! 🌿",
+    "welcomeText": "İlk kilonu girerek başla; ilerlemen burada görünecek.",
+    "welcomeCta": "Kilomu gir"
   },
   "intake": {
     "title": "Ön görüşme formu",
@@ -127,31 +125,31 @@
     "update": "Kaydet",
     "cancel": "Vazgeç",
     "saving": "Kaydediliyor...",
-    "requiredMissing": "Lütfen zorunlu soruları cevaplayın",
+    "requiredMissing": "Lütfen zorunlu soruları cevapla",
     "optional": "isteğe bağlı",
     "yes": "Evet",
     "no": "Hayır",
     "consent": "Bu formda paylaştığım sağlık bilgilerimin, beslenme danışmanlığı hizmeti kapsamında diyetisyenim tarafından işlenmesine açık rıza veriyorum.",
-    "consentRequired": "Devam etmek için açık rıza kutusunu işaretleyin",
-    "bloodTestNote": "Son 3 ay içinde yapılmış güncel kan tahlili sonuçlarınızı WhatsApp üzerinden iletiniz. Tahlil yaptırmadıysanız şu testleri içeren bir kan tahlili yaptırınız: Tam Kan Sayımı, Açlık Kan Şekeri, İnsülin, HbA1c, Tiroid Testleri (TSH, T3, T4), Demir, B12, D Vitamini, Kolesterol ve Trigliserid Profili, Karaciğer ve Böbrek Fonksiyon Testleri.",
-    "doctorNote": "Kronik bir hastalığınız veya düzenli kullandığınız ilaçlar varsa, doktorunuzdan beslenme ile ilgili özel bir öneri olup olmadığını öğreniniz.",
+    "consentRequired": "Devam etmek için açık rıza kutusunu işaretle",
+    "bloodTestNote": "Son 3 ay içinde yapılmış güncel kan tahlili sonuçlarını WhatsApp üzerinden ilet. Tahlil yaptırmadıysan şu testleri içeren bir kan tahlili yaptır: Tam Kan Sayımı, Açlık Kan Şekeri, İnsülin, HbA1c, Tiroid Testleri (TSH, T3, T4), Demir, B12, D Vitamini, Kolesterol ve Trigliserid Profili, Karaciğer ve Böbrek Fonksiyon Testleri.",
+    "doctorNote": "Kronik bir hastalığın veya düzenli kullandığın ilaçlar varsa, doktorunun beslenmeyle ilgili özel bir önerisi olup olmadığını öğren.",
     "thanksTitle": "Teşekkürler!",
-    "thanks": "Formunuz diyetisyeninize iletildi. Bilgileriniz değişirse Profil sayfasından istediğiniz zaman güncelleyebilirsiniz.",
+    "thanks": "Formun diyetisyenine iletildi. Bilgilerin değişirse sağ üstteki menüden \"Ön görüşme formum\" ile istediğin zaman güncelleyebilirsin.",
     "goHome": "Ana sayfaya git",
     "loadError": "Form yüklenemedi",
     "saveError": "Form kaydedilemedi",
     "errors": {
       "range": "{{min}} ile {{max}} arasında olmalı",
       "pastDate": "Geçmiş bir tarih olmalı",
-      "number": "Geçerli bir sayı girin",
+      "number": "Geçerli bir sayı gir",
       "required": "Bu alan zorunlu",
       "tooLong": "En fazla {{max}} karakter olabilir",
-      "decimals": "En fazla 2 ondalık basamak yazın (ör. 72,45)",
+      "decimals": "En fazla 2 ondalık basamak yaz (ör. 72,45)",
       "tooOld": "1900 veya sonrası bir tarih olmalı"
     },
     "gate": {
-      "loading": "Bilgileriniz kontrol ediliyor…",
-      "error": "Bilgileriniz kontrol edilemedi",
+      "loading": "Bilgilerin kontrol ediliyor…",
+      "error": "Bilgilerin kontrol edilemedi",
       "retry": "Tekrar dene"
     },
     "steps": {
@@ -170,38 +168,38 @@
       "heightCm": "Boy (cm)",
       "weightKg": "Kilo (kg)",
       "occupation": "Meslek",
-      "chronicDiseases": "Kronik bir hastalığınız var mı? (diyabet, hipertansiyon, tiroid vb.) Varsa belirtiniz.",
-      "surgeries": "Geçirdiğiniz önemli ameliyatlar var mı? (özellikle mide-bağırsak sistemi ile ilgiliyse)",
-      "medications": "Kullandığınız ilaçlar veya takviyeler var mı?",
-      "allergies": "Besin alerjiniz veya intoleransınız var mı?",
-      "mainMeals": "Günde kaç ana öğün tüketiyorsunuz?",
-      "eatsBreakfast": "Kahvaltı yapıyor musunuz?",
-      "waterIntake": "Günlük su tüketiminiz ne kadar?",
-      "teaCoffee": "Çay/kahve tüketiminiz nedir?",
-      "drinksSoda": "Gazlı içecek tüketiyor musunuz?",
-      "dislikedFoods": "Hangi besinleri sevmiyorsunuz veya tüketmek istemiyorsunuz?",
-      "snacks": "En sık tükettiğiniz atıştırmalıklar nelerdir?",
-      "eatingOut": "Hangi sıklıkla dışarıda yemek yiyorsunuz?",
-      "goal": "Beslenme ile ilgili hedefiniz nedir?",
-      "goalOther": "Hedefiniz \"Diğer\" ise belirtiniz",
-      "previousDiets": "Daha önce diyet yaptınız mı? Yaptıysanız nasıl bir süreç geçirdiniz?",
-      "specialDiet": "Özel bir beslenme programı uyguluyor musunuz? (vegan, vejetaryen vb.)",
-      "programStyle": "Diyet sürecinde hangi tarz bir beslenme programı size daha uygun olur?",
-      "sleepHours": "Günlük uyku süreniz kaç saattir?",
-      "energyLevel": "Gün içinde kendinizi genellikle nasıl hissediyorsunuz?",
-      "smokes": "Sigara kullanıyor musunuz?",
-      "drinksAlcohol": "Alkol tüketiminiz var mı?",
-      "alcoholFrequency": "Alkol tüketiyorsanız sıklığı",
-      "exerciseDays": "Haftada kaç gün egzersiz yapıyorsunuz?",
-      "sportTypes": "Yaptığınız spor türü nedir? (birden fazla seçebilirsiniz)",
+      "chronicDiseases": "Kronik bir hastalığın var mı? (diyabet, hipertansiyon, tiroid vb.) Varsa belirt.",
+      "surgeries": "Geçirdiğin önemli ameliyatlar var mı? (özellikle mide-bağırsak sistemiyle ilgiliyse)",
+      "medications": "Kullandığın ilaçlar veya takviyeler var mı?",
+      "allergies": "Besin alerjin veya intoleransın var mı?",
+      "mainMeals": "Günde kaç ana öğün yiyorsun?",
+      "eatsBreakfast": "Kahvaltı yapıyor musun?",
+      "waterIntake": "Günde ne kadar su içiyorsun?",
+      "teaCoffee": "Ne kadar çay/kahve içiyorsun?",
+      "drinksSoda": "Gazlı içecek içiyor musun?",
+      "dislikedFoods": "Hangi besinleri sevmiyorsun veya yemek istemiyorsun?",
+      "snacks": "En sık hangi atıştırmalıkları yiyorsun?",
+      "eatingOut": "Ne sıklıkla dışarıda yemek yiyorsun?",
+      "goal": "Beslenmeyle ilgili hedefin nedir?",
+      "goalOther": "Hedefin nedir? Kısaca yaz",
+      "previousDiets": "Daha önce diyet yaptın mı? Yaptıysan süreç nasıl geçti?",
+      "specialDiet": "Özel bir beslenme şekli uyguluyor musun? (vegan, vejetaryen vb.)",
+      "programStyle": "Diyet sürecinde hangi tarz bir program sana daha uygun olur?",
+      "sleepHours": "Günde kaç saat uyuyorsun?",
+      "energyLevel": "Gün içinde kendini genellikle nasıl hissediyorsun?",
+      "smokes": "Sigara kullanıyor musun?",
+      "drinksAlcohol": "Alkol kullanıyor musun?",
+      "alcoholFrequency": "Alkol kullanıyorsan ne sıklıkla?",
+      "exerciseDays": "Haftada kaç gün egzersiz yapıyorsun?",
+      "sportTypes": "Hangi sporları yapıyorsun? (birden fazla seçebilirsin)",
       "sportCardio": "Kardiyo (koşu, yürüyüş, bisiklet vb.)",
       "sportWeights": "Ağırlık antrenmanı",
       "sportPilatesYoga": "Pilates / Yoga",
       "sportOther": "Diğer spor türü",
-      "tracksSteps": "Günlük adım sayınızı takip ediyor musunuz?",
-      "averageSteps": "Ortalama günlük adım sayınız",
-      "digestiveProblems": "Sindirim sisteminizle ilgili bir probleminiz var mı? (kabızlık, ishal, şişkinlik vb.)",
-      "lactoseGlutenSymptoms": "Laktoz veya gluten intoleransı belirtileri yaşıyor musunuz? Şikayetlerinizi yazınız."
+      "tracksSteps": "Günlük adım sayını takip ediyor musun?",
+      "averageSteps": "Ortalama günlük adım sayın",
+      "digestiveProblems": "Sindirimle ilgili bir sorunun var mı? (kabızlık, ishal, şişkinlik vb.)",
+      "lactoseGlutenSymptoms": "Laktoz veya gluten intoleransı belirtileri yaşıyor musun? Şikayetlerini yaz."
     },
     "options": {
       "Gender": {
@@ -271,7 +269,7 @@
       "hide": "Gizle"
     },
     "profileLink": "Ön görüşme formum",
-    "profileLinkHint": "Bilgileriniz değiştiyse güncelleyin"
+    "profileLinkHint": "Bilgilerin değiştiyse güncelle"
   },
   "diet": {
     "myMenu": "Menüm",
@@ -284,7 +282,7 @@
     "preview": "Danışanın gördüğü menü",
     "history": "Geçmiş programlar",
     "noPlanDietitian": "Bu danışana henüz bir program yazılmadı.",
-    "noPlanClient": "Diyetisyeniniz henüz bir menü yazmadı. Menünüz hazır olduğunda burada görünecek.",
+    "noPlanClient": "Diyetisyenin henüz bir menü yazmadı. Menün hazır olduğunda burada görünecek.",
     "loadError": "Diyet programı yüklenemedi",
     "emptyDay": "Bu gün için menü yok.",
     "or": "veya",
@@ -354,7 +352,8 @@
       "addAsNew": "Yeni olarak ekle",
       "templateNeedsName": "Önce öğüne bir ad verin",
       "addToAllDays": "Tüm günlere ekle",
-      "addedToAllDays": "Diğer günlere eklendi"
+      "addedToAllDays": "Diğer günlere eklendi",
+      "savedToast": "Program kaydedildi"
     },
     "library": {
       "pageHint": "Sık yazdığın öğünleri ve maddeleri buradan düzenle",
@@ -432,7 +431,8 @@
     "closeNow": "Erişimi hemen kapat",
     "confirmClose": "Danışanın erişimi hemen kapatılsın mı? Bilgileri silinmez; sonra yeniden açabilirsin.",
     "error": "Hizmet süresi değiştirilemedi",
-    "confirmPastDate": "Bu tarih geçmişte: danışanın erişimi hemen kapanır. Devam edilsin mi?"
+    "confirmPastDate": "Bu tarih geçmişte: danışanın erişimi hemen kapanır. Devam edilsin mi?",
+    "saved": "Hizmet süresi güncellendi"
   },
   "landing": {
     "clientLogin": "Danışan girişi",
@@ -469,6 +469,20 @@
     "steps": "Yapılışı",
     "close": "Kapat",
     "finalTitle": "Hazırsan başlayalım 🌿",
-    "finalText": "Sorularını WhatsApp'tan sor, sana uygun paketi birlikte seçelim."
+    "finalText": "Sorularını WhatsApp'tan sor, sana uygun paketi birlikte seçelim.",
+    "footerText": "Yasaksız, sana göre sürdürülebilir online diyet danışmanlığı."
+  },
+  "common": {
+    "cancel": "Vazgeç",
+    "delete": "Sil",
+    "continue": "Devam et",
+    "saved": "Kaydedildi",
+    "deleted": "Silindi"
+  },
+  "notFound": {
+    "title": "Sayfa bulunamadı",
+    "text": "Aradığın sayfa taşınmış ya da hiç var olmamış olabilir.",
+    "toHome": "Ana sayfaya dön",
+    "toApp": "Uygulamaya dön"
   }
 }

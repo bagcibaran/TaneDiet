@@ -5,6 +5,8 @@ import { ChevronDown, Pencil, Plus, StickyNote, Trash2 } from 'lucide-react'
 
 import DayMenu from './DayMenu'
 import DayTabs from './DayTabs'
+import { useFeedback } from '../feedback/useFeedback'
+import { SkeletonCard } from '../Skeleton'
 import { deleteDietPlan, getClientDietPlans } from '../../services/dietService'
 import { toErrorMessage } from '../../services/errorMessage'
 import { mealsOfDay, todayIndex } from '../../diet/dietUtils'
@@ -17,6 +19,7 @@ type DietPlanSectionProps = {
 // Diyetisyenin danışan sayfasında: aktif program (önizleme), yeni program, geçmiş programlar
 function DietPlanSection({ clientId }: DietPlanSectionProps) {
     const { t, i18n } = useTranslation()
+    const { toast, confirm } = useFeedback()
 
     const [plans, setPlans] = useState<DietPlan[]>([])
     const [loading, setLoading] = useState(true)
@@ -37,12 +40,13 @@ function DietPlanSection({ clientId }: DietPlanSectionProps) {
     const formatDate = (date: string) => new Date(`${date.slice(0, 10)}T00:00:00`).toLocaleDateString(i18n.language)
 
     const handleDelete = async (plan: DietPlan) => {
-        if (!window.confirm(t('diet.confirmDelete', { title: plan.title }))) {
+        if (!(await confirm({ title: t('diet.confirmDelete', { title: plan.title }), confirmLabel: t('common.delete'), danger: true }))) {
             return
         }
         try {
             await deleteDietPlan(clientId, plan.id)
             setPlans((current) => current.filter((item) => item.id !== plan.id))
+            toast(t('common.deleted'))
         } catch (err) {
             setError(err)
         }
@@ -64,13 +68,13 @@ function DietPlanSection({ clientId }: DietPlanSectionProps) {
                 </Link>
             </div>
 
-            {loading && <p className="mt-3 text-muted">{t('dashboard.loading')}</p>}
-            {error !== null && <p className="mt-3 text-sm text-red-700">{toErrorMessage(error, t, 'diet.loadError')}</p>}
+            {loading && <SkeletonCard bare lines={3} label={t('dashboard.loading')} />}
+            {error !== null && <p className="mt-3 text-sm text-danger">{toErrorMessage(error, t, 'diet.loadError')}</p>}
             {!loading && error === null && !active && <p className="mt-3 text-muted">{t('diet.noPlanDietitian')}</p>}
 
             {active && (
                 <div className="mt-3 space-y-3">
-                    <div className="flex items-start justify-between gap-2 rounded-xl bg-cream p-3">
+                    <div className="flex items-start justify-between gap-2 rounded-2xl bg-cream p-3">
                         <div>
                             <p className="font-semibold text-ink">{active.title}</p>
                             <p className="text-sm text-muted">
@@ -87,7 +91,7 @@ function DietPlanSection({ clientId }: DietPlanSectionProps) {
                     </div>
 
                     {/* Danışanın gördüğü menünün önizlemesi */}
-                    <details className="group rounded-xl bg-cream px-4 py-3">
+                    <details className="group rounded-2xl bg-cream px-4 py-3">
                         <summary className="flex cursor-pointer list-none items-center justify-between font-semibold text-ink">
                             {t('diet.preview')}
                             <ChevronDown className="h-4 w-4 text-muted transition group-open:rotate-180" />
@@ -128,7 +132,7 @@ function DietPlanSection({ clientId }: DietPlanSectionProps) {
                                             type="button"
                                             onClick={() => handleDelete(plan)}
                                             aria-label={t('diet.delete')}
-                                            className="rounded-full p-2 text-red-700 hover:bg-red-50"
+                                            className="rounded-full p-2 text-danger hover:bg-danger-soft"
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </button>
@@ -141,7 +145,7 @@ function DietPlanSection({ clientId }: DietPlanSectionProps) {
                     <button
                         type="button"
                         onClick={() => handleDelete(active)}
-                        className="text-xs font-semibold text-red-700 hover:underline"
+                        className="text-xs font-semibold text-danger hover:underline"
                     >
                         {t('diet.deleteActive')}
                     </button>

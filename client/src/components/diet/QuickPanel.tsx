@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Settings2, Zap } from 'lucide-react'
 
 import { toErrorMessage } from '../../services/errorMessage'
+import { SkeletonCard } from '../Skeleton'
 import type { DietLibrary } from '../../types/dietLibrary'
 
 type QuickPanelProps = {
@@ -62,9 +63,9 @@ function QuickPanel({ library, loadError, optionMode, onOptionModeChange, onAddM
                 </button>
             </div>
 
-            {library === null && loadError === null && <p className="text-sm text-muted">{t('dashboard.loading')}</p>}
+            {library === null && loadError === null && <SkeletonCard bare lines={1} label={t('dashboard.loading')} />}
             {loadError !== null && (
-                <p className="text-sm text-red-700">{toErrorMessage(loadError, t, 'diet.library.loadError')}</p>
+                <p className="text-sm text-danger">{toErrorMessage(loadError, t, 'diet.library.loadError')}</p>
             )}
 
             {/* Öğünler: hazır öğünler ve boş öğün */}

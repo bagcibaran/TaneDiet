@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { CalendarClock, Infinity as InfinityIcon, Lock, Plus } from 'lucide-react'
 
 import { inputClass } from './ui'
+import { useFeedback } from './feedback/useFeedback'
+import { SkeletonCard } from './Skeleton'
 import { getClientAccess, updateClientAccess } from '../services/accessService'
 import { toErrorMessage } from '../services/errorMessage'
 import { PACKAGE_MONTHS, type ClientAccess, type ClientAccessRequest } from '../types/access'
@@ -14,6 +16,7 @@ type AccessPanelProps = {
 // Diyetisyenin danışan sayfasındaki "Hizmet süresi" kartı: durum + paket ekle, tarih ayarla, süresiz yap, hemen kapat
 function AccessPanel({ clientId }: AccessPanelProps) {
     const { t, i18n } = useTranslation()
+    const { toast, confirm } = useFeedback()
 
     const [access, setAccess] = useState<ClientAccess | null>(null)
     const [date, setDate] = useState('')
@@ -47,6 +50,7 @@ function AccessPanel({ clientId }: AccessPanelProps) {
             const result = await updateClientAccess(clientId, request)
             setAccess(result)
             setDate(result.accessUntil ?? '')
+            toast(t('access.saved'))
         } catch (caught) {
             setError(caught)
         } finally {
@@ -55,17 +59,17 @@ function AccessPanel({ clientId }: AccessPanelProps) {
     }
 
     // Bugünden önceki bir tarih hesabı hemen kapatır: "hemen kapat" gibi önce sorulur
-    const setEndDate = () => {
+    const setEndDate = async () => {
         const today = new Date()
         const todayText = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-        if (date < todayText && !window.confirm(t('access.confirmPastDate'))) {
+        if (date < todayText && !(await confirm({ title: t('access.confirmPastDate'), confirmLabel: t('access.closeNow'), danger: true }))) {
             return
         }
         void apply({ action: 'SET_DATE', date })
     }
 
-    const closeNow = () => {
-        if (window.confirm(t('access.confirmClose'))) {
+    const closeNow = async () => {
+        if (await confirm({ title: t('access.confirmClose'), confirmLabel: t('access.closeNow'), danger: true })) {
             void apply({ action: 'CLOSE_NOW' })
         }
     }
@@ -101,7 +105,7 @@ function AccessPanel({ clientId }: AccessPanelProps) {
                 <h2 className="font-bold text-ink">{t('access.title')}</h2>
             </div>
 
-            {access === null && error === null && <p className="mt-3 text-muted">{t('dashboard.loading')}</p>}
+            {access === null && error === null && <SkeletonCard bare lines={2} label={t('dashboard.loading')} />}
 
             {access && (
                 <>
@@ -139,7 +143,7 @@ function AccessPanel({ clientId }: AccessPanelProps) {
                         <button
                             type="button"
                             disabled={busy || date === ''}
-                            onClick={setEndDate}
+                            onClick={() => void setEndDate()}
                             className={smallButton}
                         >
                             {t('access.save')}
@@ -159,8 +163,8 @@ function AccessPanel({ clientId }: AccessPanelProps) {
                         <button
                             type="button"
                             disabled={busy || access.locked}
-                            onClick={closeNow}
-                            className="flex items-center justify-center gap-1 rounded-full border border-red-200 bg-cream px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50 disabled:opacity-50"
+                            onClick={() => void closeNow()}
+                            className="flex items-center justify-center gap-1 rounded-full border border-danger/30 bg-cream px-3 py-2 text-sm font-semibold text-danger transition hover:bg-danger-soft disabled:opacity-50"
                         >
                             <Lock className="h-4 w-4" />
                             {t('access.closeNow')}
@@ -169,7 +173,7 @@ function AccessPanel({ clientId }: AccessPanelProps) {
                 </>
             )}
 
-            {error !== null && <p className="mt-3 text-sm text-red-700">{toErrorMessage(error, t, 'access.error')}</p>}
+            {error !== null && <p className="mt-3 text-sm text-danger">{toErrorMessage(error, t, 'access.error')}</p>}
         </section>
     )
 }

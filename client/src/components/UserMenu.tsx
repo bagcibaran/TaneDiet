@@ -86,7 +86,7 @@ function UserMenu() {
                     <button
                         type="button"
                         onClick={handleLogout}
-                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-50"
+                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-danger hover:bg-danger-soft"
                     >
                         <LogOut className="h-4 w-4" />
                         {t('dashboard.logout')}

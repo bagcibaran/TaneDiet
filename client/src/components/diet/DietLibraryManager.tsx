@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Check, Pencil, Plus, Trash2, X } from 'lucide-react'
 
 import { errorTextClass, inputClass } from '../ui'
+import { useFeedback } from '../feedback/useFeedback'
 import { itemLines, sortTemplates } from '../../diet/dietUtils'
 import {
     addQuickItem,
@@ -33,12 +34,13 @@ const toRequest = (draft: MealDraft): MealTemplateRequest => ({
     items: draft.items,
 })
 
-const chipButtonClass = 'rounded-full p-1 text-muted hover:bg-cream hover:text-brand'
+const chipButtonClass = 'rounded-full p-2 text-muted hover:bg-cream hover:text-brand'
 
 // Hazırlar: diyetisyenin hazır öğünlerini ve hızlı maddelerini ekleme, düzenleme, silme.
 // "Hazırlar" sekmesinde ve program editörünün üstünde açılan pencerede aynı bileşen kullanılır.
 function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
     const { t } = useTranslation()
+    const { toast, confirm } = useFeedback()
 
     // Düzenlenen hazır öğün: id, 'new' (yeni) ya da null
     const [editingMeal, setEditingMeal] = useState<number | 'new' | null>(null)
@@ -119,16 +121,23 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
                 }))
             }
             setEditingMeal(null)
+            toast(t('common.saved'))
         })
     }
 
-    const removeMeal = (meal: MealTemplate) => {
-        if (!window.confirm(t('diet.library.confirmDeleteMeal', { name: meal.name }))) {
+    const removeMeal = async (meal: MealTemplate) => {
+        const ok = await confirm({
+            title: t('diet.library.confirmDeleteMeal', { name: meal.name }),
+            confirmLabel: t('common.delete'),
+            danger: true,
+        })
+        if (!ok) {
             return
         }
         void run(`meal-${meal.id}`, async () => {
             await deleteMealTemplate(meal.id)
             onChange((current) => ({ ...current, meals: current.meals.filter((item) => item.id !== meal.id) }))
+            toast(t('common.deleted'))
         })
     }
 
@@ -208,13 +217,19 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
         })
     }
 
-    const removeCategory = (id: number, name: string) => {
-        if (!window.confirm(t('diet.library.confirmDeleteCategory', { name }))) {
+    const removeCategory = async (id: number, name: string) => {
+        const ok = await confirm({
+            title: t('diet.library.confirmDeleteCategory', { name }),
+            confirmLabel: t('common.delete'),
+            danger: true,
+        })
+        if (!ok) {
             return
         }
         void run(`category-${id}`, async () => {
             await deleteQuickCategory(id)
             onChange((current) => ({ ...current, categories: current.categories.filter((category) => category.id !== id) }))
+            toast(t('common.deleted'))
         })
     }
 
@@ -313,10 +328,10 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => removeMeal(meal)}
+                                        onClick={() => void removeMeal(meal)}
                                         disabled={busy}
                                         aria-label={t('diet.delete')}
-                                        className="rounded-full p-2 text-red-700 hover:bg-red-50"
+                                        className="rounded-full p-2 text-danger hover:bg-danger-soft"
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </button>
@@ -378,10 +393,10 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => removeCategory(category.id, category.name)}
+                                        onClick={() => void removeCategory(category.id, category.name)}
                                         disabled={busy}
                                         aria-label={t('diet.library.deleteCategory')}
-                                        className="rounded-full p-2 text-red-700 hover:bg-red-50"
+                                        className="rounded-full p-2 text-danger hover:bg-danger-soft"
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </button>
@@ -440,7 +455,7 @@ function DietLibraryManager({ library, onChange }: DietLibraryManagerProps) {
                                             onClick={() => void removeItem(category.id, item.id)}
                                             disabled={busy}
                                             aria-label={t('diet.library.deleteItem')}
-                                            className="rounded-full p-1 text-muted hover:bg-red-50 hover:text-red-700"
+                                            className="rounded-full p-1 text-muted hover:bg-danger-soft hover:text-danger"
                                         >
                                             <X className="h-3.5 w-3.5" />
                                         </button>

@@ -5,6 +5,7 @@ import { BellDot, ChevronDown, ClipboardList } from 'lucide-react'
 import { INTAKE_STEPS, type IntakeFieldConfig, type IntakeFieldName } from '../../intake/intakeSteps'
 import { getClientIntake } from '../../services/intakeService'
 import { toErrorMessage } from '../../services/errorMessage'
+import { SkeletonCard } from '../Skeleton'
 import type { IntakeForm } from '../../types/intake'
 import type { IntakeStatus } from '../../types/client'
 
@@ -131,9 +132,9 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
                 )}
             </div>
 
-            {loading && <p className="mt-3 text-muted">{t('dashboard.loading')}</p>}
+            {loading && <SkeletonCard bare lines={2} label={t('dashboard.loading')} />}
             {error !== null && (
-                <p className="mt-3 text-sm text-red-700">{toErrorMessage(error, t, 'intake.summary.loadError')}</p>
+                <p className="mt-3 text-sm text-danger">{toErrorMessage(error, t, 'intake.summary.loadError')}</p>
             )}
             {!loading && error === null && !form && <p className="mt-3 text-muted">{t('intake.summary.notFilled')}</p>}
 
@@ -141,7 +142,7 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
                 <>
                     {/* Bildirim: form yeni mi, hangi sorular değişti? */}
                     {hasNews && (
-                        <p className="mt-3 flex items-start gap-2 rounded-xl bg-mint/30 p-3 text-sm text-ink">
+                        <p className="mt-3 flex items-start gap-2 rounded-2xl bg-mint/30 p-3 text-sm text-ink">
                             <BellDot className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                             {intakeStatus === 'NEW'
                                 ? t('intake.summary.newBanner')
@@ -177,7 +178,7 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
                                 <details
                                     key={`${step.key}-${stepChanged}`}
                                     open={stepChanged}
-                                    className="group rounded-xl bg-cream px-4 py-3"
+                                    className="group rounded-2xl bg-cream px-4 py-3"
                                 >
                                     <summary className="flex cursor-pointer list-none items-center justify-between font-semibold text-ink">
                                         <span className="flex items-center gap-2">

@@ -20,7 +20,7 @@ function LandingHero() {
             <HeroBlobs />
             <div className="relative mx-auto max-w-3xl">
                 <div className="flex items-center justify-between gap-3 animate-rise">
-                    <Logo />
+                    <Logo to="/" />
                     <div className="flex items-center gap-2">
                         <LanguageToggle />
                         {/* Giriş yapmışsa uygulamaya, değilse giriş sayfasına */}

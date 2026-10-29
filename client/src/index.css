@@ -26,6 +26,8 @@
     --color-peach-ink: #b8741a;    /* açık zeminlerin üzerindeki ikon renkleri */
     --color-lilac-ink: #6a4fb3;
     --color-sky-ink: #2a7bb0;
+    --color-danger: #b3261e;       /* hata yazıları, silme düğmeleri */
+    --color-danger-soft: #fdecea;
     --color-whatsapp: #25d366;     /* WhatsApp düğmesi */
     --color-whatsapp-ink: #073b1d;
 
@@ -94,6 +96,12 @@
 
 body {
     @apply bg-cream text-ink antialiased;
+}
+
+/* Klavyeyle gezinirken odak: yeşil zeminde de krem zeminde de görünen bal sarısı çerçeve */
+:focus-visible {
+    outline: 2px solid var(--color-honey);
+    outline-offset: 2px;
 }
 
 /* Sayfa içeriği açılışta sırayla kayarak gelir (PageBody'nin doğrudan çocukları) */

@@ -7,11 +7,13 @@ import Logo from '../components/Logo'
 import LanguageToggle from '../components/LanguageToggle'
 import { HeroBlobs } from '../components/PageLayout'
 import IntakeField from '../components/intake/IntakeField'
+import { SkeletonCard } from '../components/Skeleton'
 import { errorTextClass, primaryButtonClass } from '../components/ui'
 import { INTAKE_STEPS, fromForm, isVisible, toRequest, validateField, type IntakeAnswers } from '../intake/intakeSteps'
 import { getMyIntake, saveMyIntake } from '../services/intakeService'
 import { toErrorMessage } from '../services/errorMessage'
 import { clearSession, getUsername } from '../services/session'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 type Draft = {
     answers: IntakeAnswers
@@ -49,6 +51,7 @@ function clearDraft() {
 // Ön görüşme formu: 7 adım. İlk kez doldurulurken açık rıza ister, sonra güncellenebilir.
 function IntakePage() {
     const { t } = useTranslation()
+    usePageTitle(t('intake.title'))
     const navigate = useNavigate()
 
     const [answers, setAnswers] = useState<IntakeAnswers>({})
@@ -169,7 +172,7 @@ function IntakePage() {
                 <HeroBlobs />
                 <div className="relative mx-auto max-w-xl">
                     <div className="flex items-start justify-between">
-                        <Logo />
+                        <Logo to="/dashboard" />
                         <LanguageToggle />
                     </div>
 
@@ -199,7 +202,7 @@ function IntakePage() {
                         <p className={errorTextClass}>{toErrorMessage(loadError, t, 'intake.loadError')}</p>
                     )}
 
-                    {loadError === null && hasSavedForm === null && <p className="text-muted">{t('dashboard.loading')}</p>}
+                    {loadError === null && hasSavedForm === null && <SkeletonCard lines={5} label={t('dashboard.loading')} />}
 
                     {finished && (
                         <div className="space-y-4">
@@ -213,7 +216,7 @@ function IntakePage() {
                     {!finished && hasSavedForm !== null && (
                         <div className="space-y-5">
                             {current.note === 'bloodTest' && (
-                                <div className="flex gap-3 rounded-xl bg-mint/30 p-4 text-sm text-ink">
+                                <div className="flex gap-3 rounded-2xl bg-mint/30 p-4 text-sm text-ink">
                                     <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                                     <div className="space-y-2">
                                         <p>{t('intake.bloodTestNote')}</p>
@@ -234,7 +237,7 @@ function IntakePage() {
 
                             {/* Açık rıza: yalnızca ilk gönderimde, son adımda */}
                             {isLastStep && !hasSavedForm && (
-                                <label className="flex gap-3 rounded-xl border border-line bg-cream p-4 text-sm text-ink">
+                                <label className="flex gap-3 rounded-2xl border border-line bg-cream p-4 text-sm text-ink">
                                     <input
                                         type="checkbox"
                                         checked={consent}

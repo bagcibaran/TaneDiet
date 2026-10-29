@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import Logo from './Logo'
 import UserMenu from './UserMenu'
+import { homePath } from '../services/session'
 
 type HeroProps = {
     children?: ReactNode
@@ -29,7 +30,7 @@ export function PageHero({ children }: HeroProps) {
             <HeroBlobs />
             <div className="relative mx-auto max-w-5xl">
                 <div className="flex items-center justify-between sm:hidden">
-                    <Logo />
+                    <Logo to={homePath()} />
                     <UserMenu />
                 </div>
                 {children && <div className="mt-5 animate-rise sm:mt-0">{children}</div>}

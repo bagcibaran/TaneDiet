@@ -106,7 +106,7 @@ function InvitePanel({ onClose }: InvitePanelProps) {
     return (
         <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true" aria-label={t('invites.title')}>
             <button type="button" aria-label={t('invites.close')} onClick={onClose} className="absolute inset-0 bg-ink/40" />
-            <div className="relative max-h-[90vh] w-full max-w-lg animate-rise overflow-y-auto rounded-t-[2rem] bg-cream p-5 shadow-float sm:rounded-[2rem]">
+            <div className="relative max-h-[90vh] w-full max-w-lg animate-rise overflow-y-auto rounded-t-[2rem] bg-cream p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-float sm:rounded-[2rem] sm:pb-5">
                 <div className="mb-4 flex items-center justify-between">
                     <h2 className="flex items-center gap-2 text-xl font-extrabold text-ink">
                         <Link2 className="h-5 w-5 text-brand" />
@@ -176,7 +176,7 @@ function InvitePanel({ onClose }: InvitePanelProps) {
                             </div>
                         </div>
                     )}
-                    {error !== null && <p className="text-sm text-red-700">{toErrorMessage(error, t, 'invites.error')}</p>}
+                    {error !== null && <p className="text-sm text-danger">{toErrorMessage(error, t, 'invites.error')}</p>}
                 </section>
 
                 {/* Açık davetler: kullanılmamış ve süresi dolmamış */}
@@ -205,7 +205,7 @@ function InvitePanel({ onClose }: InvitePanelProps) {
                                     type="button"
                                     onClick={() => void handleDelete(invite.id)}
                                     aria-label={t('invites.delete')}
-                                    className="rounded-full p-2 text-red-700 hover:bg-red-50"
+                                    className="rounded-full p-2 text-danger hover:bg-danger-soft"
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </button>
