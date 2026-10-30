@@ -116,7 +116,7 @@ function WeightSection({ clientId, onSummaryChange, highlightIds = [], showSumma
     }
 
     return (
-        <section className="rounded-3xl bg-card p-5 shadow-soft">
+        <section className="mb-4 rounded-3xl bg-card p-5 shadow-soft">
             <h2 className="text-lg font-bold text-ink">{t('weights.title')}</h2>
 
             {showSummaryCards && summary && summary.points.length > 0 && (

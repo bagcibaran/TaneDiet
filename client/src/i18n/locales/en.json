@@ -354,7 +354,19 @@
       "templateNeedsName": "Give the meal a name first",
       "addToAllDays": "Add to all days",
       "addedToAllDays": "Added to the other days",
-      "savedToast": "Program saved"
+      "savedToast": "Program saved",
+      "itemsFor": "Items → {{name}}",
+      "search": "Search items",
+      "addMealTitle": "Add a meal",
+      "addMealShort": "Meal",
+      "addItemShort": "Item",
+      "unnamedMeal": "Unnamed meal",
+      "dayEmpty": "No meals for this day yet. Add one below.",
+      "startHint": "Start by adding a meal: on the left on large screens, with \"+ Meal\" on phones.",
+      "mealsOfDay": "Meals of the day",
+      "done": "Done",
+      "confirmRemoveMeal": "Delete the meal \"{{name}}\"?",
+      "noSearchResult": "No matching items"
     },
     "library": {
       "pageHint": "Edit the meals and items you write often",
@@ -434,7 +446,9 @@
     "error": "The service period could not be changed",
     "confirmPastDate": "This date is in the past: the client's access closes immediately. Continue?",
     "saved": "Service period updated",
-    "autoDelete": "Data will be deleted automatically on {{date}} (KVKK, 2 years)"
+    "autoDelete": "Data will be deleted automatically on {{date}} (KVKK, 2 years)",
+    "undo": "Undo",
+    "undone": "Change undone"
   },
   "landing": {
     "clientLogin": "Client login",

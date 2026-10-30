@@ -1,14 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowDown, ArrowLeft, ArrowUp, CalendarRange, Copy, Star, Trash2 } from 'lucide-react'
+import { ArrowLeft, Copy, ListPlus } from 'lucide-react'
 
 import { PageBody, PageHero } from '../components/PageLayout'
 import DayTabs from '../components/diet/DayTabs'
 import LibrarySheet from '../components/diet/LibrarySheet'
+import BottomSheet from '../components/diet/editor/BottomSheet'
+import ItemPicker from '../components/diet/editor/ItemPicker'
+import MealEditor, { type MealNotice } from '../components/diet/editor/MealEditor'
+import MealList from '../components/diet/editor/MealList'
+import MealStrip from '../components/diet/editor/MealStrip'
+import type { AddableMeal, EditorMeal } from '../components/diet/editor/types'
 import { useFeedback } from '../components/feedback/useFeedback'
 import { LoadingCards } from '../components/Skeleton'
-import QuickPanel from '../components/diet/QuickPanel'
 import { errorTextClass, inputClass, labelClass, primaryButtonClass } from '../components/ui'
 import { WEEKDAYS, isSameMeal, mealsOfDay, sortTemplates } from '../diet/dietUtils'
 import { createDietPlan, getClientDietPlans, updateDietPlan } from '../services/dietService'
@@ -18,26 +24,16 @@ import type { DietPlan, DietPlanRequest, PlanType } from '../types/diet'
 import type { DietLibrary, MealTemplate } from '../types/dietLibrary'
 import { usePageTitle } from '../hooks/usePageTitle'
 
-// Ekranda düzenlenen öğün. key yalnızca React listesi ve seçim için (kaydedilmez).
-type EditorMeal = {
-    key: string
-    name: string
-    time: string
-    items: string
-}
-
 // dayIndex → o günün öğünleri (günlük programda yalnızca 0)
 type EditorDays = Record<number, EditorMeal[]>
 
 let keyCounter = 0
 const newKey = () => `meal-${++keyCounter}`
 
-const emptyMeal = (name: string, time: string): EditorMeal => ({ key: newKey(), name, time, items: '' })
-
-// Yeni bir program için başlangıç öğünleri
-const starterMeals = (): EditorMeal[] => [emptyMeal('Kahvaltı', '09:00'), emptyMeal('Öğle', '13:00'), emptyMeal('Akşam', '19:00')]
-
 const cloneMeals = (meals: EditorMeal[]): EditorMeal[] => meals.map((meal) => ({ ...meal, key: newKey() }))
+
+// Bir günün ilk öğünü (açık öğün olarak seçilir); gün boşsa null
+const firstKey = (meals: EditorMeal[] | undefined): string | null => meals?.[0]?.key ?? null
 
 function todayString(): string {
     const now = new Date()
@@ -60,6 +56,8 @@ function daysFromPlan(plan: DietPlan): EditorDays {
 }
 
 // Diyetisyenin program yazma/düzenleme ekranı: /clients/:id/diet-plans/new ve /clients/:id/diet-plans/:planId
+// Büyük ekranda üç sütun (günün öğünleri · açık öğün · maddeler), dik tablette öğün şeridi + iki sütun,
+// telefonda öğün şeridi + açık öğün + alttan açılan madde paneli.
 function DietPlanEditorPage() {
     const { t } = useTranslation()
     usePageTitle(t('diet.sectionTitle'))
@@ -73,8 +71,12 @@ function DietPlanEditorPage() {
     const [title, setTitle] = useState('Diyet Listesi')
     const [startDate, setStartDate] = useState(todayString())
     const [notes, setNotes] = useState('')
-    const [days, setDays] = useState<EditorDays>({ 0: starterMeals() })
+    // Notlar bölümü: dolu bir program yüklenince açık gelir, sonra kullanıcı açıp kapatır
+    const [notesOpen, setNotesOpen] = useState(false)
+    // Yeni program boş başlar: öğünler tıklanınca eklenir
+    const [days, setDays] = useState<EditorDays>({ 0: [] })
     const [day, setDay] = useState(1)
+    // Açık (ortada düzenlenen) öğün; maddeler buna eklenir
     const [selectedKey, setSelectedKey] = useState<string | null>(null)
     // Açıksa hızlı seçimden gelen madde son satıra " / " ile seçenek olarak eklenir
     const [optionMode, setOptionMode] = useState(false)
@@ -82,10 +84,10 @@ function DietPlanEditorPage() {
     const [library, setLibrary] = useState<DietLibrary | null>(null)
     const [libraryError, setLibraryError] = useState<unknown>(null)
     const [sheetOpen, setSheetOpen] = useState(false)
+    // Telefonda alttan açılan madde paneli
+    const [pickerOpen, setPickerOpen] = useState(false)
     // Öğün kartının altında kısa bir bilgi ("kaydedildi") ya da hata
-    const [cardNotice, setCardNotice] = useState<{ key: string; messageKey: string; isError: boolean; error?: unknown } | null>(
-        null,
-    )
+    const [cardNotice, setCardNotice] = useState<(MealNotice & { key: string }) | null>(null)
     const noticeTimer = useRef<number | undefined>(undefined)
     // "Hazır öğün yap": aynı ad ve saatte hazır öğün varsa kartta "güncelle / yeni ekle" sorusu
     const [templateChoice, setTemplateChoice] = useState<{ mealKey: string; match: MealTemplate } | null>(null)
@@ -103,14 +105,18 @@ function DietPlanEditorPage() {
 
     const currentDay = planType === 'DAILY' ? 0 : day
     const meals = days[currentDay] ?? []
+    const selectedIndex = meals.findIndex((meal) => meal.key === selectedKey)
+    const selectedMeal = selectedIndex >= 0 ? meals[selectedIndex] : null
 
     // Bir programı ekrana yükler. keepMeta: başlık ve tarih de alınsın mı (düzenleme) yoksa yalnızca öğünler ve not mu (kopya)
     const loadPlan = (plan: DietPlan, keepMeta: boolean) => {
+        const loaded = daysFromPlan(plan)
         setPlanType(plan.planType)
-        setDays(daysFromPlan(plan))
+        setDays(loaded)
         setDay(1)
-        setSelectedKey(null)
+        setSelectedKey(firstKey(loaded[plan.planType === 'DAILY' ? 0 : 1]))
         setNotes(plan.notes ?? '')
+        setNotesOpen((plan.notes ?? '').trim() !== '')
         if (keepMeta) {
             setTitle(plan.title)
             setStartDate(plan.startDate)
@@ -159,6 +165,7 @@ function DietPlanEditorPage() {
     }, [])
 
     const closeSheet = useCallback(() => setSheetOpen(false), [])
+    const closePicker = useCallback(() => setPickerOpen(false), [])
 
     const updateMeals = (dayIndex: number, change: (meals: EditorMeal[]) => EditorMeal[]) =>
         setDays((current) => ({ ...current, [dayIndex]: change(current[dayIndex] ?? []) }))
@@ -166,11 +173,20 @@ function DietPlanEditorPage() {
     const updateMeal = (key: string, patch: Partial<EditorMeal>) =>
         updateMeals(currentDay, (list) => list.map((meal) => (meal.key === key ? { ...meal, ...patch } : meal)))
 
-    // Hazır öğünün (ya da boş öğünün) bir kopyası o güne eklenir; hazır öğün değişmez
-    const addMeal = (template: { name: string; time: string | null; items: string }) => {
-        const meal = { ...emptyMeal(template.name, template.time ?? ''), items: template.items }
+    const selectDay = (next: number) => {
+        // Kopyalama hedeflerinde yeni gün kalmasın (gün kendi üstüne kopyalanırsa açık öğün kaybolurdu)
+        setCopyTargets((current) => current.filter((target) => target !== next))
+        setDay(next)
+        setSelectedKey(firstKey(days[next]))
+        setTemplateChoice(null)
+    }
+
+    // Hazır öğünün (ya da boş öğünün) bir kopyası o günün sonuna eklenir ve açılır; hazır öğün değişmez
+    const addMeal = (template: AddableMeal) => {
+        const meal: EditorMeal = { key: newKey(), name: template.name, time: template.time ?? '', items: template.items }
         updateMeals(currentDay, (list) => [...list, meal])
         setSelectedKey(meal.key)
+        setTemplateChoice(null)
     }
 
     // Öğün kartının altında birkaç saniye görünen bilgi ya da hata
@@ -254,21 +270,35 @@ function DietPlanEditorPage() {
             return next
         })
 
-    const removeMeal = (key: string) => {
-        updateMeals(currentDay, (list) => list.filter((meal) => meal.key !== key))
-        if (selectedKey === key) {
-            setSelectedKey(null)
-        }
-    }
-
-    // Hızlı seçim: seçili öğüne yeni satır, ya da seçenek modunda son satıra " / " ile ekle
-    const addQuickItem = (item: string) => {
-        const target = meals.find((meal) => meal.key === selectedKey) ?? meals[meals.length - 1]
-        if (!target) {
-            setSaveError(t('diet.editor.addMealFirst'))
+    // Maddesi dolu öğün sorularak silinir; sonra komşusu (sonraki, yoksa önceki) açılır
+    const removeMeal = async (key: string) => {
+        const index = meals.findIndex((meal) => meal.key === key)
+        const meal = meals[index]
+        if (!meal) {
             return
         }
-        const lines = target.items.split('\n')
+        if (meal.items.trim() !== '') {
+            const ok = await confirm({
+                title: t('diet.editor.confirmRemoveMeal', { name: meal.name.trim() || t('diet.editor.unnamedMeal') }),
+                confirmLabel: t('common.delete'),
+                danger: true,
+            })
+            if (!ok) {
+                return
+            }
+        }
+        const remaining = meals.filter((item) => item.key !== key)
+        updateMeals(currentDay, (list) => list.filter((item) => item.key !== key))
+        setSelectedKey(remaining[index]?.key ?? remaining[index - 1]?.key ?? null)
+        setTemplateChoice(null)
+    }
+
+    // Hızlı seçim: açık öğüne yeni satır, ya da seçenek modunda son satıra " / " ile ekle
+    const addQuickItem = (item: string) => {
+        if (!selectedMeal) {
+            return
+        }
+        const lines = selectedMeal.items.split('\n')
         while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
             lines.pop()
         }
@@ -277,10 +307,9 @@ function DietPlanEditorPage() {
         } else {
             lines.push(item)
         }
-        updateMeal(target.key, { items: lines.join('\n') })
-        setSelectedKey(target.key)
+        updateMeal(selectedMeal.key, { items: lines.join('\n') })
         // Eklendiğini göstermek için öğün kartı kısa bir süre parlar
-        setFlashKey(target.key)
+        setFlashKey(selectedMeal.key)
         window.clearTimeout(flashTimer.current)
         flashTimer.current = window.setTimeout(() => setFlashKey(null), 600)
     }
@@ -292,8 +321,10 @@ function DietPlanEditorPage() {
         if (next === 'WEEKLY') {
             // Günlük liste bütün günlere kopyalanır, sonra gün gün değiştirilebilir
             const base = days[0] ?? []
-            setDays(Object.fromEntries(WEEKDAYS.map((weekday) => [weekday, cloneMeals(base)])))
+            const weekly: EditorDays = Object.fromEntries(WEEKDAYS.map((weekday) => [weekday, cloneMeals(base)]))
+            setDays(weekly)
             setDay(1)
+            setSelectedKey(firstKey(weekly[1]))
         } else {
             const ok = await confirm({
                 title: t('diet.editor.toDailyConfirm', { day: t(`diet.days.long.${day}`) }),
@@ -302,10 +333,12 @@ function DietPlanEditorPage() {
             if (!ok) {
                 return
             }
-            setDays({ 0: cloneMeals(days[day] ?? []) })
+            const daily = cloneMeals(days[day] ?? [])
+            setDays({ 0: daily })
+            setSelectedKey(firstKey(daily))
         }
         setPlanType(next)
-        setSelectedKey(null)
+        setTemplateChoice(null)
     }
 
     const copyDay = () => {
@@ -315,13 +348,19 @@ function DietPlanEditorPage() {
         const source = days[day] ?? []
         setDays((current) => {
             const next = { ...current }
-            for (const target of copyTargets) {
+            for (const target of copyTargets.filter((target) => target !== day)) {
                 next[target] = cloneMeals(source)
             }
             return next
         })
         setCopyTargets([])
         setShowCopy(false)
+    }
+
+    // Kaydetme hatası hem kartın altında hem bildirimde (sayfa uzun olabilir)
+    const failSave = (message: string) => {
+        setSaveError(message)
+        toast(message, 'error')
     }
 
     const handleSave = async () => {
@@ -343,24 +382,28 @@ function DietPlanEditorPage() {
         }
 
         if (request.title === '') {
-            setSaveError(t('diet.editor.titleRequired'))
+            failSave(t('diet.editor.titleRequired'))
             return
         }
         if (request.meals.length === 0) {
-            setSaveError(t('diet.editor.noMeals'))
+            failSave(t('diet.editor.noMeals'))
             return
         }
-        const incomplete = request.meals.find((meal) => meal.name === '' || meal.items.trim() === '')
-        if (incomplete) {
-            setSaveError(
-                planType === 'WEEKLY'
-                    ? t('diet.editor.incompleteMealOnDay', { day: t(`diet.days.long.${incomplete.dayIndex}`) })
-                    : t('diet.editor.incompleteMeal'),
-            )
-            if (planType === 'WEEKLY') {
-                setDay(incomplete.dayIndex)
+        // Adı ya da maddesi boş öğün: o gün açılır ve o öğün seçilir
+        for (const dayIndex of dayIndexes) {
+            const incomplete = (days[dayIndex] ?? []).find((meal) => meal.name.trim() === '' || meal.items.trim() === '')
+            if (incomplete) {
+                failSave(
+                    planType === 'WEEKLY'
+                        ? t('diet.editor.incompleteMealOnDay', { day: t(`diet.days.long.${dayIndex}`) })
+                        : t('diet.editor.incompleteMeal'),
+                )
+                if (planType === 'WEEKLY') {
+                    setDay(dayIndex)
+                }
+                setSelectedKey(incomplete.key)
+                return
             }
-            return
         }
 
         setSaving(true)
@@ -373,7 +416,7 @@ function DietPlanEditorPage() {
             toast(t('diet.editor.savedToast'))
             navigate(`/clients/${clientId}`)
         } catch (error) {
-            setSaveError(toErrorMessage(error, t, 'diet.editor.saveError'))
+            failSave(toErrorMessage(error, t, 'diet.editor.saveError'))
         } finally {
             setSaving(false)
         }
@@ -388,9 +431,28 @@ function DietPlanEditorPage() {
             active ? 'border-brand bg-brand text-cream' : 'border-line bg-cream text-muted hover:border-brand hover:text-brand'
         }`
 
+    const itemPicker = (hideTitle: boolean) => (
+        <ItemPicker
+            hideTitle={hideTitle}
+            library={library}
+            loadError={libraryError}
+            targetName={selectedMeal ? selectedMeal.name.trim() : null}
+            optionMode={optionMode}
+            onOptionModeChange={setOptionMode}
+            onAddItem={addQuickItem}
+            onEdit={() => {
+                // Telefonda madde paneli önce kapanır: iki pencere üst üste açılıp sayfa kaydırması kilitli kalmasın
+                setPickerOpen(false)
+                setSheetOpen(true)
+            }}
+        />
+    )
+
+    const dayCounts = Object.fromEntries(WEEKDAYS.map((weekday) => [weekday, (days[weekday] ?? []).length]))
+
     return (
         <>
-            <PageHero>
+            <PageHero wide>
                 <Link
                     to={`/clients/${clientId}`}
                     className="inline-flex items-center gap-1 text-sm font-medium text-mint hover:text-cream"
@@ -403,7 +465,7 @@ function DietPlanEditorPage() {
                 </h1>
             </PageHero>
 
-            <PageBody>
+            <PageBody wide>
                 {loading && <LoadingCards count={3} label={t('dashboard.loading')} />}
                 {loadError !== null && (
                     <p className="rounded-3xl bg-card p-5 text-danger shadow-soft">
@@ -412,7 +474,7 @@ function DietPlanEditorPage() {
                 )}
 
                 {!loading && loadError === null && (
-                    <div className="space-y-4 pb-6">
+                    <div className="space-y-4 pb-24 md:pb-6">
                         {/* Mevcut programdan başla (yalnızca yeni programda) */}
                         {editingId === null && activePlan && (
                             <button
@@ -425,21 +487,21 @@ function DietPlanEditorPage() {
                             </button>
                         )}
 
-                        {/* Program bilgileri */}
-                        <section className="space-y-4 rounded-3xl bg-card p-5 shadow-soft">
-                            <div className="flex gap-2">
-                                {(['DAILY', 'WEEKLY'] as PlanType[]).map((type) => (
-                                    <button
-                                        key={type}
-                                        type="button"
-                                        onClick={() => void changeType(type)}
-                                        className={`flex-1 ${chipClass(planType === type)} py-2`}
-                                    >
-                                        {t(`diet.type.${type}`)}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        {/* Program bilgileri: tür, başlık, tarih, kaydet; altında notlar */}
+                        <section className="space-y-3 rounded-3xl bg-card p-5 shadow-soft">
+                            <div className="grid gap-3 md:grid-cols-[auto_minmax(0,1fr)_11rem_auto] md:items-end">
+                                <div className="flex gap-2">
+                                    {(['DAILY', 'WEEKLY'] as PlanType[]).map((type) => (
+                                        <button
+                                            key={type}
+                                            type="button"
+                                            onClick={() => void changeType(type)}
+                                            className={`flex-1 ${chipClass(planType === type)} py-2.5`}
+                                        >
+                                            {t(`diet.type.${type}`)}
+                                        </button>
+                                    ))}
+                                </div>
                                 <div>
                                     <label htmlFor="plan-title" className={labelClass}>
                                         {t('diet.editor.title')}
@@ -458,30 +520,47 @@ function DietPlanEditorPage() {
                                         className={inputClass}
                                     />
                                 </div>
+                                <button
+                                    type="button"
+                                    onClick={handleSave}
+                                    disabled={saving}
+                                    className={`${primaryButtonClass} md:w-auto md:px-8`}
+                                >
+                                    {saving ? t('diet.editor.saving') : t('diet.editor.save')}
+                                </button>
                             </div>
+                            {saveError && <p className={errorTextClass}>{saveError}</p>}
+
+                            {/* Genel not: dolu ise açık başlar */}
+                            <details
+                                open={notesOpen}
+                                onToggle={(e) => setNotesOpen(e.currentTarget.open)}
+                                className="group rounded-2xl bg-cream px-4 py-3"
+                            >
+                                <summary className="cursor-pointer text-sm font-semibold text-ink">{t('diet.editor.notes')}</summary>
+                                <textarea
+                                    id="plan-notes"
+                                    aria-label={t('diet.editor.notes')}
+                                    rows={3}
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                    placeholder={t('diet.editor.notesPlaceholder')}
+                                    className={`${inputClass} mt-2 bg-card`}
+                                />
+                            </details>
                         </section>
 
-                        {/* Hızlı seçim: üstten tek dokunuşla hazır öğün ve madde ekleme */}
-                        <QuickPanel
-                            library={library}
-                            loadError={libraryError}
-                            optionMode={optionMode}
-                            onOptionModeChange={setOptionMode}
-                            onAddMeal={addMeal}
-                            onAddItem={addQuickItem}
-                            onEdit={() => setSheetOpen(true)}
-                        />
-
-                        {/* Haftalık programda gün seçimi ve kopyalama */}
+                        {/* Haftalık programda gün seçimi (altında öğün sayısı) ve kopyalama */}
                         {planType === 'WEEKLY' && (
                             <section className="space-y-2">
-                                <DayTabs selected={day} onSelect={(next) => { setDay(next); setSelectedKey(null) }} />
-                                <div className="flex items-center justify-between px-1">
-                                    <h2 className="text-lg font-bold text-ink">{t(`diet.days.long.${day}`)}</h2>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <div className="min-w-0 flex-1">
+                                        <DayTabs selected={day} onSelect={selectDay} counts={dayCounts} />
+                                    </div>
                                     <button
                                         type="button"
                                         onClick={() => setShowCopy((value) => !value)}
-                                        className="flex items-center gap-1 text-sm font-semibold text-brand"
+                                        className="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold text-brand hover:bg-card"
                                     >
                                         <Copy className="h-4 w-4" />
                                         {t('diet.editor.copyDay')}
@@ -523,171 +602,90 @@ function DietPlanEditorPage() {
                             </section>
                         )}
 
-                        {/* Öğünler */}
-                        <section className="space-y-3">
-                            {meals.map((meal, index) => (
-                                <article
-                                    key={meal.key}
-                                    onFocusCapture={() => setSelectedKey(meal.key)}
-                                    onClick={() => setSelectedKey(meal.key)}
-                                    className={`space-y-2 rounded-3xl bg-card p-4 shadow-soft transition ${
-                                        selectedKey === meal.key ? 'ring-2 ring-brand' : ''
-                                    } ${flashKey === meal.key ? 'bg-mint/40' : ''}`}
-                                >
-                                    {/* Ad geniş, saat dar: genişlikleri sarmalayıcı div'ler belirliyor (inputClass içindeki w-full ile çakışmasın) */}
-                                    <div className="flex items-center gap-2">
-                                        <div className="min-w-0 flex-1">
-                                            <input
-                                                aria-label={t('diet.editor.mealName')}
-                                                value={meal.name}
-                                                onChange={(e) => updateMeal(meal.key, { name: e.target.value })}
-                                                placeholder={t('diet.editor.mealName')}
-                                                className={`${inputClass} font-semibold`}
-                                            />
-                                        </div>
-                                        <div className="w-28 shrink-0">
-                                            <input
-                                                aria-label={t('diet.editor.mealTime')}
-                                                type="time"
-                                                value={meal.time}
-                                                onChange={(e) => updateMeal(meal.key, { time: e.target.value })}
-                                                className={inputClass}
-                                            />
-                                        </div>
-                                    </div>
-                                    <textarea
-                                        aria-label={t('diet.editor.items')}
-                                        rows={Math.max(3, meal.items.split('\n').length + 1)}
-                                        value={meal.items}
-                                        onChange={(e) => updateMeal(meal.key, { items: e.target.value })}
-                                        placeholder={t('diet.editor.itemsPlaceholder')}
-                                        className={inputClass}
+                        {/* Büyük ekran: günün öğünleri · açık öğün · maddeler. Dik tablet: açık öğün · maddeler (öğünler şeritte). */}
+                        <div className="grid items-start gap-4 md:grid-cols-[minmax(0,1fr)_260px] lg:grid-cols-[220px_minmax(0,1fr)_280px]">
+                            <aside className="hidden rounded-3xl bg-card p-4 shadow-soft lg:sticky lg:top-4 lg:block lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
+                                <MealList
+                                    meals={meals}
+                                    selectedKey={selectedKey}
+                                    library={library}
+                                    onSelect={(key) => {
+                                        setSelectedKey(key)
+                                        setTemplateChoice(null)
+                                    }}
+                                    onMove={moveMeal}
+                                    onAdd={addMeal}
+                                />
+                            </aside>
+
+                            <div id="acik-ogun" className="min-w-0 scroll-mt-4 space-y-3">
+                                <div className="lg:hidden">
+                                    <MealStrip
+                                        meals={meals}
+                                        selectedKey={selectedKey}
+                                        library={library}
+                                        onSelect={(key) => {
+                                            setSelectedKey(key)
+                                            setTemplateChoice(null)
+                                        }}
+                                        onAdd={addMeal}
                                     />
-                                    {/* Solda yazı düğmeleri, sağda sıra ve silme. Dar ekranda gruplar bütün olarak alt satıra iner. */}
-                                    <div className="flex flex-wrap items-center justify-between gap-1">
-                                        <div className="flex flex-wrap gap-1">
-                                            <button
-                                                type="button"
-                                                onClick={() => saveAsTemplate(meal)}
-                                                disabled={templateSaving || library === null}
-                                                className="flex items-center gap-1 rounded-full border border-line px-3 py-1.5 text-xs font-semibold text-brand hover:border-brand disabled:opacity-40"
-                                            >
-                                                <Star className="h-3.5 w-3.5" />
-                                                {t('diet.editor.saveAsTemplate')}
-                                            </button>
-                                            {planType === 'WEEKLY' && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => addToAllDays(meal)}
-                                                    className="flex items-center gap-1 rounded-full border border-line px-3 py-1.5 text-xs font-semibold text-brand hover:border-brand"
-                                                >
-                                                    <CalendarRange className="h-3.5 w-3.5" />
-                                                    {t('diet.editor.addToAllDays')}
-                                                </button>
-                                            )}
-                                        </div>
-                                        <div className="ml-auto flex gap-1">
-                                            <button
-                                                type="button"
-                                                onClick={() => moveMeal(meal.key, -1)}
-                                                disabled={index === 0}
-                                                aria-label={t('diet.editor.moveUp')}
-                                                className="rounded-full p-2 text-muted hover:bg-cream disabled:opacity-30"
-                                            >
-                                                <ArrowUp className="h-4 w-4" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => moveMeal(meal.key, 1)}
-                                                disabled={index === meals.length - 1}
-                                                aria-label={t('diet.editor.moveDown')}
-                                                className="rounded-full p-2 text-muted hover:bg-cream disabled:opacity-30"
-                                            >
-                                                <ArrowDown className="h-4 w-4" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeMeal(meal.key)}
-                                                aria-label={t('diet.editor.removeMeal')}
-                                                className="rounded-full p-2 text-danger hover:bg-danger-soft"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </div>
+                                </div>
+                                <MealEditor
+                                    meal={selectedMeal}
+                                    isWeekly={planType === 'WEEKLY'}
+                                    isFirst={selectedIndex <= 0}
+                                    isLast={selectedIndex === meals.length - 1}
+                                    flash={selectedMeal !== null && flashKey === selectedMeal.key}
+                                    templateBusy={templateSaving}
+                                    libraryReady={library !== null}
+                                    notice={selectedMeal && cardNotice?.key === selectedMeal.key ? cardNotice : null}
+                                    templateMatch={
+                                        selectedMeal && templateChoice?.mealKey === selectedMeal.key ? templateChoice.match : null
+                                    }
+                                    onChange={(patch) => selectedMeal && updateMeal(selectedMeal.key, patch)}
+                                    onMove={(direction) => selectedMeal && moveMeal(selectedMeal.key, direction)}
+                                    onRemove={() => selectedMeal && void removeMeal(selectedMeal.key)}
+                                    onSaveTemplate={() => selectedMeal && saveAsTemplate(selectedMeal)}
+                                    onAddToAllDays={() => selectedMeal && addToAllDays(selectedMeal)}
+                                    onStoreTemplate={(replaceId) => selectedMeal && void storeTemplate(selectedMeal, replaceId)}
+                                    onCancelTemplate={() => setTemplateChoice(null)}
+                                />
+                            </div>
 
-                                    {/* Aynı ad ve saatte hazır öğün var: güncellensin mi, yeni mi eklensin? */}
-                                    {templateChoice?.mealKey === meal.key && (
-                                        <div className="space-y-2 rounded-2xl bg-cream p-3">
-                                            <p className="text-sm text-ink">
-                                                {t('diet.editor.templateExists', { name: templateChoice.match.name })}
-                                            </p>
-                                            <div className="flex flex-wrap gap-2">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => void storeTemplate(meal, templateChoice.match.id)}
-                                                    disabled={templateSaving}
-                                                    className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-cream hover:bg-brand-dark disabled:opacity-50"
-                                                >
-                                                    {t('diet.editor.updateExisting')}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => void storeTemplate(meal, null)}
-                                                    disabled={templateSaving}
-                                                    className="rounded-full border border-brand px-3 py-1.5 text-xs font-semibold text-brand hover:bg-card disabled:opacity-50"
-                                                >
-                                                    {t('diet.editor.addAsNew')}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setTemplateChoice(null)}
-                                                    className="rounded-full px-3 py-1.5 text-xs font-semibold text-muted hover:text-brand"
-                                                >
-                                                    {t('diet.library.cancel')}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {cardNotice?.key === meal.key && (
-                                        <p
-                                            role="status"
-                                            className={`text-sm font-semibold ${cardNotice.isError ? 'text-danger' : 'text-brand'}`}
-                                        >
-                                            {cardNotice.error !== undefined
-                                                ? toErrorMessage(cardNotice.error, t, cardNotice.messageKey)
-                                                : t(cardNotice.messageKey)}
-                                        </p>
-                                    )}
-                                </article>
-                            ))}
-
-                        </section>
-
-                        {/* Genel not */}
-                        <section className="rounded-3xl bg-card p-5 shadow-soft">
-                            <label htmlFor="plan-notes" className={labelClass}>
-                                {t('diet.editor.notes')}
-                            </label>
-                            <textarea
-                                id="plan-notes"
-                                rows={3}
-                                value={notes}
-                                onChange={(e) => setNotes(e.target.value)}
-                                placeholder={t('diet.editor.notesPlaceholder')}
-                                className={inputClass}
-                            />
-                        </section>
-
-                        {saveError && <p className={errorTextClass}>{saveError}</p>}
-
-                        <button type="button" onClick={handleSave} disabled={saving} className={primaryButtonClass}>
-                            {saving ? t('diet.editor.saving') : t('diet.editor.save')}
-                        </button>
+                            <aside className="hidden rounded-3xl bg-card p-4 shadow-soft md:sticky md:top-4 md:block md:max-h-[calc(100vh-2rem)] md:overflow-y-auto">
+                                {itemPicker(false)}
+                            </aside>
+                        </div>
                     </div>
                 )}
             </PageBody>
+
+            {/* Telefon: alttaki "+ Madde" düğmesi ve madde paneli (eklendikçe kapanmaz, "Bitti" ile kapanır) */}
+            {!loading &&
+                loadError === null &&
+                createPortal(
+                    <button
+                        type="button"
+                        onClick={() => {
+                            // Açık öğün panelin üstünde görünsün: eklenen maddeler arkada izlenebilir
+                            document.getElementById('acik-ogun')?.scrollIntoView({ block: 'start' })
+                            setPickerOpen(true)
+                        }}
+                        className="fixed bottom-[calc(6rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-center gap-2 rounded-full bg-brand px-5 py-3 font-bold text-cream shadow-float transition hover:bg-brand-dark active:scale-[0.97] sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] md:hidden"
+                    >
+                        <ListPlus className="h-5 w-5" />
+                        {t('diet.editor.addItemShort')}
+                    </button>,
+                    document.body,
+                )}
+            <BottomSheet
+                open={pickerOpen}
+                title={selectedMeal ? t('diet.editor.itemsFor', { name: selectedMeal.name.trim() || t('diet.editor.unnamedMeal') }) : t('diet.editor.tabItems')}
+                onClose={closePicker}
+            >
+                {itemPicker(true)}
+            </BottomSheet>
 
             {library && (
                 <LibrarySheet

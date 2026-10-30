@@ -7,10 +7,12 @@ type DayTabsProps = {
     onSelect: (dayIndex: number) => void
     // Bugünü küçük bir noktayla işaretle (danışan ekranı)
     markToday?: boolean
+    // Verilirse her günün altında küçük öğün sayısı (program editörü)
+    counts?: Record<number, number>
 }
 
 // Pzt Sal Çar … Paz düğmeleri (haftalık program)
-function DayTabs({ selected, onSelect, markToday = false }: DayTabsProps) {
+function DayTabs({ selected, onSelect, markToday = false, counts }: DayTabsProps) {
     const { t } = useTranslation()
     const today = todayIndex()
 
@@ -28,6 +30,11 @@ function DayTabs({ selected, onSelect, markToday = false }: DayTabsProps) {
                     }`}
                 >
                     {t(`diet.days.short.${day}`)}
+                    {counts && (
+                        <span className={`block text-[0.65rem] font-medium ${selected === day ? 'text-mint' : 'text-muted'}`}>
+                            {counts[day] ?? 0}
+                        </span>
+                    )}
                     {markToday && day === today && (
                         <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-honey" />
                     )}

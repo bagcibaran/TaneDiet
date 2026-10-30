@@ -196,7 +196,7 @@ function IntakePage() {
                 </div>
             </div>
 
-            <div className="mx-auto -mt-10 max-w-xl px-4">
+            <div className="relative mx-auto -mt-10 max-w-xl px-4">
                 <section className="rounded-3xl bg-card p-5 shadow-soft">
                     {loadError !== null && (
                         <p className={errorTextClass}>{toErrorMessage(loadError, t, 'intake.loadError')}</p>

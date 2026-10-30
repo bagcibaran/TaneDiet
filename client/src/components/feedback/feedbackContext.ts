@@ -12,9 +12,15 @@ export type ConfirmOptions = {
 
 export type ToastTone = 'success' | 'error'
 
+// Bildirimdeki düğme (ör. "Geri al"); verilirse bildirim daha uzun kalır
+export type ToastAction = {
+    label: string
+    onClick: () => void
+}
+
 export type FeedbackApi = {
     // Kısa bildirim ("Kaydedildi"); birkaç saniye sonra kendiliğinden kaybolur
-    toast: (message: string, tone?: ToastTone) => void
+    toast: (message: string, tone?: ToastTone, action?: ToastAction) => void
     // Markalı onay penceresi; kullanıcı onaylarsa true döner
     confirm: (options: ConfirmOptions) => Promise<boolean>
 }

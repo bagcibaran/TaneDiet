@@ -3,9 +3,9 @@ import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { AlertTriangle, CheckCircle2, XCircle } from 'lucide-react'
 
-import { FeedbackContext, type ConfirmOptions, type ToastTone } from './feedbackContext'
+import { FeedbackContext, type ConfirmOptions, type ToastAction, type ToastTone } from './feedbackContext'
 
-type Toast = { id: number; message: string; tone: ToastTone }
+type Toast = { id: number; message: string; tone: ToastTone; action?: ToastAction }
 
 type PendingConfirm = ConfirmOptions & { resolve: (value: boolean) => void }
 
@@ -21,11 +21,16 @@ function FeedbackProvider({ children }: { children: ReactNode }) {
     const confirmButton = useRef<HTMLButtonElement>(null)
     const typedInput = useRef<HTMLInputElement>(null)
 
-    const toast = useCallback((message: string, tone: ToastTone = 'success') => {
-        const id = ++nextId.current
-        setToasts((current) => [...current.slice(-2), { id, message, tone }])
-        window.setTimeout(() => setToasts((current) => current.filter((item) => item.id !== id)), 2800)
+    const dismissToast = useCallback((id: number) => {
+        setToasts((current) => current.filter((item) => item.id !== id))
     }, [])
+
+    const toast = useCallback((message: string, tone: ToastTone = 'success', action?: ToastAction) => {
+        const id = ++nextId.current
+        setToasts((current) => [...current.slice(-2), { id, message, tone, action }])
+        // Düğmeli bildirim, düğmeye basmaya zaman kalsın diye daha uzun durur
+        window.setTimeout(() => dismissToast(id), action ? 7000 : 2800)
+    }, [dismissToast])
 
     const confirm = useCallback(
         (options: ConfirmOptions) =>
@@ -95,6 +100,18 @@ function FeedbackProvider({ children }: { children: ReactNode }) {
                                     <XCircle className="h-4 w-4 text-coral" />
                                 )}
                                 {item.message}
+                                {item.action && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            dismissToast(item.id)
+                                            item.action?.onClick()
+                                        }}
+                                        className="ml-1 rounded-full bg-cream/15 px-3 py-1 text-honey transition hover:bg-cream/25"
+                                    >
+                                        {item.action.label}
+                                    </button>
+                                )}
                             </div>
                         ))}
                     </div>

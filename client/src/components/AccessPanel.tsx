@@ -43,14 +43,29 @@ function AccessPanel({ clientId }: AccessPanelProps) {
         }
     }, [clientId])
 
-    const apply = async (request: ClientAccessRequest) => {
+    // undoable: değişiklikten sonra bildirimde "Geri al" çıkar ve önceki bitiş tarihine döner
+    const apply = async (request: ClientAccessRequest, undoable = true) => {
+        const previousUntil = access?.accessUntil ?? null
         setBusy(true)
         setError(null)
         try {
             const result = await updateClientAccess(clientId, request)
             setAccess(result)
             setDate(result.accessUntil ?? '')
-            toast(t('access.saved'))
+            if (undoable) {
+                toast(t('access.saved'), 'success', {
+                    label: t('access.undo'),
+                    onClick: () =>
+                        void apply(
+                            previousUntil === null
+                                ? { action: 'UNLIMITED' }
+                                : { action: 'SET_DATE', date: previousUntil },
+                            false,
+                        ),
+                })
+            } else {
+                toast(t('access.undone'))
+            }
         } catch (caught) {
             setError(caught)
         } finally {

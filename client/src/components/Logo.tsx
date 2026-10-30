@@ -21,11 +21,11 @@ function Logo({ tone = 'light', size = 'md', showTagline = true, to }: LogoProps
     const content = (
         <>
             {/* Marka adı çevrilmez. Harf aralığı CSS ile: ekranda "t a n e." görünür, metin "tane." kalır */}
-            <span className={`font-extrabold tracking-[0.25em] ${wordSize} ${wordColor}`}>
+            <span className={`font-extrabold tracking-[0.12em] ${wordSize} ${wordColor}`}>
                 tane.
             </span>
             {showTagline && (
-                <span className={`mt-1 block text-[0.6rem] font-semibold uppercase tracking-[0.35em] ${taglineColor}`}>
+                <span className={`mt-1 block text-[0.6rem] font-semibold uppercase tracking-[0.28em] ${taglineColor}`}>
                     {t('brand.tagline')}
                 </span>
             )}

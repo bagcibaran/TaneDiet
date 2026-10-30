@@ -354,7 +354,19 @@
       "templateNeedsName": "Önce öğüne bir ad verin",
       "addToAllDays": "Tüm günlere ekle",
       "addedToAllDays": "Diğer günlere eklendi",
-      "savedToast": "Program kaydedildi"
+      "savedToast": "Program kaydedildi",
+      "itemsFor": "Maddeler → {{name}}",
+      "search": "Madde ara",
+      "addMealTitle": "Öğün ekle",
+      "addMealShort": "Öğün",
+      "addItemShort": "Madde",
+      "unnamedMeal": "Adsız öğün",
+      "dayEmpty": "Bu gün için öğün yok. Aşağıdan ekleyin.",
+      "startHint": "Bir öğün ekleyerek başlayın: büyük ekranda soldan, telefonda \"+ Öğün\" ile.",
+      "mealsOfDay": "Günün öğünleri",
+      "done": "Bitti",
+      "confirmRemoveMeal": "\"{{name}}\" öğünü silinsin mi?",
+      "noSearchResult": "Eşleşen madde yok"
     },
     "library": {
       "pageHint": "Sık yazdığın öğünleri ve maddeleri buradan düzenle",
@@ -434,7 +446,9 @@
     "error": "Hizmet süresi değiştirilemedi",
     "confirmPastDate": "Bu tarih geçmişte: danışanın erişimi hemen kapanır. Devam edilsin mi?",
     "saved": "Hizmet süresi güncellendi",
-    "autoDelete": "Veriler {{date}} tarihinde otomatik silinecek (KVKK, 2 yıl)"
+    "autoDelete": "Veriler {{date}} tarihinde otomatik silinecek (KVKK, 2 yıl)",
+    "undo": "Geri al",
+    "undone": "Değişiklik geri alındı"
   },
   "landing": {
     "clientLogin": "Danışan girişi",

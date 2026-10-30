@@ -112,7 +112,6 @@ function ClientDetailPage() {
             </PageHero>
 
             <PageBody>
-                <AccessPanel clientId={clientId} />
                 <IntakeSummary
                     clientId={clientId}
                     intakeStatus={activity?.intakeStatus}
@@ -124,7 +123,8 @@ function ClientDetailPage() {
                     onSummaryChange={setSummary}
                     highlightIds={activity?.newWeightEntryIds ?? []}
                 />
-                {/* KVKK: dışa aktarma, kalıcı silme, görüntüleme kaydı (geri alınamaz işlem en altta) */}
+                {/* Hizmet süresi ve KVKK (dışa aktarma, kalıcı silme, görüntüleme kaydı) en altta */}
+                <AccessPanel clientId={clientId} />
                 {client && <ClientDataPanel client={client} />}
             </PageBody>
         </>
