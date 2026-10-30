@@ -485,7 +485,8 @@
     "close": "Close",
     "finalTitle": "Ready? Let's start 🌿",
     "finalText": "Ask your questions on WhatsApp and we will choose the right package together.",
-    "footerText": "No bans, made for you: sustainable online diet counselling."
+    "footerText": "No bans, made for you: sustainable online diet counselling.",
+    "dietitianPhotoAlt": "Photo of {{name}}"
   },
   "common": {
     "cancel": "Cancel",

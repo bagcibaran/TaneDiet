@@ -5,12 +5,12 @@ import { Check } from 'lucide-react'
 import Logo from '../Logo'
 import LanguageToggle from '../LanguageToggle'
 import WhatsAppButton from '../WhatsAppButton'
-import DietitianAvatar from './DietitianAvatar'
+import { DietitianPhotoCard } from './DietitianAvatar'
 import { HeroBlobs } from '../PageLayout'
-import { DIETITIAN } from '../../landing/content'
 import { isLoggedIn } from '../../services/session'
 
-// Sayfanın girişi: logo, kısa slogan, diyetisyen, büyük WhatsApp düğmesi. Kayıt düğmesi yok.
+// Sayfanın girişi: logo, diyetisyenin büyük fotoğrafı (güven için ilk bakışta yüz), kısa slogan, büyük WhatsApp düğmesi.
+// Telefonda fotoğraf üstte, bilgisayarda sağda. Kayıt düğmesi yok.
 function LandingHero() {
     const { t } = useTranslation()
     const loggedIn = isLoggedIn()
@@ -18,7 +18,7 @@ function LandingHero() {
     return (
         <header className="relative rounded-b-[2.25rem] bg-linear-160 from-brand-deep via-brand to-brand-light px-5 pb-9 pt-6 text-cream">
             <HeroBlobs />
-            <div className="relative mx-auto max-w-3xl">
+            <div className="relative mx-auto max-w-4xl">
                 <div className="flex items-center justify-between gap-3 animate-rise">
                     <Logo to="/" />
                     <div className="flex items-center gap-2">
@@ -33,31 +33,31 @@ function LandingHero() {
                     </div>
                 </div>
 
-                <h1 className="mt-8 animate-rise text-[2rem] font-extrabold leading-[1.08] tracking-tight [animation-delay:0.1s] sm:text-5xl">
-                    <Trans i18nKey="landing.headline" components={{ em: <span className="text-honey" />, br: <br /> }} />
-                </h1>
-                <p className="mt-3 animate-rise text-cream/90 [animation-delay:0.15s] sm:text-lg">{t('landing.subtitle')}</p>
+                <div className="mt-5 grid gap-5 sm:mt-8 sm:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] sm:items-center sm:gap-10">
+                    <div className="animate-rise [animation-delay:0.05s] sm:order-2">
+                        <DietitianPhotoCard />
+                    </div>
 
-                <div className="mt-6 flex animate-rise items-center gap-3 [animation-delay:0.2s]">
-                    <DietitianAvatar />
-                    <div>
-                        <p className="font-bold">{DIETITIAN.name}</p>
-                        <p className="text-sm text-cream/85">{t('landing.dietitianTitle')}</p>
+                    <div className="sm:order-1">
+                        <h1 className="animate-rise text-[2rem] font-extrabold leading-[1.08] tracking-tight [animation-delay:0.1s] sm:text-5xl">
+                            <Trans i18nKey="landing.headline" components={{ em: <span className="text-honey" />, br: <br /> }} />
+                        </h1>
+                        <p className="mt-3 animate-rise text-cream/90 [animation-delay:0.15s] sm:text-lg">{t('landing.subtitle')}</p>
+
+                        <div className="mt-6 animate-rise [animation-delay:0.2s] sm:max-w-sm">
+                            <WhatsAppButton text={t('whatsapp.ask')} label={t('landing.whatsappCta')} size="lg" pulse />
+                        </div>
+
+                        <ul className="mt-4 flex flex-wrap gap-2 animate-rise [animation-delay:0.25s]">
+                            {['chip1', 'chip2', 'chip3'].map((key) => (
+                                <li key={key} className="flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">
+                                    <Check className="h-3.5 w-3.5" />
+                                    {t(`landing.${key}`)}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
-
-                <div className="mt-6 animate-rise [animation-delay:0.25s] sm:max-w-sm">
-                    <WhatsAppButton text={t('whatsapp.ask')} label={t('landing.whatsappCta')} size="lg" pulse />
-                </div>
-
-                <ul className="mt-4 flex flex-wrap gap-2 animate-rise [animation-delay:0.3s]">
-                    {['chip1', 'chip2', 'chip3'].map((key) => (
-                        <li key={key} className="flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">
-                            <Check className="h-3.5 w-3.5" />
-                            {t(`landing.${key}`)}
-                        </li>
-                    ))}
-                </ul>
             </div>
         </header>
     )

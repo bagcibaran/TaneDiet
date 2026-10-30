@@ -139,4 +139,7 @@ export const ABOUT = {
 
 export const DIETITIAN = {
     name: 'Dyt. Betül Bağcı',
+    // Gerçek fotoğraf: dosyayı client/public/ klasörüne koy (ör. dietitian.webp, dikey, en az 900 px genişlik)
+    // ve buraya '/dietitian.webp' yaz. Boşken (null) yer tutucu çizim gösterilir.
+    photo: null as string | null,
 }

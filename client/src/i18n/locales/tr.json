@@ -485,7 +485,8 @@
     "close": "Kapat",
     "finalTitle": "Hazırsan başlayalım 🌿",
     "finalText": "Sorularını WhatsApp'tan sor, sana uygun paketi birlikte seçelim.",
-    "footerText": "Yasaksız, sana göre sürdürülebilir online diyet danışmanlığı."
+    "footerText": "Yasaksız, sana göre sürdürülebilir online diyet danışmanlığı.",
+    "dietitianPhotoAlt": "{{name}} fotoğrafı"
   },
   "common": {
     "cancel": "Vazgeç",
