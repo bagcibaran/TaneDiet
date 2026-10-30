@@ -13,6 +13,9 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 const ClientsPage = lazy(() => import('./pages/ClientsPage'))
 const ClientDetailPage = lazy(() => import('./pages/ClientDetailPage'))
 const IntakePage = lazy(() => import('./pages/IntakePage'))
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'))
+const ConsentPage = lazy(() => import('./pages/ConsentPage'))
+const ClientExportPage = lazy(() => import('./pages/ClientExportPage'))
 const MenuPage = lazy(() => import('./pages/MenuPage'))
 const DietPlanEditorPage = lazy(() => import('./pages/DietPlanEditorPage'))
 const DietLibraryPage = lazy(() => import('./pages/DietLibraryPage'))
@@ -31,6 +34,17 @@ function App() {
                         {/* Giriş yapmadan açılan sayfalar (sekme çubuğu yok) */}
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/gizlilik" element={<PrivacyPage />} />
+
+                        {/* KVKK: güncel açık rıza metnini onaylama ekranı (sekme çubuğu yok) */}
+                        <Route
+                            path="/consent"
+                            element={
+                                <ProtectedRoute allowedRoles={['CLIENT']}>
+                                    <ConsentPage />
+                                </ProtectedRoute>
+                            }
+                        />
 
                         {/* Ön görüşme formu: danışana özel, sekme çubuğu yok */}
                         <Route
@@ -38,6 +52,16 @@ function App() {
                             element={
                                 <ProtectedRoute allowedRoles={['CLIENT']}>
                                     <IntakePage />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        {/* KVKK: danışan verilerinin yazdırılabilir dökümü (sekme çubuğu yok) */}
+                        <Route
+                            path="/clients/:id/export"
+                            element={
+                                <ProtectedRoute allowedRoles={['DIETITIAN']}>
+                                    <ClientExportPage />
                                 </ProtectedRoute>
                             }
                         />

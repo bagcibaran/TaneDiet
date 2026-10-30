@@ -7,6 +7,7 @@ import { PageBody, PageHero } from '../components/PageLayout'
 import WeightSection from '../components/WeightSection'
 import IntakeSummary from '../components/intake/IntakeSummary'
 import AccessPanel from '../components/AccessPanel'
+import ClientDataPanel from '../components/ClientDataPanel'
 import DietPlanSection from '../components/diet/DietPlanSection'
 import { getClient, getClientActivity, markClientReviewed } from '../services/clientService'
 import { formatKg } from '../utils/format'
@@ -123,6 +124,8 @@ function ClientDetailPage() {
                     onSummaryChange={setSummary}
                     highlightIds={activity?.newWeightEntryIds ?? []}
                 />
+                {/* KVKK: dışa aktarma, kalıcı silme, görüntüleme kaydı (geri alınamaz işlem en altta) */}
+                {client && <ClientDataPanel client={client} />}
             </PageBody>
         </>
     )

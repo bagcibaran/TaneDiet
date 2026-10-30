@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BellDot, ChevronDown, ClipboardList } from 'lucide-react'
 
-import { INTAKE_STEPS, type IntakeFieldConfig, type IntakeFieldName } from '../../intake/intakeSteps'
+import { INTAKE_STEPS, type IntakeFieldName } from '../../intake/intakeSteps'
+import { formatIntakeAnswer } from '../../intake/formatAnswer'
 import { getClientIntake } from '../../services/intakeService'
 import { toErrorMessage } from '../../services/errorMessage'
 import { SkeletonCard } from '../Skeleton'
@@ -26,10 +27,6 @@ const HIGHLIGHTS: IntakeFieldName[] = [
     'goal',
     'specialDiet',
 ]
-
-const FIELDS_BY_NAME = new Map<IntakeFieldName, IntakeFieldConfig>(
-    INTAKE_STEPS.flatMap((step) => step.fields.map((field) => [field.name, field] as const)),
-)
 
 // Diyetisyenin danışan sayfasında gördüğü ön görüşme özeti
 function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSummaryProps) {
@@ -70,24 +67,8 @@ function IntakeSummary({ clientId, intakeStatus, changedFields = [] }: IntakeSum
     const hasNews = intakeStatus === 'NEW' || (intakeStatus === 'UPDATED' && changedFields.length > 0)
 
     // Bir cevabı ekranda okunacak metne çevirir; boş cevaplar "Yok"
-    const formatAnswer = (name: IntakeFieldName): string => {
-        const field = FIELDS_BY_NAME.get(name)
-        const value = form?.[name]
-        if (value === null || value === undefined || value === '') {
-            return t('intake.summary.none')
-        }
-        if (typeof value === 'boolean') {
-            return value ? t('intake.yes') : t('intake.no')
-        }
-        if (field?.kind === 'choice') {
-            const label = t(`intake.options.${field.optionSet}.${value}`)
-            return name === 'goal' && value === 'OTHER' && form?.goalOther ? `${label}: ${form.goalOther}` : label
-        }
-        if (field?.kind === 'date') {
-            return new Date(`${value}T00:00:00`).toLocaleDateString(i18n.language)
-        }
-        return typeof value === 'number' ? value.toLocaleString(i18n.language) : value
-    }
+    const formatAnswer = (name: IntakeFieldName): string =>
+        form ? formatIntakeAnswer(form, name, t, i18n.language) : t('intake.summary.none')
 
     // Bir cevap satırı; değiştiyse açık yeşil zemin ve "Güncellendi" etiketi
     const answerRow = (name: IntakeFieldName, bold: boolean) => (

@@ -6,7 +6,7 @@ import { BookMarked, Home, Users, UtensilsCrossed, type LucideIcon } from 'lucid
 import Logo from './Logo'
 import UserMenu from './UserMenu'
 import { LoadingCards } from './Skeleton'
-import { getRole, homePath } from '../services/session'
+import { getRole } from '../services/session'
 
 type Tab = {
     to: string
@@ -41,7 +41,7 @@ function AppShell() {
             {/* Bilgisayar: hap şeklinde sekmeler, sayfanın yeşil başlığının üstünde şeffaf durur (tek parça görünsün diye; telefonda gizli) */}
             <header className="absolute inset-x-0 top-0 z-30 hidden sm:block">
                 <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-                    <Logo to={homePath()} />
+                    <Logo to="/" />
                     <div className="flex items-center gap-3">
                         <nav className="flex gap-1 rounded-full bg-black/15 p-1">
                             {tabs.map((tab) => {

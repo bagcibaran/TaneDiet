@@ -198,6 +198,17 @@ class ClientAccessServiceTest {
         assertTrue(response.isLocked());
     }
 
+    // KVKK: veriler hizmetin bittiği günden 2 yıl sonra otomatik silinir; süresiz danışanda tarih yok
+    @Test
+    void deletionDateIsTwoYearsAfterEnd() {
+        client.setAccessUntil(LocalDate.of(2026, 10, 20));
+        // Gece işi "son gün < bugün - 2 yıl" olanı siler: 2028-10-20'de kalır, 2028-10-21 gecesi silinir
+        assertEquals(LocalDate.of(2028, 10, 21), service.toResponse(client).getDeletionDate());
+
+        client.setAccessUntil(null);
+        assertNull(service.toResponse(client).getDeletionDate());
+    }
+
     @Test
     void nonClientIs404() {
         User dietitian = new User("diyetisyen", "d@test.com", "hash");

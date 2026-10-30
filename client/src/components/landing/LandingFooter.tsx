@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { LogIn, MessageCircle } from 'lucide-react'
+import { LogIn, MessageCircle, ShieldCheck } from 'lucide-react'
 
 import Logo from '../Logo'
 import { whatsappContactLink } from '../../utils/whatsapp'
@@ -32,6 +32,12 @@ function LandingFooter() {
                         <Link to="/login" className="inline-flex items-center gap-2 text-brand hover:text-brand-dark">
                             <LogIn className="h-4 w-4" />
                             {t('landing.clientLogin')}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/gizlilik" className="inline-flex items-center gap-2 text-brand hover:text-brand-dark">
+                            <ShieldCheck className="h-4 w-4" />
+                            {t('privacy.link')}
                         </Link>
                     </li>
                 </ul>

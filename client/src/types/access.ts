@@ -6,6 +6,8 @@ export type ClientAccess = {
     locked: boolean
     // Kalan gün (son gün 0); süresiz veya kilitliyse null
     daysLeft: number | null
+    // KVKK: veriler bu gün otomatik silinir (son günden 2 yıl sonra); süresizse null
+    deletionDate: string | null
 }
 
 // ADD_MONTHS: paket ekle · SET_DATE: bitiş tarihini ayarla · UNLIMITED: süresiz yap · CLOSE_NOW: erişimi hemen kapat

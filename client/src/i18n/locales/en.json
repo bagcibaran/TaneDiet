@@ -31,7 +31,8 @@
     "checkingInvite": "Checking your invite link...",
     "passwordHint": "At least 8 characters",
     "passwordTooShort": "The password must be at least 8 characters",
-    "submitting": "Creating account..."
+    "submitting": "Creating account...",
+    "privacyNote": "Read how your personal data is handled on the <privacy>Privacy and KVKK</privacy> page."
   },
   "dashboard": {
     "logout": "Logout",
@@ -129,7 +130,7 @@
     "optional": "optional",
     "yes": "Yes",
     "no": "No",
-    "consent": "I give my explicit consent for the health information I share in this form to be processed by my dietitian for the purpose of nutrition counselling.",
+    "consent": "I have read the <privacy>explicit consent text</privacy> and give my explicit consent for the health information I share in this form to be processed by my dietitian for nutrition counselling.",
     "consentRequired": "Please tick the consent box to continue",
     "bloodTestNote": "Please send your blood test results from the last 3 months via WhatsApp. If you have not had one, please get a blood test covering: complete blood count, fasting blood glucose, insulin, HbA1c, thyroid tests (TSH, T3, T4), iron, B12, vitamin D, cholesterol and triglyceride profile, liver and kidney function tests.",
     "doctorNote": "If you have a chronic disease or take medication regularly, ask your doctor whether there is any specific nutrition advice for you.",
@@ -432,7 +433,8 @@
     "confirmClose": "Close this client's access now? Their data is kept; you can reopen it later.",
     "error": "The service period could not be changed",
     "confirmPastDate": "This date is in the past: the client's access closes immediately. Continue?",
-    "saved": "Service period updated"
+    "saved": "Service period updated",
+    "autoDelete": "Data will be deleted automatically on {{date}} (KVKK, 2 years)"
   },
   "landing": {
     "clientLogin": "Client login",
@@ -477,12 +479,76 @@
     "delete": "Delete",
     "continue": "Continue",
     "saved": "Saved",
-    "deleted": "Deleted"
+    "deleted": "Deleted",
+    "loading": "Loading",
+    "typeToConfirm": "Type {{text}} to confirm"
   },
   "notFound": {
     "title": "Page not found",
     "text": "The page you are looking for may have moved or never existed.",
     "toHome": "Back to the home page",
     "toApp": "Back to the app"
+  },
+  "privacy": {
+    "link": "Privacy and KVKK",
+    "title": "Privacy and KVKK",
+    "version": "Version: {{version}}",
+    "loadError": "Could not load the text, please refresh"
+  },
+  "consent": {
+    "title": "Explicit consent",
+    "intro": "Before you continue, please read and accept the current explicit consent text.",
+    "accept": "I accept",
+    "accepting": "Saving...",
+    "decline": "I do not accept",
+    "accepted": "Thank you, your consent was saved",
+    "error": "Could not save your consent",
+    "fullPrivacy": "Full privacy notice",
+    "declinedTitle": "We cannot continue without consent",
+    "declinedText": "Your health information can only be processed with your explicit consent, so the app cannot be used without it. If you have questions or want your data deleted, message your dietitian on WhatsApp.",
+    "whatsappMessage": "Hello, I have some questions about the explicit consent text.",
+    "back": "Back to the text"
+  },
+  "clientData": {
+    "title": "Data and KVKK",
+    "hint": "Export the client's data if they ask for it and send it on WhatsApp; delete it permanently on request.",
+    "export": "View / print data",
+    "delete": "Delete client and data",
+    "deleteTitle": "Permanently delete {{username}}?",
+    "deleteMessage": "The account, intake form, weight entries, diet programs and consent records are deleted. This cannot be undone.",
+    "deleteConfirm": "Delete permanently",
+    "deleted": "Client and data deleted",
+    "deleteError": "Could not delete the client",
+    "accessLog": "Access log",
+    "accessLogEmpty": "No entries yet",
+    "accessLogError": "Could not load the log",
+    "actions": {
+      "VIEW_INTAKE": "Intake form viewed",
+      "EXPORT": "Data exported"
+    },
+    "exportTitle": "Client data",
+    "exportedAt": "Prepared: {{date}}",
+    "print": "Print / save as PDF",
+    "back": "Back to client",
+    "loadError": "Could not load the data",
+    "sections": {
+      "account": "Account",
+      "consents": "Explicit consents",
+      "intake": "Intake form",
+      "weights": "Weight entries",
+      "plans": "Diet programs",
+      "accessLog": "Access log"
+    },
+    "username": "Username",
+    "email": "Email",
+    "serviceUntil": "Service ends",
+    "unlimited": "Unlimited",
+    "consentLine": "Version {{version}} · {{date}}",
+    "none": "No entries",
+    "intakeMissing": "Form not filled in",
+    "everyDay": "Every day",
+    "date": "Date",
+    "weight": "Weight",
+    "enteredBy": "Entered by"
   }
 }

@@ -110,6 +110,12 @@ function AccessPanel({ clientId }: AccessPanelProps) {
             {access && (
                 <>
                     <p className={`mt-3 inline-block rounded-full px-3 py-1 text-sm font-semibold ${statusClass}`}>{status}</p>
+                    {/* Süresi dolan danışanın verileri 2 yıl sonra kendiliğinden silinir (KVKK) */}
+                    {access.locked && access.deletionDate && (
+                        <p className="mt-2 text-xs text-muted">
+                            {t('access.autoDelete', { date: formatDate(access.deletionDate) })}
+                        </p>
+                    )}
 
                     {/* Paket ekle: kilitli/süresizse bugünden, açıksa mevcut son günden uzatır */}
                     <p className="mt-4 text-xs font-semibold text-muted">{t('access.addPackage')}</p>

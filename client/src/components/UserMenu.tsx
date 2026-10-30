@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ClipboardList, Globe, LogOut } from 'lucide-react'
+import { ClipboardList, Globe, LogOut, ShieldCheck } from 'lucide-react'
 
 import LanguageToggle from './LanguageToggle'
 import { clearSession, getRole, getUsername } from '../services/session'
 
-// Sağ üstteki yuvarlak baş harf düğmesi. Tıklayınca: kullanıcı adı, dil, (danışansa) ön görüşme formu, çıkış.
+// Sağ üstteki yuvarlak baş harf düğmesi. Tıklayınca: kullanıcı adı, dil, (danışansa) ön görüşme formu, gizlilik, çıkış.
 function UserMenu() {
     const { t } = useTranslation()
     const navigate = useNavigate()
@@ -82,6 +82,15 @@ function UserMenu() {
                             {t('intake.profileLink')}
                         </Link>
                     )}
+
+                    <Link
+                        to="/gizlilik"
+                        onClick={() => setOpen(false)}
+                        className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold hover:bg-cream"
+                    >
+                        <ShieldCheck className="h-4 w-4 text-brand" />
+                        {t('privacy.link')}
+                    </Link>
 
                     <button
                         type="button"

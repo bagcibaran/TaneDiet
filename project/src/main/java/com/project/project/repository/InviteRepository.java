@@ -1,9 +1,11 @@
 package com.project.project.repository;
 
 import com.project.project.entity.Invite;
+import com.project.project.entity.User;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -22,4 +24,9 @@ public interface InviteRepository extends JpaRepository<Invite, Long> {
 
     // Açık davetler (kullanılmamış, süresi dolmamış), en yeni önce
     List<Invite> findAllByUsedAtIsNullAndExpiresAtAfterOrderByCreatedAtDesc(LocalDateTime now);
+
+    // KVKK silme: kullanılmış davet kalır (kullanıldı bilgisi), ama silinen danışanla bağı kopar
+    @Modifying
+    @Query("update Invite i set i.usedBy = null where i.usedBy = :user")
+    void clearUsedBy(@Param("user") User user);
 }

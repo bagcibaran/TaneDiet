@@ -31,7 +31,8 @@
     "checkingInvite": "Davet linkin kontrol ediliyor...",
     "passwordHint": "En az 8 karakter",
     "passwordTooShort": "Şifre en az 8 karakter olmalı",
-    "submitting": "Hesap açılıyor..."
+    "submitting": "Hesap açılıyor...",
+    "privacyNote": "Kişisel verilerinin nasıl işlendiğini <privacy>Gizlilik ve KVKK</privacy> sayfasında okuyabilirsin."
   },
   "dashboard": {
     "logout": "Çıkış yap",
@@ -129,7 +130,7 @@
     "optional": "isteğe bağlı",
     "yes": "Evet",
     "no": "Hayır",
-    "consent": "Bu formda paylaştığım sağlık bilgilerimin, beslenme danışmanlığı hizmeti kapsamında diyetisyenim tarafından işlenmesine açık rıza veriyorum.",
+    "consent": "<privacy>Açık rıza metnini</privacy> okudum; bu formda paylaştığım sağlık bilgilerimin beslenme danışmanlığı hizmeti kapsamında diyetisyenim tarafından işlenmesine açık rıza veriyorum.",
     "consentRequired": "Devam etmek için açık rıza kutusunu işaretle",
     "bloodTestNote": "Son 3 ay içinde yapılmış güncel kan tahlili sonuçlarını WhatsApp üzerinden ilet. Tahlil yaptırmadıysan şu testleri içeren bir kan tahlili yaptır: Tam Kan Sayımı, Açlık Kan Şekeri, İnsülin, HbA1c, Tiroid Testleri (TSH, T3, T4), Demir, B12, D Vitamini, Kolesterol ve Trigliserid Profili, Karaciğer ve Böbrek Fonksiyon Testleri.",
     "doctorNote": "Kronik bir hastalığın veya düzenli kullandığın ilaçlar varsa, doktorunun beslenmeyle ilgili özel bir önerisi olup olmadığını öğren.",
@@ -432,7 +433,8 @@
     "confirmClose": "Danışanın erişimi hemen kapatılsın mı? Bilgileri silinmez; sonra yeniden açabilirsin.",
     "error": "Hizmet süresi değiştirilemedi",
     "confirmPastDate": "Bu tarih geçmişte: danışanın erişimi hemen kapanır. Devam edilsin mi?",
-    "saved": "Hizmet süresi güncellendi"
+    "saved": "Hizmet süresi güncellendi",
+    "autoDelete": "Veriler {{date}} tarihinde otomatik silinecek (KVKK, 2 yıl)"
   },
   "landing": {
     "clientLogin": "Danışan girişi",
@@ -477,12 +479,76 @@
     "delete": "Sil",
     "continue": "Devam et",
     "saved": "Kaydedildi",
-    "deleted": "Silindi"
+    "deleted": "Silindi",
+    "loading": "Yükleniyor",
+    "typeToConfirm": "Onaylamak için {{text}} yazın"
   },
   "notFound": {
     "title": "Sayfa bulunamadı",
     "text": "Aradığın sayfa taşınmış ya da hiç var olmamış olabilir.",
     "toHome": "Ana sayfaya dön",
     "toApp": "Uygulamaya dön"
+  },
+  "privacy": {
+    "link": "Gizlilik ve KVKK",
+    "title": "Gizlilik ve KVKK",
+    "version": "Sürüm: {{version}}",
+    "loadError": "Metin yüklenemedi, sayfayı yenile"
+  },
+  "consent": {
+    "title": "Açık rıza metni",
+    "intro": "Devam etmeden önce güncel açık rıza metnini okuyup onaylaman gerekiyor.",
+    "accept": "Onaylıyorum",
+    "accepting": "Kaydediliyor...",
+    "decline": "Onaylamıyorum",
+    "accepted": "Teşekkürler, onayın kaydedildi",
+    "error": "Onay kaydedilemedi",
+    "fullPrivacy": "Aydınlatma metninin tamamı",
+    "declinedTitle": "Onay olmadan devam edemiyoruz",
+    "declinedText": "Sağlık bilgilerin yalnızca açık rızanla işlenebilir, bu yüzden uygulamayı onay vermeden kullanamazsın. Sorun ya da verilerinin silinmesini istersen diyetisyenine WhatsApp'tan yazabilirsin.",
+    "whatsappMessage": "Merhaba, açık rıza metniyle ilgili sormak istediklerim var.",
+    "back": "Metne geri dön"
+  },
+  "clientData": {
+    "title": "Veriler ve KVKK",
+    "hint": "Danışan verilerini isterse dışa aktarıp WhatsApp'tan iletin; silme talebinde kalıcı olarak silin.",
+    "export": "Verileri görüntüle / yazdır",
+    "delete": "Danışanı ve verilerini sil",
+    "deleteTitle": "{{username}} kalıcı olarak silinsin mi?",
+    "deleteMessage": "Hesap, ön görüşme formu, kilo kayıtları, diyet programları ve onay kayıtları silinir. Bu işlem geri alınamaz.",
+    "deleteConfirm": "Kalıcı olarak sil",
+    "deleted": "Danışan ve verileri silindi",
+    "deleteError": "Danışan silinemedi",
+    "accessLog": "Görüntüleme kaydı",
+    "accessLogEmpty": "Henüz kayıt yok",
+    "accessLogError": "Kayıt yüklenemedi",
+    "actions": {
+      "VIEW_INTAKE": "Ön görüşme formu görüntülendi",
+      "EXPORT": "Veriler dışa aktarıldı"
+    },
+    "exportTitle": "Danışan verileri",
+    "exportedAt": "Hazırlanma: {{date}}",
+    "print": "Yazdır / PDF olarak kaydet",
+    "back": "Danışana dön",
+    "loadError": "Veriler yüklenemedi",
+    "sections": {
+      "account": "Hesap",
+      "consents": "Açık rıza onayları",
+      "intake": "Ön görüşme formu",
+      "weights": "Kilo kayıtları",
+      "plans": "Diyet programları",
+      "accessLog": "Görüntüleme kaydı"
+    },
+    "username": "Kullanıcı adı",
+    "email": "E-posta",
+    "serviceUntil": "Hizmet son günü",
+    "unlimited": "Süresiz",
+    "consentLine": "Sürüm {{version}} · {{date}}",
+    "none": "Kayıt yok",
+    "intakeMissing": "Form doldurulmadı",
+    "everyDay": "Her gün",
+    "date": "Tarih",
+    "weight": "Kilo",
+    "enteredBy": "Giren"
   }
 }

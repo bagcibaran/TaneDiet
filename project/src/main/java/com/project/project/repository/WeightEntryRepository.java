@@ -3,6 +3,7 @@ package com.project.project.repository;
 import com.project.project.entity.User;
 import com.project.project.entity.WeightEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,4 +20,8 @@ public interface WeightEntryRepository extends JpaRepository<WeightEntry, Long> 
     long countByUserAndEnteredByAndCreatedAtAfter(User user, User enteredBy, LocalDateTime after);
 
     List<WeightEntry> findAllByUserAndEnteredByAndCreatedAtAfter(User user, User enteredBy, LocalDateTime after);
+
+    // KVKK silme
+    @Modifying
+    void deleteAllByUser(User user);
 }

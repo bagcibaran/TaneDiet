@@ -15,8 +15,11 @@ function FeedbackProvider({ children }: { children: ReactNode }) {
     const { t } = useTranslation()
     const [toasts, setToasts] = useState<Toast[]>([])
     const [pending, setPending] = useState<PendingConfirm | null>(null)
+    // requireText için kullanıcının yazdığı
+    const [typed, setTyped] = useState('')
     const nextId = useRef(0)
     const confirmButton = useRef<HTMLButtonElement>(null)
+    const typedInput = useRef<HTMLInputElement>(null)
 
     const toast = useCallback((message: string, tone: ToastTone = 'success') => {
         const id = ++nextId.current
@@ -27,6 +30,7 @@ function FeedbackProvider({ children }: { children: ReactNode }) {
     const confirm = useCallback(
         (options: ConfirmOptions) =>
             new Promise<boolean>((resolve) => {
+                setTyped('')
                 setPending({ ...options, resolve })
             }),
         [],
@@ -40,14 +44,18 @@ function FeedbackProvider({ children }: { children: ReactNode }) {
         [pending],
     )
 
-    // Onay açıkken: Esc vazgeçer, sayfa kaymaz, odak onay düğmesine gider
+    // Onay açıkken: Esc vazgeçer, sayfa kaymaz, odak onay düğmesine (yazarak onayda kutuya) gider
     useEffect(() => {
         if (!pending) {
             return
         }
         const previousOverflow = document.body.style.overflow
         document.body.style.overflow = 'hidden'
-        confirmButton.current?.focus()
+        if (pending.requireText) {
+            typedInput.current?.focus()
+        } else {
+            confirmButton.current?.focus()
+        }
         const handleKey = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 close(false)
@@ -61,6 +69,8 @@ function FeedbackProvider({ children }: { children: ReactNode }) {
     }, [pending, close])
 
     const api = useMemo(() => ({ toast, confirm }), [toast, confirm])
+
+    const confirmBlocked = pending?.requireText !== undefined && typed !== pending.requireText
 
     return (
         <FeedbackContext.Provider value={api}>
@@ -120,6 +130,26 @@ function FeedbackProvider({ children }: { children: ReactNode }) {
                                         {pending.message}
                                     </p>
                                 )}
+                                {pending.requireText !== undefined && (
+                                    <label className="mt-4 block text-sm font-medium text-ink">
+                                        {t('common.typeToConfirm', { text: pending.requireText })}
+                                        <input
+                                            ref={typedInput}
+                                            value={typed}
+                                            onChange={(event) => setTyped(event.target.value)}
+                                            onKeyDown={(event) => {
+                                                if (event.key === 'Enter' && !confirmBlocked) {
+                                                    close(true)
+                                                }
+                                            }}
+                                            autoCapitalize="off"
+                                            autoCorrect="off"
+                                            autoComplete="off"
+                                            spellCheck={false}
+                                            className="mt-1 w-full rounded-2xl border border-line bg-cream px-3 py-3 text-ink outline-none transition focus:border-danger focus:ring-2 focus:ring-danger/20"
+                                        />
+                                    </label>
+                                )}
                                 <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                                     <button
                                         type="button"
@@ -131,8 +161,9 @@ function FeedbackProvider({ children }: { children: ReactNode }) {
                                     <button
                                         ref={confirmButton}
                                         type="button"
+                                        disabled={confirmBlocked}
                                         onClick={() => close(true)}
-                                        className={`rounded-full px-5 py-3 font-semibold text-cream shadow-soft transition active:scale-[0.98] ${
+                                        className={`rounded-full px-5 py-3 font-semibold text-cream shadow-soft transition active:scale-[0.98] disabled:opacity-50 ${
                                             pending.danger ? 'bg-danger hover:brightness-95' : 'bg-brand hover:bg-brand-dark'
                                         }`}
                                     >

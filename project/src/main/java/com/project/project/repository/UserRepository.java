@@ -4,6 +4,7 @@ import com.project.project.entity.Role;
 import com.project.project.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     List<User> findAllByRoleOrderByUsernameAsc(Role role);
+
+    // KVKK saklama süresi: son günü verilen tarihten önce olanlar (süresiz = NULL hiç gelmez)
+    List<User> findAllByRoleAndAccessUntilBefore(Role role, LocalDate date);
 }

@@ -52,7 +52,10 @@ public class ClientAccessService {
     }
 
     public ClientAccessResponse toResponse(User user) {
-        return new ClientAccessResponse(user.getAccessUntil(), isLocked(user), daysLeft(user));
+        LocalDate deletionDate = user.getAccessUntil() == null
+                ? null
+                : user.getAccessUntil().plusYears(RetentionJob.RETENTION_YEARS).plusDays(1);
+        return new ClientAccessResponse(user.getAccessUntil(), isLocked(user), daysLeft(user), deletionDate);
     }
 
     // Paket süresi 1, 3 veya 6 ay olabilir

@@ -3,6 +3,7 @@ package com.project.project.security;
 import com.project.project.entity.User;
 import com.project.project.repository.UserRepository;
 import com.project.project.service.impl.ClientAccessService;
+import com.project.project.service.impl.ConsentService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -36,6 +37,9 @@ class JwtAuthFilterTest {
     @Mock
     private FilterChain chain;
 
+    @Mock
+    private ConsentService consentService;
+
     private JwtAuthFilter filter;
 
     @BeforeEach
@@ -43,7 +47,7 @@ class JwtAuthFilterTest {
         MockitoAnnotations.openMocks(this);
         // Bugün = 28 Ekim 2026
         Clock clock = Clock.fixed(Instant.parse("2026-10-28T09:00:00Z"), ZoneId.of("Europe/Istanbul"));
-        filter = new JwtAuthFilter(jwtService, userRepository, new ClientAccessService(userRepository, clock));
+        filter = new JwtAuthFilter(jwtService, userRepository, new ClientAccessService(userRepository, clock), consentService);
 
         Claims claims = Jwts.claims().subject("ayse").add("role", "CLIENT").build();
         when(jwtService.parseClaims("tok")).thenReturn(claims);
@@ -112,6 +116,64 @@ class JwtAuthFilterTest {
 
         filter.doFilter(request("/weights"), new MockHttpServletResponse(), chain);
 
+        assertNotNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    private User activeClient() {
+        User client = new User("ayse", "ayse@test.com", "hash");
+        client.setAccessUntil(LocalDate.of(2026, 12, 31));
+        when(userRepository.findByUsername("ayse")).thenReturn(Optional.of(client));
+        return client;
+    }
+
+    // Güncel rıza metnini onaylamamış danışan: sağlık verilerine ulaşamaz (428)
+    @Test
+    void clientNeedingConsentGets428() throws Exception {
+        User client = activeClient();
+        when(consentService.needsConsent(client)).thenReturn(true);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request("/weights"), response, chain);
+
+        assertEquals(428, response.getStatus());
+        assertTrue(response.getContentAsString().contains("açık rıza"));
+        verify(chain, never()).doFilter(any(), any());
+    }
+
+    // Onay ekranı çalışmalı: /consent açık kalır
+    @Test
+    void consentPathAllowedWhileNeedingConsent() throws Exception {
+        User client = activeClient();
+        when(consentService.needsConsent(client)).thenReturn(true);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request("/consent"), response, chain);
+
+        assertEquals(200, response.getStatus());
+        verify(chain).doFilter(any(), any());
+    }
+
+    @Test
+    void legalPathAllowed() throws Exception {
+        User client = activeClient();
+        when(consentService.needsConsent(client)).thenReturn(true);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request("/legal/consent"), response, chain);
+
+        assertEquals(200, response.getStatus());
+        verify(chain).doFilter(any(), any());
+    }
+
+    @Test
+    void clientWithCurrentConsentPasses() throws Exception {
+        User client = activeClient();
+        when(consentService.needsConsent(client)).thenReturn(false);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request("/weights"), response, chain);
+
+        assertEquals(200, response.getStatus());
         assertNotNull(SecurityContextHolder.getContext().getAuthentication());
     }
 }

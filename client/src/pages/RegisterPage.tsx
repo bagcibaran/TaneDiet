@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Lock } from 'lucide-react'
 
 import AuthLayout from '../AppLayout/Routes/AuthLayout'
@@ -183,6 +183,21 @@ function RegisterPage() {
                     {submitting ? t('register.submitting') : t('register.submit')}
                 </button>
             </form>
+
+            <p className="mt-4 text-center text-xs text-muted">
+                <Trans
+                    i18nKey="register.privacyNote"
+                    components={{
+                        privacy: (
+                            <Link
+                                to="/gizlilik"
+                                target="_blank"
+                                className="font-semibold text-brand hover:text-brand-dark"
+                            />
+                        ),
+                    }}
+                />
+            </p>
 
             <p className="mt-6 text-center text-sm text-muted">
                 {t('register.loginPrompt')}{' '}

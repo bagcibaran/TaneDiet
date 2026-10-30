@@ -6,6 +6,8 @@ export type ConfirmOptions = {
     confirmLabel: string
     // Silme / kapatma gibi geri alınamaz işlemler kırmızı düğmeyle sorulur
     danger?: boolean
+    // Verilirse onay düğmesi, kullanıcı bu metni aynen yazana kadar kapalı kalır (ör. kalıcı silmede kullanıcı adı)
+    requireText?: string
 }
 
 export type ToastTone = 'success' | 'error'

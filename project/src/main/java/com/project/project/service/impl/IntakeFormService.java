@@ -27,15 +27,18 @@ public class IntakeFormService {
     private final IntakeFormRepository intakeFormRepository;
     private final UserRepository userRepository;
     private final WeightEntryRepository weightEntryRepository;
+    private final ConsentService consentService;
 
     public IntakeFormService(
             IntakeFormRepository intakeFormRepository,
             UserRepository userRepository,
-            WeightEntryRepository weightEntryRepository
+            WeightEntryRepository weightEntryRepository,
+            ConsentService consentService
     ) {
         this.intakeFormRepository = intakeFormRepository;
         this.userRepository = userRepository;
         this.weightEntryRepository = weightEntryRepository;
+        this.consentService = consentService;
     }
 
     // ---------- Danışan: kendi formu ----------
@@ -64,6 +67,8 @@ public class IntakeFormService {
 
         if (firstTime) {
             form.setConsentGivenAt(LocalDateTime.now());
+            // KVKK: hangi rıza metni sürümünün onaylandığı ayrıca kaydedilir
+            consentService.recordCurrent(user);
             // Formdaki kilo ilk kilo kaydı olur; danışanın zaten kaydı varsa grafiği bozmamak için eklenmez
             if (!weightEntryRepository.existsByUser(user)) {
                 weightEntryRepository.save(new WeightEntry(user, request.getWeightKg(), LocalDate.now(), user));

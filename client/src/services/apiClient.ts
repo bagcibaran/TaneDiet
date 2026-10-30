@@ -58,6 +58,11 @@ export async function apiRequest<T>(
         window.location.replace('/login?reason=locked')
     }
 
+    // KVKK (428): güncel açık rıza metni onaylanmamış. Oturum kalır, danışan onay ekranına gider.
+    if (response.status === 428 && token && window.location.pathname !== '/consent') {
+        window.location.replace('/consent')
+    }
+
     if (!response.ok) {
         const errorBody = await response.json().catch(() => null)
         throw new ApiError(response.status, errorBody?.message ?? '')

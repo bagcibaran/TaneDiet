@@ -53,8 +53,3 @@ export function getUsername(): string | null {
     const token = getToken()
     return token ? (readPayload(token)?.sub ?? null) : null
 }
-
-// Giriş yapmış kullanıcının ana sayfası: diyetisyen için danışan listesi, danışan için ana sayfa
-export function homePath(): string {
-    return getRole() === 'DIETITIAN' ? '/clients' : '/dashboard'
-}

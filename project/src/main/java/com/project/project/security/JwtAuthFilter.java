@@ -4,6 +4,7 @@ import com.project.project.entity.User;
 import com.project.project.exception.ClientAccessLockedException;
 import com.project.project.repository.UserRepository;
 import com.project.project.service.impl.ClientAccessService;
+import com.project.project.service.impl.ConsentService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -28,11 +29,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final ClientAccessService clientAccessService;
+    private final ConsentService consentService;
 
-    public JwtAuthFilter(JwtService jwtService, UserRepository userRepository, ClientAccessService clientAccessService) {
+    public JwtAuthFilter(
+            JwtService jwtService,
+            UserRepository userRepository,
+            ClientAccessService clientAccessService,
+            ConsentService consentService
+    ) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.clientAccessService = clientAccessService;
+        this.consentService = consentService;
     }
 
     @Override
@@ -56,8 +64,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             // Token durumsuz: hizmet süresi dolan danışanın token'ı hâlâ geçerli olabilir.
             // Bu yüzden danışan her istekte veritabanından kontrol edilir; kilitliyse 423 döner.
-            // /auth/** (giriş, kayıt, davet kontrolü) hariç: telefonda eski bir token kalsa bile bu sayfalar çalışmalı.
-            if ("CLIENT".equals(role) && !isAuthPath(request)) {
+            // /auth/** (giriş, kayıt, davet kontrolü) ve /legal/** (KVKK metinleri) hariç: eski bir token kalsa bile bu sayfalar çalışmalı.
+            if ("CLIENT".equals(role) && !isOpenPath(request)) {
                 Optional<User> user = userRepository.findByUsername(username);
                 // Kullanıcı bulunamadı (adı değişti veya silindi): oturum tanınmaz, korumalı istek 401 alır
                 if (user.isEmpty()) {
@@ -65,7 +73,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     return;
                 }
                 if (clientAccessService.isLocked(user.get())) {
-                    writeLocked(response);
+                    writeError(response, 423, ClientAccessLockedException.MESSAGE);
+                    return;
+                }
+                // KVKK: güncel açık rıza metnini onaylamamış danışan, onay ekranı dışında hiçbir veriye ulaşamaz (428)
+                if (!isConsentPath(request) && consentService.needsConsent(user.get())) {
+                    writeError(response, 428, CONSENT_REQUIRED_MESSAGE);
                     return;
                 }
             }
@@ -87,14 +100,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isAuthPath(HttpServletRequest request) {
-        return request.getServletPath().startsWith("/auth/");
+    private static final String CONSENT_REQUIRED_MESSAGE = "Devam etmek için güncel açık rıza metnini onaylaman gerekiyor.";
+
+    // Giriş/kayıt ve KVKK metinleri: kilit ve rıza kontrolü yapılmaz
+    private boolean isOpenPath(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.startsWith("/auth/") || path.startsWith("/legal/");
     }
 
-    private void writeLocked(HttpServletResponse response) throws IOException {
-        response.setStatus(423);
+    private boolean isConsentPath(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.equals("/consent") || path.startsWith("/consent/");
+    }
+
+    // Mesajlar sabit ve tırnak içermez, bu yüzden JSON elle yazılabilir
+    private void writeError(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
         response.setContentType("application/json");
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.getWriter().write("{\"status\":423,\"message\":\"" + ClientAccessLockedException.MESSAGE + "\"}");
+        response.getWriter().write("{\"status\":" + status + ",\"message\":\"" + message + "\"}");
     }
 }

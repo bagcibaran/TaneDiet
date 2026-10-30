@@ -38,6 +38,9 @@ class IntakeFormServiceTest {
     @Mock
     private WeightEntryRepository weightEntryRepository;
 
+    @Mock
+    private ConsentService consentService;
+
     private IntakeFormService intakeFormService;
 
     private User client;
@@ -45,7 +48,7 @@ class IntakeFormServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        intakeFormService = new IntakeFormService(intakeFormRepository, userRepository, weightEntryRepository);
+        intakeFormService = new IntakeFormService(intakeFormRepository, userRepository, weightEntryRepository, consentService);
 
         client = new User("betul", "betul@test.com", "hash");
         client.setId(41L);
@@ -216,5 +219,28 @@ class IntakeFormServiceTest {
         intakeFormService.saveMyForm("betul", second);
 
         assertEquals(java.util.List.of("medications", "goal"), form.getChangedFields());
+    }
+
+    // KVKK: ilk gönderimde hangi rıza metni sürümünün onaylandığı kaydedilir; güncellemelerde tekrar kaydedilmez
+    @Test
+    void firstSaveRecordsConsent() {
+        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.empty());
+        IntakeFormRequest request = validRequest();
+        request.setConsent(true);
+
+        intakeFormService.saveMyForm("betul", request);
+
+        verify(consentService, times(1)).recordCurrent(client);
+    }
+
+    @Test
+    void updateDoesNotRecordConsent() {
+        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.of(new IntakeForm(client)));
+        IntakeFormRequest request = validRequest();
+        request.setConsent(null);
+
+        intakeFormService.saveMyForm("betul", request);
+
+        verify(consentService, never()).recordCurrent(any());
     }
 }

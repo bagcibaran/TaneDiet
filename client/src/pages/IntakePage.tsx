@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Info, LogOut } from 'lucide-react'
 
 import Logo from '../components/Logo'
@@ -172,7 +172,7 @@ function IntakePage() {
                 <HeroBlobs />
                 <div className="relative mx-auto max-w-xl">
                     <div className="flex items-start justify-between">
-                        <Logo to="/dashboard" />
+                        <Logo to="/" />
                         <LanguageToggle />
                     </div>
 
@@ -247,7 +247,22 @@ function IntakePage() {
                                         }}
                                         className="mt-0.5 h-5 w-5 shrink-0 accent-brand"
                                     />
-                                    <span>{t('intake.consent')}</span>
+                                    {/* Bağlantı yeni sekmede açılır: yarım kalan form kaybolmasın */}
+                                    <span>
+                                        <Trans
+                                            i18nKey="intake.consent"
+                                            components={{
+                                                privacy: (
+                                                    <a
+                                                        href="/gizlilik#acik-riza"
+                                                        target="_blank"
+                                                        rel="noopener"
+                                                        className="font-semibold text-brand underline hover:text-brand-dark"
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </span>
                                 </label>
                             )}
 
