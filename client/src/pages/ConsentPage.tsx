@@ -19,8 +19,9 @@ import type { LegalText as LegalTextData } from '../types/legal'
 // Açık rıza metni değişti (ya da hiç onaylanmamış): danışan güncel metni onaylayana kadar backend 428 verir ve
 // apiClient buraya gönderir. Onaylamazsa uygulamayı kullanamaz; diyetisyene WhatsApp'tan yazabilir.
 function ConsentPage() {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     usePageTitle(t('consent.title'))
+    const language = i18n.language
     const navigate = useNavigate()
     const { toast } = useFeedback()
     const [consent, setConsent] = useState<LegalTextData | null>(null)
@@ -34,7 +35,8 @@ function ConsentPage() {
 
     useEffect(() => {
         let cancelled = false
-        getConsentText()
+        // Dil değişince metin o dilde yeniden yüklenir; onaylanan sürüm her dilde aynıdır
+        getConsentText(language)
             .then((text) => {
                 if (!cancelled) {
                     setConsent(text)
@@ -48,7 +50,7 @@ function ConsentPage() {
         return () => {
             cancelled = true
         }
-    }, [reloadKey])
+    }, [reloadKey, language])
 
     const handleAccept = async () => {
         if (!consent || saving) {

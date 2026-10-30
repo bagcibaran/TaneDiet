@@ -2,11 +2,11 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import RecipeSheet from './RecipeSheet'
-import { RECIPES, TONE_CLASSES, type Recipe } from '../../landing/content'
+import { RECIPES, TONE_CLASSES, localize, type Recipe } from '../../landing/content'
 
 // Yana kayan tarif kartları; dokununca tarif alttan açılır
 function RecipeRow() {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const [open, setOpen] = useState<Recipe | null>(null)
     const close = useCallback(() => setOpen(null), [])
 
@@ -22,9 +22,9 @@ function RecipeRow() {
                     >
                         <span className={`flex h-24 items-center justify-center text-5xl ${TONE_CLASSES[recipe.tone]}`}>{recipe.emoji}</span>
                         <span className="block p-3">
-                            <span className="block font-bold text-ink">{recipe.name}</span>
+                            <span className="block font-bold text-ink">{localize(recipe.name, i18n.language)}</span>
                             <span className="block text-xs text-muted">
-                                {t('landing.minutes', { count: recipe.minutes })} · {recipe.meal}
+                                {t('landing.minutes', { count: recipe.minutes })} · {localize(recipe.meal, i18n.language)}
                             </span>
                         </span>
                     </button>

@@ -20,4 +20,11 @@ i18n
         },
     })
 
+// <html lang> seçili dili izler: ekran okuyucular doğru dilde okur, büyük harf dönüşümü doğru olur (İngilizcede "DIET", "DİET" değil)
+const syncHtmlLang = (language: string | undefined) => {
+    document.documentElement.lang = (language ?? 'tr').slice(0, 2)
+}
+syncHtmlLang(i18n.resolvedLanguage)
+i18n.on('languageChanged', syncHtmlLang)
+
 export default i18n

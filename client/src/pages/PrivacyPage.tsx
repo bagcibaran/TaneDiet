@@ -19,8 +19,9 @@ type Texts = {
 
 // Herkese açık gizlilik sayfası: aydınlatma metni ve altında açık rıza metni (#acik-riza)
 function PrivacyPage() {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     usePageTitle(t('privacy.title'))
+    const language = i18n.language
     const location = useLocation()
     const [texts, setTexts] = useState<Texts | null>(null)
     // Ham hata saklanır, ekrana çizilirken çevrilir
@@ -28,7 +29,8 @@ function PrivacyPage() {
 
     useEffect(() => {
         let cancelled = false
-        Promise.all([getPrivacyText(), getConsentText()])
+        // Dil değişince metinler o dilde yeniden yüklenir
+        Promise.all([getPrivacyText(language), getConsentText(language)])
             .then(([privacy, consent]) => {
                 if (!cancelled) {
                     setTexts({ privacy, consent })
@@ -42,7 +44,7 @@ function PrivacyPage() {
         return () => {
             cancelled = true
         }
-    }, [])
+    }, [language])
 
     // Metin sonradan yüklendiği için tarayıcı #acik-riza'ya kendisi kaydıramaz
     useEffect(() => {
