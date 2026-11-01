@@ -64,53 +64,76 @@ class ClientReviewServiceTest {
         when(userRepository.findById(41L)).thenReturn(Optional.of(client));
     }
 
+    // Liste toplu sorgularla hazırlanır: verilen danışanların inceleme ve formları, programı olanlar, yeni kilo sayıları
+    private void stubBatch(List<ClientReview> reviews, List<IntakeForm> forms, List<Long> withPlan, List<Object[]> newWeightCounts) {
+        when(clientReviewRepository.findAllByClientIn(any())).thenReturn(reviews);
+        when(intakeFormRepository.findAllByUserIn(any())).thenReturn(forms);
+        when(dietPlanRepository.findClientIdsWithPlan()).thenReturn(withPlan);
+        when(weightEntryRepository.countNewClientWeights()).thenReturn(newWeightCounts);
+    }
+
     @Test
     void listClients_noForm_isMissing() {
-        when(clientReviewRepository.findByClient(client)).thenReturn(Optional.empty());
-        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.empty());
+        stubBatch(List.of(), List.of(), List.of(), List.of());
 
         ClientOverviewResponse overview = clientReviewService.listClients().get(0);
 
         assertEquals("MISSING", overview.getIntakeStatus());
         assertEquals("betul", overview.getUsername());
+        assertEquals(0L, overview.getNewWeightCount());
+        assertFalse(overview.isHasPlan());
     }
 
+    // Yeni kilo sayısı toplu sorgudan gelir (danışanın kendi girdikleri, son incelemeden sonra; hiç bakılmadıysa hepsi)
     @Test
-    void listClients_neverReviewed_formIsNewAndCountsClientEnteredWeightsSinceEpoch() {
-        when(clientReviewRepository.findByClient(client)).thenReturn(Optional.empty());
-        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.of(new IntakeForm(client)));
-        when(weightEntryRepository.countByUserAndEnteredByAndCreatedAtAfter(eq(client), eq(client), any()))
-                .thenReturn(3L);
+    void listClients_neverReviewed_formIsNewAndUsesNewWeightCount() {
+        stubBatch(List.of(), List.of(new IntakeForm(client)), List.of(41L), List.<Object[]>of(new Object[] {41L, 3L}));
 
         ClientOverviewResponse overview = clientReviewService.listClients().get(0);
 
         assertEquals("NEW", overview.getIntakeStatus());
         assertEquals(3L, overview.getNewWeightCount());
-        // Danışanın kendi girdiği kilolar sayılır (diyetisyenin girdikleri değil), hiç bakılmadıysa en baştan
-        verify(weightEntryRepository).countByUserAndEnteredByAndCreatedAtAfter(client, client, ClientReviewService.NEVER);
+        assertTrue(overview.isHasPlan());
     }
 
     @Test
     void listClients_reviewedAfterSubmissionWithChanges_isUpdated() {
         IntakeForm form = new IntakeForm(client);
         form.addChangedFields(List.of("medications"));
-        ClientReview review = new ClientReview(client);
-        when(clientReviewRepository.findByClient(client)).thenReturn(Optional.of(review));
-        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.of(form));
+        stubBatch(List.of(new ClientReview(client)), List.of(form), List.of(), List.of());
 
-        ClientOverviewResponse overview = clientReviewService.listClients().get(0);
-
-        assertEquals("UPDATED", overview.getIntakeStatus());
-        verify(weightEntryRepository).countByUserAndEnteredByAndCreatedAtAfter(client, client, review.getReviewedAt());
+        assertEquals("UPDATED", clientReviewService.listClients().get(0).getIntakeStatus());
     }
 
     @Test
     void listClients_reviewedAfterSubmissionWithoutChanges_isSeen() {
-        IntakeForm form = new IntakeForm(client);
-        when(clientReviewRepository.findByClient(client)).thenReturn(Optional.of(new ClientReview(client)));
-        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.of(form));
+        stubBatch(List.of(new ClientReview(client)), List.of(new IntakeForm(client)), List.of(), List.of());
 
         assertEquals("SEEN", clientReviewService.listClients().get(0).getIntakeStatus());
+    }
+
+    // Danışan sayısı ne olursa olsun sabit sayıda sorgu: danışan başına sorgu yok
+    @Test
+    void listUsesConstantQueries() {
+        User second = new User("ayse", "ayse@test.com", "hash");
+        second.setId(42L);
+        when(userRepository.findAllByRoleOrderByUsernameAsc(Role.CLIENT)).thenReturn(List.of(client, second));
+        stubBatch(List.of(), List.of(new IntakeForm(second)), List.of(42L), List.<Object[]>of(new Object[] {42L, 2L}));
+
+        List<ClientOverviewResponse> list = clientReviewService.listClients();
+
+        assertEquals("MISSING", list.get(0).getIntakeStatus());
+        assertEquals("NEW", list.get(1).getIntakeStatus());
+        assertEquals(2L, list.get(1).getNewWeightCount());
+        assertTrue(list.get(1).isHasPlan());
+        verify(clientReviewRepository, times(1)).findAllByClientIn(any());
+        verify(intakeFormRepository, times(1)).findAllByUserIn(any());
+        verify(dietPlanRepository, times(1)).findClientIdsWithPlan();
+        verify(weightEntryRepository, times(1)).countNewClientWeights();
+        verify(clientReviewRepository, never()).findByClient(any());
+        verify(intakeFormRepository, never()).findByUser(any());
+        verify(dietPlanRepository, never()).existsByClient(any());
+        verify(weightEntryRepository, never()).countByUserAndEnteredByAndCreatedAtAfter(any(), any(), any());
     }
 
     @Test
@@ -164,9 +187,7 @@ class ClientReviewServiceTest {
 
     @Test
     void listClients_reportsWhetherClientHasDietPlan() {
-        when(clientReviewRepository.findByClient(client)).thenReturn(Optional.empty());
-        when(intakeFormRepository.findByUser(client)).thenReturn(Optional.empty());
-        when(dietPlanRepository.existsByClient(client)).thenReturn(true);
+        stubBatch(List.of(), List.of(), List.of(41L), List.of());
 
         assertTrue(clientReviewService.listClients().get(0).isHasPlan());
     }

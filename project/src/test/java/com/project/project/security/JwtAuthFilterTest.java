@@ -165,6 +165,59 @@ class JwtAuthFilterTest {
         verify(chain).doFilter(any(), any());
     }
 
+    // ---------- Diyetisyen (ve her rol) her istekte veritabanından kontrol edilir ----------
+
+    private MockHttpServletRequest dietitianRequest(String path) {
+        Claims claims = Jwts.claims().subject("diyetisyen").add("role", "DIETITIAN").build();
+        when(jwtService.parseClaims("dtok")).thenReturn(claims);
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", path);
+        request.setServletPath(path);
+        request.addHeader("Authorization", "Bearer dtok");
+        return request;
+    }
+
+    // Hesabı silinen diyetisyenin eski token'ı artık işe yaramaz (korumalı yol 401 alır)
+    @Test
+    void deletedDietitianIsUnauthenticated() throws Exception {
+        when(userRepository.findByUsername("diyetisyen")).thenReturn(Optional.empty());
+
+        filter.doFilter(dietitianRequest("/clients"), new MockHttpServletResponse(), chain);
+
+        verify(chain).doFilter(any(), any());
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    // Rolü değişen hesabın eski token'ındaki rol geçmez
+    @Test
+    void roleChangedIsUnauthenticated() throws Exception {
+        when(userRepository.findByUsername("diyetisyen")).thenReturn(Optional.of(new User("diyetisyen", "d@test.com", "hash")));
+
+        filter.doFilter(dietitianRequest("/clients"), new MockHttpServletResponse(), chain);
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    @Test
+    void activeDietitianIsAuthenticated() throws Exception {
+        User dietitian = new User("diyetisyen", "d@test.com", "hash");
+        dietitian.setRole(com.project.project.entity.Role.DIETITIAN);
+        when(userRepository.findByUsername("diyetisyen")).thenReturn(Optional.of(dietitian));
+
+        filter.doFilter(dietitianRequest("/clients"), new MockHttpServletResponse(), chain);
+
+        assertEquals("ROLE_DIETITIAN",
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority());
+    }
+
+    // Giriş, kayıt, davet ve KVKK metinlerinde veritabanına bakılmaz
+    @Test
+    void openPathDoesNotLoadUser() throws Exception {
+        filter.doFilter(dietitianRequest("/auth/invites/x"), new MockHttpServletResponse(), chain);
+
+        verify(userRepository, never()).findByUsername(any());
+        verify(chain).doFilter(any(), any());
+    }
+
     @Test
     void clientWithCurrentConsentPasses() throws Exception {
         User client = activeClient();

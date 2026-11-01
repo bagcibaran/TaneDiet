@@ -15,6 +15,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +27,12 @@ public class WeightEntryService {
 
     private final WeightEntryRepository weightEntryRepository;
     private final UserRepository userRepository;
+    private final Clock clock;
 
-    public WeightEntryService(WeightEntryRepository weightEntryRepository, UserRepository userRepository) {
+    public WeightEntryService(WeightEntryRepository weightEntryRepository, UserRepository userRepository, Clock clock) {
         this.weightEntryRepository = weightEntryRepository;
         this.userRepository = userRepository;
+        this.clock = clock;
     }
 
     // ---------- Danışan: kendi kayıtları ----------
@@ -141,7 +144,7 @@ public class WeightEntryService {
         // Tek bir gün varsa "başlangıçtan beri" anlamsız
         BigDecimal changeSinceStart = points.size() > 1 ? latestWeight.subtract(startWeight) : null;
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(clock);
 
         return new WeightSummaryResponse(
                 startWeight,

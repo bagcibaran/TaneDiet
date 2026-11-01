@@ -14,6 +14,7 @@ import com.project.project.repository.WeightEntryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,17 +29,24 @@ public class IntakeFormService {
     private final UserRepository userRepository;
     private final WeightEntryRepository weightEntryRepository;
     private final ConsentService consentService;
+    private final Clock clock;
 
     public IntakeFormService(
             IntakeFormRepository intakeFormRepository,
             UserRepository userRepository,
             WeightEntryRepository weightEntryRepository,
-            ConsentService consentService
+            ConsentService consentService,
+            Clock clock
     ) {
         this.intakeFormRepository = intakeFormRepository;
         this.userRepository = userRepository;
         this.weightEntryRepository = weightEntryRepository;
         this.consentService = consentService;
+        this.clock = clock;
+    }
+
+    private IntakeFormResponse toResponse(IntakeForm form) {
+        return new IntakeFormResponse(form, LocalDate.now(clock));
     }
 
     // ---------- Danışan: kendi formu ----------
@@ -46,7 +54,7 @@ public class IntakeFormService {
     // Form henüz doldurulmadıysa boş döner (controller 204 verir)
     public Optional<IntakeFormResponse> getMyForm(String username) {
         User user = findUserByUsername(username);
-        return intakeFormRepository.findByUser(user).map(IntakeFormResponse::new);
+        return intakeFormRepository.findByUser(user).map(this::toResponse);
     }
 
     // Yoksa oluşturur, varsa günceller. Form ve ilk kilo kaydı birlikte kaydedilsin diye tek transaction.
@@ -66,12 +74,12 @@ public class IntakeFormService {
         apply(form, request);
 
         if (firstTime) {
-            form.setConsentGivenAt(LocalDateTime.now());
+            form.setConsentGivenAt(LocalDateTime.now(clock));
             // KVKK: hangi rıza metni sürümünün onaylandığı ayrıca kaydedilir
             consentService.recordCurrent(user);
             // Formdaki kilo ilk kilo kaydı olur; danışanın zaten kaydı varsa grafiği bozmamak için eklenmez
             if (!weightEntryRepository.existsByUser(user)) {
-                weightEntryRepository.save(new WeightEntry(user, request.getWeightKg(), LocalDate.now(), user));
+                weightEntryRepository.save(new WeightEntry(user, request.getWeightKg(), LocalDate.now(clock), user));
             }
         } else {
             // Diyetisyene bildirim: hangi sorular değişti?
@@ -88,14 +96,14 @@ public class IntakeFormService {
             }
         }
 
-        return new IntakeFormResponse(intakeFormRepository.save(form));
+        return toResponse(intakeFormRepository.save(form));
     }
 
     // ---------- Diyetisyen: bir danışanın formu ----------
 
     public Optional<IntakeFormResponse> getClientForm(Long clientId) {
         User client = findClientById(clientId);
-        return intakeFormRepository.findByUser(client).map(IntakeFormResponse::new);
+        return intakeFormRepository.findByUser(client).map(this::toResponse);
     }
 
     // ---------- Yardımcılar ----------

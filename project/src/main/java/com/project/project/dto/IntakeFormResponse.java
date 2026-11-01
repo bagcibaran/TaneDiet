@@ -53,7 +53,8 @@ public class IntakeFormResponse {
     private final LocalDateTime consentGivenAt;
     private final LocalDateTime updatedAt;
 
-    public IntakeFormResponse(IntakeForm form) {
+    // today: yaşı hesaplamak için "bugün" (servis Clock'tan verir)
+    public IntakeFormResponse(IntakeForm form, LocalDate today) {
         this.fullName = form.getFullName();
         this.birthDate = form.getBirthDate();
         this.gender = form.getGender();
@@ -93,7 +94,7 @@ public class IntakeFormResponse {
         this.lactoseGlutenSymptoms = form.getLactoseGlutenSymptoms();
 
         // Yaş sorulmuyor, doğum tarihinden hesaplanıyor
-        this.age = Period.between(form.getBirthDate(), LocalDate.now()).getYears();
+        this.age = Period.between(form.getBirthDate(), today).getYears();
         this.consentGivenAt = form.getConsentGivenAt();
         this.updatedAt = form.getUpdatedAt();
     }

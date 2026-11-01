@@ -62,24 +62,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String username = claims.getSubject();
             String role = claims.get("role", String.class);
 
-            // Token durumsuz: hizmet süresi dolan danışanın token'ı hâlâ geçerli olabilir.
-            // Bu yüzden danışan her istekte veritabanından kontrol edilir; kilitliyse 423 döner.
+            // Token durumsuz: hesap silinse, rolü değişse ya da hizmet süresi dolsa bile eski token hâlâ geçerli olabilir.
+            // Bu yüzden her rolde kullanıcı her istekte veritabanından kontrol edilir.
             // /auth/** (giriş, kayıt, davet kontrolü) ve /legal/** (KVKK metinleri) hariç: eski bir token kalsa bile bu sayfalar çalışmalı.
-            if ("CLIENT".equals(role) && !isOpenPath(request)) {
+            if (!isOpenPath(request)) {
                 Optional<User> user = userRepository.findByUsername(username);
-                // Kullanıcı bulunamadı (adı değişti veya silindi): oturum tanınmaz, korumalı istek 401 alır
-                if (user.isEmpty()) {
+                // Kullanıcı bulunamadı (adı değişti veya silindi) ya da rolü token'dakinden farklı:
+                // oturum tanınmaz, korumalı istek 401 alır (ön yüz giriş sayfasına yönlendirir)
+                if (user.isEmpty() || role == null || !role.equals(user.get().getRole().name())) {
                     filterChain.doFilter(request, response);
                     return;
                 }
-                if (clientAccessService.isLocked(user.get())) {
-                    writeError(response, 423, ClientAccessLockedException.MESSAGE);
-                    return;
-                }
-                // KVKK: güncel açık rıza metnini onaylamamış danışan, onay ekranı dışında hiçbir veriye ulaşamaz (428)
-                if (!isConsentPath(request) && consentService.needsConsent(user.get())) {
-                    writeError(response, 428, CONSENT_REQUIRED_MESSAGE);
-                    return;
+                // Danışan: kilit ve KVKK rızası kontrolü
+                if ("CLIENT".equals(role)) {
+                    if (clientAccessService.isLocked(user.get())) {
+                        writeError(response, 423, ClientAccessLockedException.MESSAGE);
+                        return;
+                    }
+                    // KVKK: güncel açık rıza metnini onaylamamış danışan, onay ekranı dışında hiçbir veriye ulaşamaz (428)
+                    if (!isConsentPath(request) && consentService.needsConsent(user.get())) {
+                        writeError(response, 428, CONSENT_REQUIRED_MESSAGE);
+                        return;
+                    }
                 }
             }
 

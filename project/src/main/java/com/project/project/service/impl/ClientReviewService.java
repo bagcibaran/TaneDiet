@@ -18,8 +18,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 // Diyetisyen bildirimleri: danışan, diyetisyen en son baktığından beri ne değiştirdi?
 @Service
@@ -51,18 +57,31 @@ public class ClientReviewService {
         this.clientAccessService = clientAccessService;
     }
 
-    // Danışan listesi: her kart için bildirimler
+    // Danışan listesi: her kart için bildirimler. Danışan sayısı ne olursa olsun sabit sayıda sorgu (danışan başına sorgu yok).
     public List<ClientOverviewResponse> listClients() {
-        return userRepository.findAllByRoleOrderByUsernameAsc(Role.CLIENT).stream()
-                .map(client -> {
-                    Optional<ClientReview> review = clientReviewRepository.findByClient(client);
-                    LocalDateTime since = since(review);
-                    // Yalnızca danışanın kendi girdiği kilolar; diyetisyenin girdiklerini zaten biliyor
-                    long newWeights = weightEntryRepository.countByUserAndEnteredByAndCreatedAtAfter(client, client, since);
-                    String intakeStatus = intakeStatus(intakeFormRepository.findByUser(client), review);
-                    boolean hasPlan = dietPlanRepository.existsByClient(client);
-                    return new ClientOverviewResponse(client, newWeights, intakeStatus, hasPlan, clientAccessService.toResponse(client));
-                })
+        List<User> clients = userRepository.findAllByRoleOrderByUsernameAsc(Role.CLIENT);
+        if (clients.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, ClientReview> reviews = clientReviewRepository.findAllByClientIn(clients).stream()
+                .collect(Collectors.toMap(review -> review.getClient().getId(), Function.identity()));
+        Map<Long, IntakeForm> forms = intakeFormRepository.findAllByUserIn(clients).stream()
+                .collect(Collectors.toMap(form -> form.getUser().getId(), Function.identity()));
+        Set<Long> withPlan = new HashSet<>(dietPlanRepository.findClientIdsWithPlan());
+        // Yalnızca danışanın kendi girdiği kilolar; diyetisyenin girdiklerini zaten biliyor
+        Map<Long, Long> newWeights = new HashMap<>();
+        for (Object[] row : weightEntryRepository.countNewClientWeights()) {
+            newWeights.put((Long) row[0], (Long) row[1]);
+        }
+
+        return clients.stream()
+                .map(client -> new ClientOverviewResponse(
+                        client,
+                        newWeights.getOrDefault(client.getId(), 0L),
+                        intakeStatus(Optional.ofNullable(forms.get(client.getId())), Optional.ofNullable(reviews.get(client.getId()))),
+                        withPlan.contains(client.getId()),
+                        clientAccessService.toResponse(client)))
                 .toList();
     }
 

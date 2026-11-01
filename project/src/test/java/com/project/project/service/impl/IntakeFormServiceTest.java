@@ -20,6 +20,9 @@ import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.Instant;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -48,7 +51,9 @@ class IntakeFormServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        intakeFormService = new IntakeFormService(intakeFormRepository, userRepository, weightEntryRepository, consentService);
+        // UTC'de 10 Mart 22:30 = Türkiye'de 11 Mart: ilk kilonun tarihi saatten gelir
+        Clock clock = Clock.fixed(Instant.parse("2026-03-10T22:30:00Z"), ZoneId.of("Europe/Istanbul"));
+        intakeFormService = new IntakeFormService(intakeFormRepository, userRepository, weightEntryRepository, consentService, clock);
 
         client = new User("betul", "betul@test.com", "hash");
         client.setId(41L);
@@ -108,7 +113,7 @@ class IntakeFormServiceTest {
         ArgumentCaptor<WeightEntry> seeded = ArgumentCaptor.forClass(WeightEntry.class);
         verify(weightEntryRepository).save(seeded.capture());
         assertEquals(0, seeded.getValue().getWeightKg().compareTo(new BigDecimal("72.40")));
-        assertEquals(LocalDate.now(), seeded.getValue().getMeasuredOn());
+        assertEquals(LocalDate.of(2026, 3, 11), seeded.getValue().getMeasuredOn());
         assertSame(client, seeded.getValue().getUser());
         assertSame(client, seeded.getValue().getEnteredBy());
     }
@@ -164,7 +169,8 @@ class IntakeFormServiceTest {
         when(intakeFormRepository.findByUser(client)).thenReturn(Optional.empty());
         when(weightEntryRepository.existsByUser(client)).thenReturn(true);
         IntakeFormRequest request = validRequest();
-        request.setBirthDate(LocalDate.now().minusYears(30));
+        // Saatin bugünü (11 Mart 2026) ile tam 30 yıl önce
+        request.setBirthDate(LocalDate.of(2026, 3, 11).minusYears(30));
         request.setConsent(true);
 
         IntakeFormResponse response = intakeFormService.saveMyForm("betul", request);

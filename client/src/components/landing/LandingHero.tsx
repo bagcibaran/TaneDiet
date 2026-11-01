@@ -33,7 +33,7 @@ function LandingHero() {
                     </div>
                 </div>
 
-                <div className="mt-5 grid gap-5 sm:mt-8 sm:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] sm:items-center sm:gap-10">
+                <div className="mt-4 grid gap-4 sm:mt-8 sm:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] sm:items-center sm:gap-10">
                     <div className="animate-rise [animation-delay:0.05s] sm:order-2">
                         <DietitianPhotoCard />
                     </div>

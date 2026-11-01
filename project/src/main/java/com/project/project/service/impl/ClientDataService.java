@@ -76,7 +76,7 @@ public class ClientDataService {
         return new ClientExportResponse(
                 new UserResponse(client),
                 client.getAccessUntil(),
-                intakeFormRepository.findByUser(client).map(IntakeFormResponse::new).orElse(null),
+                intakeFormRepository.findByUser(client).map(form -> new IntakeFormResponse(form, LocalDate.now(clock))).orElse(null),
                 consentService.history(client),
                 weightEntryRepository.findAllByUserOrderByMeasuredOnDescCreatedAtDesc(client).stream()
                         .map(WeightEntryResponse::new)

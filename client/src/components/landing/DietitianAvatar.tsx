@@ -44,11 +44,12 @@ function DietitianAvatar({ size = 64 }: DietitianAvatarProps) {
     )
 }
 
-// Ana sayfanın ilk ekranındaki büyük fotoğraf kartı; adı ve unvanı fotoğrafın üstünde bir etikette
+// Ana sayfanın ilk ekranındaki büyük fotoğraf kartı; adı ve unvanı fotoğrafın üstünde bir etikette.
+// Telefonda yüksekliği ekranın ~üçte biriyle sınırlı: slogan ve WhatsApp düğmesi de ilk ekrana sığsın (küçük telefonlar dahil).
 export function DietitianPhotoCard() {
     const { t } = useTranslation()
     return (
-        <figure className="relative aspect-[4/5] max-h-[62vh] w-full overflow-hidden rounded-[1.75rem] bg-linear-180 from-cream to-sage shadow-float sm:max-h-none">
+        <figure className="relative aspect-[4/5] max-h-[36svh] w-full overflow-hidden rounded-[1.75rem] bg-linear-180 from-cream to-sage shadow-float sm:max-h-none">
             <DietitianPicture />
             <figcaption className="absolute bottom-3 left-3 right-3 rounded-2xl bg-card/95 px-4 py-2.5 text-ink shadow-soft backdrop-blur sm:right-auto">
                 <p className="font-bold">{DIETITIAN.name}</p>
