@@ -6,7 +6,7 @@ package com.project.project.legal;
 //  - Bunlar TASLAKTIR. Yayına almadan önce bir avukat ya da KVKK danışmanı tarafından gözden geçirilmeli.
 //  - [ADRES] ve [E-POSTA] yer tutucularını diyetisyen doldurur.
 //  - Açık rıza metni değişirse CONSENT_VERSION güncellenmeli: danışanlar bir sonraki girişte yeni metni onaylar.
-//  - *_EN çeviriler yalnızca bilgi amaçlıdır; bağlayıcı olan Türkçe metindir. Türkçe metin değişince çeviriler de güncellenmeli.
+//  - *_EN ve *_DE çeviriler yalnızca bilgi amaçlıdır; bağlayıcı olan Türkçe metindir. Türkçe metin değişince çeviriler de güncellenmeli.
 //  - Biçim: "## " ile başlayan satır başlıktır, boş satır paragrafları ayırır.
 public final class LegalTexts {
 
@@ -105,6 +105,53 @@ public final class LegalTexts {
             If you want a copy of your information or want it deleted, write to your dietitian on WhatsApp or at [E-POSTA]. Your request will be concluded within 30 days at the latest.
             """;
 
+    // Almanca çeviri: yalnızca bilgi amaçlı, bağlayıcı olan Türkçe metindir. Türkçe metin değişince bu da güncellenmeli.
+    public static final String PRIVACY_TEXT_DE = """
+            ## Datenschutzhinweis zum Schutz personenbezogener Daten
+
+            Dieser Text ist ein Entwurf; er wird vor der Veröffentlichung rechtlich geprüft. Diese deutsche Fassung ist eine Übersetzung zur Information; verbindlich ist der türkische Text.
+
+            ## Verantwortliche
+
+            Dyt. Betül Bağcı (Einzelperson) — tane. online diyet
+            Adresse: [ADRES]
+            E-Mail: [E-POSTA]
+
+            ## Welche Daten verarbeiten wir?
+
+            Deine Identitäts- und Kontaktdaten (Benutzername, E-Mail), deine Antworten im Vorgesprächsformular, deine Gewichtseinträge, die für dich erstellten Ernährungspläne sowie technische Aufzeichnungen, die für den sicheren Betrieb der App nötig sind (z. B. Anmeldeversuche, wann die Ernährungsberaterin deine Angaben angesehen hat).
+
+            Die Gesundheitsangaben im Vorgesprächsformular (Erkrankungen, Operationen, Medikamente, Allergien, Verdauungsbeschwerden und Ähnliches) sind nach dem KVKK (türkisches Datenschutzgesetz) besondere Kategorien personenbezogener Daten.
+
+            ## Warum verarbeiten wir sie?
+
+            Um dir eine persönliche Ernährungsberatung zu geben, deinen Plan zu erstellen, deinen Fortschritt zu verfolgen und dich zum Service zu kontaktieren.
+
+            ## Rechtsgrundlage
+
+            Deine Gesundheitsangaben werden nur auf Grundlage deiner ausdrücklichen Einwilligung verarbeitet. Deine übrigen Angaben werden verarbeitet, weil sie für die Einrichtung und Durchführung des Services zwischen uns erforderlich sind.
+
+            ## An wen geben wir sie weiter?
+
+            Deine Daten werden nicht an Dritte weitergegeben oder verkauft. Server, auf dem die App läuft: [SUNUCU / BARINDIRMA HİZMETİ]. Liegt der Server im Ausland, wird dies gesondert angegeben und, falls erforderlich, deine Einwilligung eingeholt.
+
+            ## Wie lange speichern wir sie?
+
+            Während deines Services und 2 Jahre nach dessen Ende. Danach werden deine Daten automatisch dauerhaft gelöscht. Wenn du eine frühere Löschung möchtest, schreib uns einfach.
+
+            ## Cookies
+
+            Die App verwendet keine Werbe- oder Tracking-Cookies. Sie nutzt nur den lokalen Speicher des Browsers, um dich angemeldet zu halten und ein unvollständiges Formular nicht zu verlieren.
+
+            ## Deine Rechte (KVKK Artikel 11)
+
+            Du hast das Recht zu erfahren, ob deine Daten verarbeitet werden, Auskunft zu verlangen, den Zweck zu erfahren, zu wissen, an wen sie übermittelt werden, ihre Berichtigung bei Unvollständigkeit oder Fehlern und ihre Löschung zu verlangen, Widerspruch einzulegen und bei einem Schaden Ersatz zu verlangen.
+
+            ## So stellst du einen Antrag
+
+            Wenn du eine Kopie deiner Daten oder ihre Löschung möchtest, schreib deiner Ernährungsberaterin über WhatsApp oder an [E-POSTA]. Dein Antrag wird spätestens innerhalb von 30 Tagen erledigt.
+            """;
+
     public static final String CONSENT_VERSION = "2026-10-30";
 
     public static final String CONSENT_TEXT = """
@@ -128,9 +175,38 @@ public final class LegalTexts {
             I know that I have read the privacy notice, that I can withdraw my consent at any time and that I can ask for my information to be deleted. I understand that if I withdraw my consent, the service may not be able to continue without this information.
             """;
 
-    // Bu dilde çeviri var mı (şimdilik yalnızca İngilizce; Almanca sonra)
+    // Almanca çeviri: yalnızca bilgi amaçlı. Onaylanan sürüm ve metin özeti Türkçe metne aittir.
+    public static final String CONSENT_TEXT_DE = """
+            ## Ausdrückliche Einwilligung
+
+            Dieser Text ist ein Entwurf; er wird vor der Veröffentlichung rechtlich geprüft. Diese deutsche Fassung ist eine Übersetzung zur Information; verbindlich ist der türkische Text.
+
+            Ich willige ausdrücklich ein, dass meine im Vorgesprächsformular angegebenen Gesundheitsdaten (Erkrankungen, Operationen, eingenommene Medikamente und Nahrungsergänzungsmittel, Allergien, Verdauungsbeschwerden und Ähnliches) und meine Gewichtseinträge von Dyt. Betül Bağcı zum Zweck meiner Ernährungsberatung, der Erstellung meines Ernährungsplans und der Verfolgung meines Fortschritts verarbeitet und nach Ende des Services 2 Jahre gespeichert werden.
+
+            Ich bestätige, dass ich den Datenschutzhinweis gelesen habe, und weiß, dass ich meine Einwilligung jederzeit widerrufen und die Löschung meiner Daten verlangen kann. Mir ist bewusst, dass der Service ohne diese Daten möglicherweise nicht fortgeführt werden kann, wenn ich meine Einwilligung widerrufe.
+            """;
+
+    // Bu dilde çeviri var mı (İngilizce, Almanca)
     public static boolean hasTranslation(String language) {
-        return "en".equals(language);
+        return "en".equals(language) || "de".equals(language);
+    }
+
+    // Aydınlatma metni istenen dilde; çevirisi yoksa Türkçe
+    public static String privacyText(String language) {
+        return switch (language) {
+            case "en" -> PRIVACY_TEXT_EN;
+            case "de" -> PRIVACY_TEXT_DE;
+            default -> PRIVACY_TEXT;
+        };
+    }
+
+    // Açık rıza metni istenen dilde; çevirisi yoksa Türkçe
+    public static String consentText(String language) {
+        return switch (language) {
+            case "en" -> CONSENT_TEXT_EN;
+            case "de" -> CONSENT_TEXT_DE;
+            default -> CONSENT_TEXT;
+        };
     }
 
     private LegalTexts() {

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 // Gerçek ekran görüntüleri (örnek danışan "Ayşe", gerçek veri değil): public/showcase/<dil>/<ekran>.webp, 375×700 (2x).
 // Yeniden çekmek için: DEVAM_NOTU.md'deki "Tanıtım ekran görüntüleri" notu. Görüntüsü olmayan dilde Türkçeleri gösterilir.
-const SHOT_LANGUAGES = ['tr', 'en']
+const SHOT_LANGUAGES = ['tr', 'en', 'de']
 
 const SHOTS = [
     { name: 'home', caption: 'landing.shotHome' },

@@ -1,0 +1,358 @@
+{
+  "Ad soyad boş olamaz": {
+    "en": "Full name cannot be empty",
+    "de": "Vor- und Nachname dürfen nicht leer sein"
+  },
+  "Ad soyad en fazla 100 karakter olabilir": {
+    "en": "Full name can be at most 100 characters",
+    "de": "Vor- und Nachname dürfen höchstens 100 Zeichen lang sein"
+  },
+  "Adım sayısı negatif olamaz": {
+    "en": "Step count cannot be negative",
+    "de": "Die Schrittzahl darf nicht negativ sein"
+  },
+  "Adım sayısı sorusu cevaplanmalı": {
+    "en": "Please answer the step count question",
+    "de": "Bitte beantworte die Frage zur Schrittzahl"
+  },
+  "Alkol sorusu cevaplanmalı": {
+    "en": "Please answer the alcohol question",
+    "de": "Bitte beantworte die Frage zum Alkohol"
+  },
+  "Başlangıç tarihi boş olamaz": {
+    "en": "Start date cannot be empty",
+    "de": "Das Startdatum darf nicht leer sein"
+  },
+  "Başlık en fazla 100 karakter olabilir": {
+    "en": "Title can be at most 100 characters",
+    "de": "Der Titel darf höchstens 100 Zeichen lang sein"
+  },
+  "Beklenmeyen bir hata oluştu": {
+    "en": "An unexpected error occurred",
+    "de": "Ein unerwarteter Fehler ist aufgetreten"
+  },
+  "Bir programda en fazla 100 öğün olabilir": {
+    "en": "A program can have at most 100 meals",
+    "de": "Ein Plan darf höchstens 100 Mahlzeiten haben"
+  },
+  "Bir öğün en fazla 4000 karakter olabilir": {
+    "en": "A meal can be at most 4000 characters",
+    "de": "Eine Mahlzeit darf höchstens 4000 Zeichen lang sein"
+  },
+  "Bitiş tarihi gerekli": {
+    "en": "End date is required",
+    "de": "Das Enddatum ist erforderlich"
+  },
+  "Boy boş olamaz": {
+    "en": "Height cannot be empty",
+    "de": "Die Größe darf nicht leer sein"
+  },
+  "Boy en az 100 cm olmalı": {
+    "en": "Height must be at least 100 cm",
+    "de": "Die Größe muss mindestens 100 cm betragen"
+  },
+  "Boy en fazla 250 cm olabilir": {
+    "en": "Height can be at most 250 cm",
+    "de": "Die Größe darf höchstens 250 cm betragen"
+  },
+  "Bu alan en fazla 255 karakter olabilir": {
+    "en": "This field can be at most 255 characters",
+    "de": "Dieses Feld darf höchstens 255 Zeichen lang sein"
+  },
+  "Bu e-posta adresi zaten kayıtlı": {
+    "en": "This email address is already registered",
+    "de": "Diese E-Mail-Adresse ist bereits registriert"
+  },
+  "Bu kullanıcı adı zaten alınmış": {
+    "en": "This username is already taken",
+    "de": "Dieser Benutzername ist bereits vergeben"
+  },
+  "Bu kullanıcıya ait görevler olduğu için silinemez": {
+    "en": "This user cannot be deleted because they have tasks",
+    "de": "Dieser Benutzer kann nicht gelöscht werden, da ihm Aufgaben zugeordnet sind"
+  },
+  "Cevaplar en fazla 2000 karakter olabilir": {
+    "en": "Answers can be at most 2000 characters",
+    "de": "Antworten dürfen höchstens 2000 Zeichen lang sein"
+  },
+  "Cinsiyet seçilmeli": {
+    "en": "Please choose a gender",
+    "de": "Bitte wähle ein Geschlecht"
+  },
+  "Danışan bulunamadı, id: ": {
+    "en": "Client not found, id: ",
+    "de": "Klient nicht gefunden, ID: "
+  },
+  "Davet linki geçersiz veya süresi dolmuş": {
+    "en": "The invite link is invalid or has expired",
+    "de": "Der Einladungslink ist ungültig oder abgelaufen"
+  },
+  "Devam etmek için açık rıza onayı gerekli": {
+    "en": "Explicit consent is required to continue",
+    "de": "Zum Fortfahren ist deine ausdrückliche Einwilligung erforderlich"
+  },
+  "Devam etmek için güncel açık rıza metnini onaylaman gerekiyor.": {
+    "en": "To continue, you need to accept the current explicit consent text.",
+    "de": "Um fortzufahren, musst du den aktuellen Einwilligungstext bestätigen."
+  },
+  "Diyet programı bulunamadı, id: ": {
+    "en": "Diet program not found, id: ",
+    "de": "Ernährungsplan nicht gefunden, ID: "
+  },
+  "Doğum tarihi boş olamaz": {
+    "en": "Date of birth cannot be empty",
+    "de": "Das Geburtsdatum darf nicht leer sein"
+  },
+  "Doğum tarihi geçmişte olmalı": {
+    "en": "Date of birth must be in the past",
+    "de": "Das Geburtsdatum muss in der Vergangenheit liegen"
+  },
+  "E-posta boş olamaz": {
+    "en": "Email cannot be empty",
+    "de": "Die E-Mail-Adresse darf nicht leer sein"
+  },
+  "E-posta en fazla 100 karakter olabilir": {
+    "en": "Email can be at most 100 characters",
+    "de": "Die E-Mail-Adresse darf höchstens 100 Zeichen lang sein"
+  },
+  "Egzersiz sıklığı seçilmeli": {
+    "en": "Please choose how often you exercise",
+    "de": "Bitte wähle, wie oft du Sport machst"
+  },
+  "Email boş olamaz": {
+    "en": "Email cannot be empty",
+    "de": "Die E-Mail-Adresse darf nicht leer sein"
+  },
+  "Email veya şifre hatalı": {
+    "en": "Email or password is incorrect",
+    "de": "E-Mail-Adresse oder Passwort ist falsch"
+  },
+  "Enerji durumu seçilmeli": {
+    "en": "Please choose your energy level",
+    "de": "Bitte wähle dein Energieniveau"
+  },
+  "Gazlı içecek sorusu cevaplanmalı": {
+    "en": "Please answer the soft drink question",
+    "de": "Bitte beantworte die Frage zu Softdrinks"
+  },
+  "Geçerli bir e-posta adresi girin": {
+    "en": "Please enter a valid email address",
+    "de": "Bitte gib eine gültige E-Mail-Adresse ein"
+  },
+  "Geçerli bir email adresi giriniz": {
+    "en": "Please enter a valid email address",
+    "de": "Bitte gib eine gültige E-Mail-Adresse ein"
+  },
+  "Geçersiz gün": {
+    "en": "Invalid day",
+    "de": "Ungültiger Tag"
+  },
+  "Günlük programda öğünler her gün için yazılır": {
+    "en": "In a daily program, meals are written for every day",
+    "de": "In einem Tagesplan gelten die Mahlzeiten für jeden Tag"
+  },
+  "Haftalık programda her öğün bir güne (Pazartesi-Pazar) ait olmalı": {
+    "en": "In a weekly program, every meal must belong to a day (Monday–Sunday)",
+    "de": "In einem Wochenplan muss jede Mahlzeit einem Tag (Montag–Sonntag) zugeordnet sein"
+  },
+  "Hedef seçilmeli": {
+    "en": "Please choose a goal",
+    "de": "Bitte wähle ein Ziel"
+  },
+  "Hizmet süren doldu. Devam etmek için diyetisyeninle iletişime geç.": {
+    "en": "Your service period has ended. Contact your dietitian to continue.",
+    "de": "Dein Servicezeitraum ist abgelaufen. Wende dich an deine Ernährungsberaterin, um weiterzumachen."
+  },
+  "Kahvaltı sorusu cevaplanmalı": {
+    "en": "Please answer the breakfast question",
+    "de": "Bitte beantworte die Frage zum Frühstück"
+  },
+  "Kategori adı boş olamaz": {
+    "en": "Category name cannot be empty",
+    "de": "Der Kategoriename darf nicht leer sein"
+  },
+  "Kategori adı en fazla 50 karakter olabilir": {
+    "en": "Category name can be at most 50 characters",
+    "de": "Der Kategoriename darf höchstens 50 Zeichen lang sein"
+  },
+  "Kayıt bulunamadı": {
+    "en": "Record not found",
+    "de": "Eintrag nicht gefunden"
+  },
+  "Kayıt yalnızca davet linkiyle yapılabilir": {
+    "en": "Sign-up is only possible with an invite link",
+    "de": "Eine Registrierung ist nur mit einem Einladungslink möglich"
+  },
+  "Kilo boş olamaz": {
+    "en": "Weight cannot be empty",
+    "de": "Das Gewicht darf nicht leer sein"
+  },
+  "Kilo en az 20 kg olmalı": {
+    "en": "Weight must be at least 20 kg",
+    "de": "Das Gewicht muss mindestens 20 kg betragen"
+  },
+  "Kilo en fazla 2 ondalık basamak içerebilir": {
+    "en": "Weight can have at most 2 decimal places",
+    "de": "Das Gewicht darf höchstens 2 Nachkommastellen haben"
+  },
+  "Kilo en fazla 400 kg olabilir": {
+    "en": "Weight can be at most 400 kg",
+    "de": "Das Gewicht darf höchstens 400 kg betragen"
+  },
+  "Kilo kaydı bulunamadı, id: ": {
+    "en": "Weight entry not found, id: ",
+    "de": "Gewichtseintrag nicht gefunden, ID: "
+  },
+  "Kullanıcı adı boş olamaz": {
+    "en": "Username cannot be empty",
+    "de": "Der Benutzername darf nicht leer sein"
+  },
+  "Kullanıcı adı en fazla 50 karakter olabilir": {
+    "en": "Username can be at most 50 characters",
+    "de": "Der Benutzername darf höchstens 50 Zeichen lang sein"
+  },
+  "Kullanıcı bulunamadı: ": {
+    "en": "User not found: ",
+    "de": "Benutzer nicht gefunden: "
+  },
+  "Madde boş olamaz": {
+    "en": "Item cannot be empty",
+    "de": "Der Eintrag darf nicht leer sein"
+  },
+  "Madde en fazla 255 karakter olabilir": {
+    "en": "Item can be at most 255 characters",
+    "de": "Ein Eintrag darf höchstens 255 Zeichen lang sein"
+  },
+  "Meslek boş olamaz": {
+    "en": "Occupation cannot be empty",
+    "de": "Der Beruf darf nicht leer sein"
+  },
+  "Meslek en fazla 100 karakter olabilir": {
+    "en": "Occupation can be at most 100 characters",
+    "de": "Der Beruf darf höchstens 100 Zeichen lang sein"
+  },
+  "Metin güncellendi, sayfayı yenileyip tekrar onayla": {
+    "en": "The text has been updated, refresh the page and accept again",
+    "de": "Der Text wurde aktualisiert. Lade die Seite neu und bestätige erneut"
+  },
+  "Metin sürümü gerekli": {
+    "en": "Text version is required",
+    "de": "Die Textversion ist erforderlich"
+  },
+  "Not en fazla 4000 karakter olabilir": {
+    "en": "Note can be at most 4000 characters",
+    "de": "Die Notiz darf höchstens 4000 Zeichen lang sein"
+  },
+  "Not en fazla 60 karakter olabilir": {
+    "en": "Note can be at most 60 characters",
+    "de": "Die Notiz darf höchstens 60 Zeichen lang sein"
+  },
+  "Onay için danışanın kullanıcı adını aynen yaz": {
+    "en": "To confirm, type the client's username exactly",
+    "de": "Geben Sie zur Bestätigung den Benutzernamen des Klienten genau ein"
+  },
+  "Onay için danışanın kullanıcı adını yaz": {
+    "en": "To confirm, type the client's username",
+    "de": "Geben Sie zur Bestätigung den Benutzernamen des Klienten ein"
+  },
+  "Paket süresi 1, 3 veya 6 ay olabilir": {
+    "en": "The package can be 1, 3 or 6 months",
+    "de": "Das Paket kann 1, 3 oder 6 Monate dauern"
+  },
+  "Paket süresi seçilmeli": {
+    "en": "Please choose a package length",
+    "de": "Bitte wählen Sie eine Paketdauer"
+  },
+  "Program başlığı boş olamaz": {
+    "en": "Program title cannot be empty",
+    "de": "Der Titel des Plans darf nicht leer sein"
+  },
+  "Program tarzı seçilmeli": {
+    "en": "Please choose a program style",
+    "de": "Bitte wähle einen Planstil"
+  },
+  "Program türü seçilmeli": {
+    "en": "Please choose a program type",
+    "de": "Bitte wählen Sie einen Plantyp"
+  },
+  "Programda en az bir öğün olmalı": {
+    "en": "The program must have at least one meal",
+    "de": "Der Plan muss mindestens eine Mahlzeit enthalten"
+  },
+  "Sigara sorusu cevaplanmalı": {
+    "en": "Please answer the smoking question",
+    "de": "Bitte beantworte die Frage zum Rauchen"
+  },
+  "Spor türü bilgisi eksik": {
+    "en": "Sport type information is missing",
+    "de": "Angaben zur Sportart fehlen"
+  },
+  "Su tüketimi seçilmeli": {
+    "en": "Please choose your water intake",
+    "de": "Bitte wähle deine Trinkmenge"
+  },
+  "Tartı tarihi boş olamaz": {
+    "en": "Weighing date cannot be empty",
+    "de": "Das Wiegedatum darf nicht leer sein"
+  },
+  "Tartı tarihi gelecekte olamaz": {
+    "en": "Weighing date cannot be in the future",
+    "de": "Das Wiegedatum darf nicht in der Zukunft liegen"
+  },
+  "Uyku süresi seçilmeli": {
+    "en": "Please choose how long you sleep",
+    "de": "Bitte wähle deine Schlafdauer"
+  },
+  "Çay/kahve tüketimi seçilmeli": {
+    "en": "Please choose your tea/coffee intake",
+    "de": "Bitte wähle deinen Tee-/Kaffeekonsum"
+  },
+  "Çok fazla deneme yapıldı. Lütfen 15 dakika sonra tekrar dene.": {
+    "en": "Too many attempts. Please try again in 15 minutes.",
+    "de": "Zu viele Versuche. Bitte versuche es in 15 Minuten erneut."
+  },
+  "Öğün adı boş olamaz": {
+    "en": "Meal name cannot be empty",
+    "de": "Der Name der Mahlzeit darf nicht leer sein"
+  },
+  "Öğün adı en fazla 60 karakter olabilir": {
+    "en": "Meal name can be at most 60 characters",
+    "de": "Der Name der Mahlzeit darf höchstens 60 Zeichen lang sein"
+  },
+  "Öğün saati SS:DD biçiminde olmalı": {
+    "en": "Meal time must be in HH:MM format",
+    "de": "Die Uhrzeit der Mahlzeit muss im Format HH:MM sein"
+  },
+  "Öğün sayısı seçilmeli": {
+    "en": "Please choose the number of meals",
+    "de": "Bitte wähle die Anzahl der Mahlzeiten"
+  },
+  "Öğünde en az bir madde olmalı": {
+    "en": "A meal must have at least one item",
+    "de": "Eine Mahlzeit muss mindestens einen Eintrag haben"
+  },
+  "Öğünde en az bir madde olmalı: ": {
+    "en": "A meal must have at least one item: ",
+    "de": "Eine Mahlzeit muss mindestens einen Eintrag haben: "
+  },
+  "Öğünün günü belirtilmeli": {
+    "en": "The meal's day must be specified",
+    "de": "Der Tag der Mahlzeit muss angegeben werden"
+  },
+  "İşlem seçilmeli": {
+    "en": "Please choose an action",
+    "de": "Bitte wählen Sie eine Aktion"
+  },
+  "İşlem veri kurallarına uymuyor": {
+    "en": "The operation does not comply with the data rules",
+    "de": "Der Vorgang entspricht nicht den Datenregeln"
+  },
+  "Şifre boş olamaz": {
+    "en": "Password cannot be empty",
+    "de": "Das Passwort darf nicht leer sein"
+  },
+  "Şifre en az 8, en fazla 72 karakter olmalı": {
+    "en": "Password must be 8 to 72 characters",
+    "de": "Das Passwort muss 8 bis 72 Zeichen lang sein"
+  }
+}

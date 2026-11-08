@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 
 import tr from './locales/tr.json'
 import en from './locales/en.json'
+import de from './locales/de.json'
 
 i18n
     .use(LanguageDetector)
@@ -12,9 +13,13 @@ i18n
         resources: {
             tr: { translation: tr },
             en: { translation: en },
+            de: { translation: de },
         },
         fallbackLng: 'tr',
-        supportedLngs: ['tr', 'en'],
+        supportedLngs: ['tr', 'en', 'de'],
+        // Bölgeli diller ana dile iner: de-AT, de-DE → de; en-GB → en
+        nonExplicitSupportedLngs: true,
+        load: 'languageOnly',
         interpolation: {
             escapeValue: false,
         },

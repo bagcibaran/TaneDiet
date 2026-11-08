@@ -1,4 +1,4 @@
-// Tanıtım sayfası için gerçek ekran görüntüleri: örnek danışan "Ayşe" (gerçek veri değil), TR ve EN.
+// Tanıtım sayfası için gerçek ekran görüntüleri: örnek danışan "Ayşe" (gerçek veri değil), TR, EN ve DE.
 // YALNIZCA yerel geliştirme veritabanında çalıştır. Gerekenler:
 //   1. Test API'si 8081'de, uygulama 5174'te (API isteklerini 8081'e yollayan geçici bir Vite ayarıyla) açık.
 //   2. Chrome hata ayıklama portuyla açık:
@@ -6,7 +6,7 @@
 //   3. Yerel veritabanında demo-diyetisyen@test.local (şifre Demo12345!) DIETITIAN rolüyle var
 //      (başlangıç daveti SQL ile eklenip /auth/register ile kayıt, sonra role='DIETITIAN').
 // Kullanım: node scripts/showcase-shots.mjs public/showcase
-// Bittikten sonra demo-%@test.local kullanıcılarını ve verilerini sil. Almanca eklenince dil listesine 'de' ekle.
+// Bittikten sonra demo-%@test.local kullanıcılarını ve verilerini sil. Yeni dil eklenince dil listesine ekle.
 import { mkdirSync, writeFileSync } from 'node:fs'
 
 const OUT = process.argv[2]
@@ -41,7 +41,7 @@ for (let i = 0; i < weights.length; i++) {
 
 const intake = (lang) => ({
     fullName: 'Ayşe Yılmaz', birthDate: '1991-04-18', gender: 'FEMALE', heightCm: 166, weightKg: 76.8,
-    occupation: lang === 'en' ? 'Teacher' : 'Öğretmen', mainMeals: 'THREE', eatsBreakfast: true, waterIntake: 'ONE_LITER',
+    occupation: { tr: 'Öğretmen', en: 'Teacher', de: 'Lehrerin' }[lang], mainMeals: 'THREE', eatsBreakfast: true, waterIntake: 'ONE_LITER',
     teaCoffee: 'TWO_CUPS', drinksSoda: false, goal: 'LOSE_WEIGHT', programStyle: 'FLEXIBLE', sleepHours: 'FROM_6_TO_8',
     energyLevel: 'MODERATELY_TIRED', smokes: false, drinksAlcohol: false, exerciseDays: 'ONE_TO_TWO', sportCardio: true,
     sportWeights: false, sportPilatesYoga: true, tracksSteps: true, averageSteps: 6500, consent: lang === 'tr' ? true : undefined,
@@ -63,12 +63,19 @@ const MEALS = {
         ['Snack', '16:30', '1 glass of ayran\n2 dried apricots'],
         ['Dinner', '19:30', 'Vegetables in olive oil\n4 tbsp bulgur / 1 slice of bread\nTzatziki'],
     ],
+    de: [
+        ['Frühstück', '08:30', '2 gekochte Eier\n30 g Weißkäse / 2 EL Quark\n5 Oliven\nBlattsalat, Tomate, Gurke\n1 Scheibe Vollkornbrot'],
+        ['Zwischenmahlzeit', '11:00', '1 Portion Obst\n10 rohe Mandeln'],
+        ['Mittagessen', '13:30', 'Gegrilltes Hähnchen (120 g) / Frikadellen\nSalat der Saison (1 EL Olivenöl)\n1 Schale Joghurt'],
+        ['Zwischenmahlzeit', '16:30', '1 Glas Ayran\n2 getrocknete Aprikosen'],
+        ['Abendessen', '19:30', 'Gemüse in Olivenöl\n4 EL Bulgur / 1 Scheibe Brot\nZaziki'],
+    ],
 }
 const plan = (lang) => ({
     planType: 'DAILY',
-    title: lang === 'en' ? 'Diet list' : 'Diyet Listesi',
+    title: { tr: 'Diyet Listesi', en: 'Diet list', de: 'Ernährungsplan' }[lang],
     startDate: '2026-10-26',
-    notes: lang === 'en' ? 'Drink at least 2 litres of water a day.' : 'Günde en az 2 litre su iç.',
+    notes: { tr: 'Günde en az 2 litre su iç.', en: 'Drink at least 2 litres of water a day.', de: 'Trink mindestens 2 Liter Wasser am Tag.' }[lang],
     meals: MEALS[lang].map(([name, time, items]) => ({ dayIndex: 0, name, time, items })),
 })
 const clientId = (await call('GET', '/clients', null, D)).find((c) => c.username === 'Ayşe').id
@@ -112,7 +119,7 @@ async function shot(lang, name, path, prepare) {
     console.log('saved', lang, name)
 }
 
-for (const lang of ['tr', 'en']) {
+for (const lang of ['tr', 'en', 'de']) {
     await call('PUT', `/clients/${clientId}/diet-plans/${saved.id}`, plan(lang), D)
     await call('PUT', '/intake', intake(lang), C)
     await cdp('Page.navigate', { url: APP + '/login' })

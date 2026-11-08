@@ -26,13 +26,30 @@ class LegalControllerTest {
         assertEquals("en", response.getLanguage());
     }
 
-    // Çevirisi olmayan dil (ör. henüz Almanca yok): Türkçe metin döner, dil "tr" olarak bildirilir
+    // Çevirisi olmayan dil: Türkçe metin döner, dil "tr" olarak bildirilir
     @Test
     void unknownLanguageFallsBackToTurkish() {
-        LegalTextResponse response = controller.consent("de").getBody();
+        LegalTextResponse response = controller.consent("fr").getBody();
 
         assertEquals(LegalTexts.CONSENT_TEXT, response.getText());
         assertEquals("tr", response.getLanguage());
+    }
+
+    @Test
+    void privacyInGermanWhenAsked() {
+        LegalTextResponse response = controller.privacy("de").getBody();
+
+        assertEquals(LegalTexts.PRIVACY_TEXT_DE, response.getText());
+        assertEquals("de", response.getLanguage());
+    }
+
+    @Test
+    void consentVersionIsSameInGerman() {
+        LegalTextResponse german = controller.consent("de").getBody();
+
+        assertEquals(LegalTexts.CONSENT_VERSION, german.getVersion());
+        assertEquals(LegalTexts.CONSENT_TEXT_DE, german.getText());
+        assertEquals("de", german.getLanguage());
     }
 
     // Onaylanan sürüm dilden bağımsız: bağlayıcı olan Türkçe metindir
